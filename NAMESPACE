@@ -1,0 +1,2 @@
+UseDynLib(sdcTable)
+export(protectTable, processTableHYPERCUBE, processTableHITAS, roundSubtable, summary.safeTable, createFullData)
