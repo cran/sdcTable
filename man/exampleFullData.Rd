@@ -12,6 +12,8 @@
     	\item{\code{indexvars}}{a vector representing the columns of the dimensional variables in data set.}
     	\item{\code{supps2check}}{a numeric vector of indices representing cells that need to be protected.}
 		\item{\code{numberindexvars}}{the total number of dimensional variables.}
+		\item{\code{allDims}}{list of all possible characteristics for each dimensional variable.}
+		\item{\code{dimensions}}{list containing the hierarchical structure of each dimensional variable.}
 	}
 }
 \examples{

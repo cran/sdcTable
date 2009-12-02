@@ -21,12 +21,14 @@
 		# first hierarchical variable: sex: we have {total}-> {male, women}
 		sex <- c("00", "01", "02")
 		
-		# second hierarchical variable: a total of 13 age-groups including the total: we have {total}<- {group1-group12} 
+		# second hierarchical variable: a total of 13 age-groups including the total: 
+		# we have {total}<- {group1-group12} 
 		age <- c("000", "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012")
 		
-		# for the minimal dataset we don't need the totals: we generate each combination of sublevels of the hierarchical variables
+		# for the minimal dataset we don't need the totals: 
+		# we generate each combination of sublevels of the hierarchical variables
 		minimalData <- expand.grid(sex[-1], age[-1])
-		
+
 		# the column with values is added (just random numbers in this case)
 		minimalData$value <- rpois(nrow(minimalData), 7)
 		
@@ -34,20 +36,38 @@
 		indexvars <- c(1,2)		
 		
 		# level-structure of the hierarchical variables:
-		# the first level (sex) consists of a total of 2 levels (this is total and male/women). Since there are only 2 characteristics in the sub-level, we need to add 1.
-		# the first level (age)consists of a total of 12 levels (this is the total and 12 age groups). Since we need 2 digits for the 12 age groups (01, 02,...,12)for this level, the second component of list[[2]] needs to be 2.
 		l <- list()
+		# the first level (sex) consists of a total of 2 levels (total and male/women). 
+		# Since there are only 2 characteristics in the sub-level, we need to add 1.
 		l[[1]] <- c(1, 1)
+
+		# the first level (age)consists of a total of 12 levels (total and 12 age groups). 
+		# Since we need 2 digits for the 12 age groups (01, 02,...,12)for this level, the second component of list[[2]] needs to be 2.
 		l[[2]] <- c(1, 2)
+
+		### Alternatively one could use genCodesFromFiles: ###
+		# infoSex <- genCodesFromFile(file=paste(searchpaths()[grep("sdcTable", searchpaths())], "/etc/exampleSex.hcr", sep=""), hierIndex="@", varname="Sex", minimal=TRUE)
+		# infoAge <- genCodesFromFile(file=paste(searchpaths()[grep("sdcTable", searchpaths())], "/etc/exampleAge.hcr", sep=""), hierIndex="@", varname="Age", minimal=TRUE)
+		# sex <- infoSex$codesStandard
+		# age <- infoAge$codesStandard
+		# l <- list()
+		# l[[1]] <- infoSex$levelStructure
+		# l[[2]] <- infoAge$levelStructure
+		# indexvars <- c(1,2)	
+		# minimalData <- expand.grid(sex=sex, age=age)
+		#######################################################
+
 		
-		# we generate an object of class fullData which we can then use as input object for other functions and primary suppress all values less equal than 4, but don't mark emty cells as primary suppressed.
+		# we generate an object of class fullData which we can then use as input object for other functions 
+		# and primary suppress all values less equal than 4, but don't mark emty cells as primary suppressed.
 		fullDat <- createFullData (minimalData, indexvars, l, suppVals=TRUE, suppLimit=4, suppZeros=FALSE)
 		class(fullDat)
 		
-		#result <- protectTable(fullDat, method="GHMITER")
+		result <- protectTable(fullDat, method="GHMITER")
 		summary(result)
 		
-		# result$fullData$data is the protected dataset containing all totals. The user needs then to provide a function to recode the hierarchical variables.
+		# result$fullData$data is the protected dataset containing all totals. 
+		# The user needs to provide a function to recode back the hierarchical variables.
 	}
 }
 \keyword{methods}

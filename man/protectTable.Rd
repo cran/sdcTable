@@ -18,6 +18,22 @@
 \author{Bernhard Meindl}
 \examples{
 	\dontrun{
+		### very simple example: protect a 2-dimensional table with only one marginal sum for each dimensional variable
+		V1 <- c("01", "02", "03")
+		V2 <- c("01", "02", "03","04", "05")
+		minDat <- expand.grid(V1, V2)
+		minDat$value <- rpois(nrow(minDat), 7)
+		
+		# creating the full data set needed for protectTable()
+		fullDat <- createFullData (minDat, indexvars=1:2, l=list(c(1,1), c(1,1)), suppVals=TRUE, suppLimit=3, suppZeros=FALSE)
+		
+		# protecting the data using HYPERCUBE and HITAS approach
+		protData1 <- protectTable(fullDat, method="HYPERCUBE")
+		protData2 <- protectTable(fullDat, method="HITAS")
+		
+		summary(protData1); summary(protData2)
+		
+		### example with existing data-set
 		data(exampleFullData)
 		result1 <- protectTable(exampleFullData, method="HYPERCUBE", allowZeros=FALSE, suppMethod="minSum")
 		result2 <- protectTable(exampleFullData, method="HITAS", LPLPerc=15, UPLPerc=20)

@@ -1,4 +1,7 @@
 .onLoad <- function(lib, pkg) {
 	library.dynam("sdcTable", pkg, lib)
-	cat("Package sdcTable has been loaded!\ \n")
+	#v <- citation("sdcTable")$note
+	#version <- substr(v, nchar(v)-4, nchar(v))
+	#cat("Package sdcTable", version, "has been loaded!\n")
+	cat("Package sdcTable 0.0.6 has been loaded!\n")
 }
