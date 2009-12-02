@@ -5,10 +5,9 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 		createMatM <- function(subtab, indexvars) {
 			recodeFactor <- function(factorOrig) {
 				factorNeu <- rep(0, length(factorOrig))
-				origs <- as.character(sort(unique(factorOrig)))
-				for (i in 2:length(origs)) {
+				origs <- sort(as.character(sort(unique(factorOrig))), decreasing=FALSE)
+				for (i in 2:length(origs)) 
 					factorNeu[which(factorOrig == origs[i])] <- (i-1)
-				}
 				factorNeu
 			}
 			
@@ -17,9 +16,8 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 			nrVars <- nrow(subtab)
 
 			# recode
-			for (i in indexvars) {
+			for (i in indexvars) 
 				subtab[,i] <- recodeFactor(subtab[,i])
-			}
 			
 			anzLevs <- apply(subtab[,indexvars], 2, function(x) { length(unique(x)) } )
 			mat <- NULL
@@ -50,8 +48,7 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 			mat <- mat[sample(1:nrow(mat)),]
 		}
 		# the Attacker Subproblem (minimize, maximize)
-		AttackerSubproblem <- function(vals, xi, M, primSupp, LB, UB) {
-			
+		AttackerSubproblem <- function(vals, xi, M, primSupp, LB, UB) {			
 			# quick and dirty fix for NA-values
 			vals[which(is.na(vals))] <- 1
 			
@@ -116,7 +113,6 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 				rhs <- c(rhs, res$rhs)
 				dir <- c(dir, res$dir)
 			}
-
 			erg <- lp("min", objF, con, dir, rhs, binary.vec=1:length(objF))
 		    erg
 		}
@@ -198,15 +194,14 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 		fixedVals[is.na(fixedVals)] <- 1		
 		
 		# lb = lower bound
-		if(is.null(lb)) {
+		if(is.null(lb)) 
 			lb <- rep(0, nrVars)
-		}
 
 		# lb = lower bound
-		if(is.null(ub)) {
+		if(is.null(ub)) 
 			ub <- fixedVals * 100
-		}
 
+		# TODO: Checken, ob Wahl von UPLPerc und LPLPerc stimmen kann (oder ob man eines "umdrehen" muss) 
 		UPL <- ceiling(fixedVals * (1+(UPLPerc/100))) - fixedVals 
 		UPL <- as.numeric(sapply(UPL, function(x) { max(x, 1) } ))
 
@@ -218,9 +213,8 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 
 		primSupp <- which(subtab$geh == "P")
 		indNAS <- which(is.na(subtab$val))
-		if(length(indNAS) > 0) {
+		if(length(indNAS) > 0) 
 			primSupp <- c(primSupp, indNAS)
-		}
 		
 		# other Suppressions
 		secondarySupps <- which(subtab$geh != "" & subtab$geh != "P")
@@ -244,39 +238,37 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 		# use weight for objective-function
 		# values: w_i equals cell values
 		# logs: w_i equals log(1+cell values)
-		if(!weight %in% c("values","logs")) {
-			stop("You need to speficy a correct weighting scheme. Possible choices are: values, logs.")
-		}
+		if(!weight %in% c("values","logs")) 
+			stop("You need to speficy a correct weighting scheme.\nPossible choices are: values, logs.")
 		else {
 			indSupps <- which(subtab$geh %in% c("S", "P"))
 			notindSupps <- which(subtab$geh =="")
 			v <- rep(NA, nrVars)
 			v[indSupps] <- 0
-			if(weight=="values") {					
+			if(weight=="values") 					
 				v[notindSupps] <- fixedVals[notindSupps]	
-			}
-			if(weight=="logs") {
+			if(weight=="logs") 
 				v[notindSupps] <- log(1+fixedVals[notindSupps])
-			}					
 		}			
 		
 		xi <- solveMasterLP(v, allSuppsStart, res=NULL)$sol
 		while (ind == FALSE) {	
-			if(!is.null(res)) { 	
+			if(!is.null(res))  	
 				nrConstraints <- nrow(res$con)
-			}
 			for (z in 1:length(primSupp)) {
 				attProb <- AttackerSubproblem(subtab$val, xi, M, primSupp[z], LB, UB)
 				res <- combineRestrictions(res, attProb, LB, UB, LPL, UPL, primSupp[z])
 			}
 			
 			xi <- solveMasterLP(v, allSuppsStart, res)$sol
-			if(nrConstraints == nrow(res$con)) { 	
+			
+			if(is.null(res$con) & nrConstraints==0)
 				ind <- TRUE
-			}	
+			else if(nrConstraints == nrow(res$con)) 	
+				ind <- TRUE
 		}
 
-		# recode subtab: S... secondary suppressed cells, P ... primary suppressed cells
+		# add information about primary and secondary suppressions
 		subtab$geh[which(xi==1)] <- "S"
 		subtab$geh[primSupp] <- "P"
 		secondarySupps <- as.numeric(rownames(subtab)[which(subtab$geh=="S")])
@@ -287,9 +279,8 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 	
 	# primary Supps are "fullData$supps2check", all other supps are "secondary"
 	SuppsStart <- which(fullData$data$geh != "")	
-	if(length(SuppsStart) > 0) {
+	if(length(SuppsStart) > 0) 
 		fullData$data$geh[SuppsStart] <- "S"
-	}
 	fullData$data$geh[fullData$supps2check] <- "P"
 	
 	anzSuppStart <- length(SuppsStart)
@@ -316,9 +307,8 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 
 	# all cells with NA's are also secondary suppressions
 	indNA <- which(is.na(fullData$data$val))
-	if(length(indNA) > 0) {
+	if(length(indNA) > 0) 
 		fullData$data$geh[indNA] <- "S"
-	}
 	rm(indNA)	
 	
 	suppsNew <- SuppsEnd[-which(SuppsEnd %in% SuppsStart)]
@@ -332,11 +322,9 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
     erg$fullData <- fullData
 	erg$counter <- 1
     erg$time <- end-start
-	erg$method <- "OPT"
+	erg$method <- "HITAS"
 	erg$totSupps <- length(which(fullData$data$geh=="S"))
 	
 	class(erg) <- "safeTable"
     return(erg)
-
-	#return(list(fullData=fullData, anzSecSupp=anzSuppSec, time=end-start))
 }
