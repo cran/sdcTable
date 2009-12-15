@@ -20,9 +20,13 @@ processTableHYPERCUBE <- function(fullData, allowZeros=TRUE, randomResult=FALSE,
 		diametralIndex <- function(subtab, indGeh) {
 			nrCols <- ncol(subtab$data)
 			start <- nrCols - subtab$numberindexvars
+			indexvars <- subtab$indexvars
 			
 			# position of the suppressed value indGeh within subtab$data
-			indDat <- apply(subtab$data[,(start+1):nrCols], 1, function(x) { paste(x, collapse="") } )
+			if(length(indexvars)>1)
+				indDat <- apply(subtab$data[,(start+1):nrCols], 1, function(x) { paste(x, collapse="") } )
+			else
+				indDat <- sapply(subtab$data[,nrCols], function(x) { paste(x, collapse="") } )
 			posIndGeh <- which(indDat %in% paste(indGeh, collapse=""))
 			
 			# is the value primary (P) or secondary (S) suppressed?
@@ -118,15 +122,29 @@ processTableHYPERCUBE <- function(fullData, allowZeros=TRUE, randomResult=FALSE,
 				quaderPosition
 			}
 			
+			indexvars <- subtab$indexvars
+			
 			# we create list which will contain the results for each diametral index of supp$indGeh
 			ergebnis <- list()
 			
 			erg <- extractIndicesSubtable(as.vector(as.matrix(subtab$data[,(ncol(subtab$data) - subtab$numberindexvars+1):ncol(subtab$data)])), nrow(subtab$data), subtab$numberindexvars)
 			vals <- erg$final
 			powers <- erg$powers
-			for (z in 1:nrow(supp$diametralIndices)) {		
+			
+			if(length(indexvars)==1)
+				limit <- length(supp$diametralIndices)
+			else
+				limit <- nrow(supp$diametralIndices)
+			
+			#for (z in 1:nrow(supp$diametralIndices)) {		
+			for (z in 1:limit) {
 				# 1) we identify the quader given by supp$indGeh and supp$diametralIndices[z,]
-				indexQ <- calcQuader(supp$indGeh, supp$diametralIndices[z,], subtab$numberindexvars)
+				if(length(indexvars)>1)
+					indexQ <- calcQuader(supp$indGeh, supp$diametralIndices[z,], subtab$numberindexvars)
+				else
+					indexQ <- calcQuader(supp$indGeh, supp$diametralIndices[z], subtab$numberindexvars)
+				
+				
 				indexQuader <- indexQ$Quader
 				indexQuaderVec <- indexQ$QuaderVec
 				
@@ -421,7 +439,6 @@ processTableHYPERCUBE <- function(fullData, allowZeros=TRUE, randomResult=FALSE,
 			xx <- xx+1
 			# g: index of the values which needs to be protected
 			g <- as.numeric(as.character(subtab$data[i, (ind2+1):ncol(subtab$data)]))
-			
 			# supp: the potential diametral indices and information about the suppressed value 
 			supp <- diametralIndex(subtab, g) 			
 			info <- calculateInformationForSuppValg(subtab, supp, allowZeros, protectionLevel)
@@ -471,7 +488,7 @@ processTableHYPERCUBE <- function(fullData, allowZeros=TRUE, randomResult=FALSE,
 	lSpl <- length(spl)
 	for (i in 1:lSpl) {
 		txtProgressBar(max = lSpl, initial = i, char = "=",style = 3)
-		subtab <- calcSubset(fullData, spl[[i]])		
+		subtab <- calcSubset(fullData, spl[[i]])	
 		subtab <- algorithmGHMITER(subtab, allowZeros, randomResult, suppMethod, protectionLevel)
 		ind <-  as.numeric(rownames(subset(subtab$data, subtab$data$geh=="S")))
 		if(length(ind) > 0) 

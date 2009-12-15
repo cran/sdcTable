@@ -1,23 +1,26 @@
 genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
-	calcDigits <- function(hier, hierIndex="@", nrLevels) {
-		# calc split-index
-		startIndex <- c(which(hier$hierarchy==hierIndex), nrow(hier))
-		splitIndex <- NULL
-		for (z in 1:(length(startIndex)-1)) {
-			if(z != (length(startIndex)-1)) 
-				splitIndex <- c(splitIndex, rep(z, length=length(startIndex[z]:(startIndex[z+1]-1))))
-			else
-				splitIndex <- c(splitIndex, rep(z, length=length(startIndex[z]:(startIndex[z+1]))))
-		}	
-		spl <- split(hier, splitIndex)
-		nrDigits <- 1 # one digit needed for TOT
-		nrDigits <- c(nrDigits, nchar(as.character(length(spl))))
+	calcDigits <- function(hier, nrLevels) {		
+		# Total (always only 1 digit needed)
+		nrDigits <- 1
+		# level 2
+		nrDigits <- c(nrDigits, nchar(as.character(length(which(hier$level==2)))))
+		
 		if(nrLevels > 2) {
-			for (i in 2:(nrLevels-1)) 
-				nrDigits <- c(nrDigits, nchar(as.character(max(unlist(lapply(spl, function(x) { length(which(x$level==i)) } ) )))))
+			for(i in 2:(nrLevels-1)) {
+				ss <- subset(hier, hier$level %in% c(i, i+1))
+				ss$fac <- NA
+				ind <- which(ss$level==i)
+				for (j in 1:(length(ind)-1)) {
+					ss$fac[ind[j]:(ind[j+1]-1)] <- j
+				}
+				spl <- split(ss, ss$fac)
+				nrDigits <- c(nrDigits,	nchar(as.character((max(unlist(lapply(spl, function(x) { nrow(x)})))-1))))
+			}				
 		}
+		
+
 		nrDigits
-	}	
+	}
 	
 	# generate standard-codes
 	genStandardCodes <- function(hier, nrDigits, nrLevels) {
@@ -51,7 +54,6 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 		
 		substrInd <- genDigits(nrDigits, nrLevels)
 		hier$code <- paste(rep("0", sum(nrDigits)), collapse="")
-		hier$level <- hier$level+1
 		
 		for(i in 1:nrow(hier)) {
 			actLevel <- hier$level[i]
@@ -59,9 +61,9 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 			
 			if(i == 1) {
 				substr(hier$code[i], substrInd[[actLevel]][1], substrInd[[actLevel]][2]) <- fixedCharVec(1, charsActLevel)		
-			}		
+			}	
 			else {
-				# gleiches Level -> kopieren und erhöhen
+				# same level -> copy and increment
 				if(hier$level[i] == hier$level[i-1]) {
 					oldInd <- i-1
 					hier$code[i] <- hier$code[i-1]
@@ -69,7 +71,7 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 					substr(hier$code[i], substrInd[[actLevel]][1], substrInd[[actLevel]][2]) <- fixedCharVec(oldVal+1, nrDigits[actLevel])		
 				}
 				
-				# eins zurückgehen, neue Hierarchiestufe hinzufügen
+				# go back and add new hierarchy-level
 				else if(hier$level[i] > hier$level[i-1]) {
 					oldInd <- i-1
 					hier$code[i] <- hier$code[i-1]
@@ -77,7 +79,7 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 					substr(hier$code[i], substrInd[[actLevel]][1], substrInd[[actLevel]][2]) <- fixedCharVec(oldVal+1, nrDigits[actLevel])		
 				}
 				
-				# soweit wie notwendig zurückgehen
+				# go back as far as necessary
 				else if(hier$level[i] < hier$level[i-1]) {
 					candidate <- which(hier$level==actLevel)
 					oldInd <- candidate[max(which(candidate < i))]
@@ -85,8 +87,7 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 					oldVal <- as.integer(substr(hier$code[oldInd],substrInd[[actLevel]][1],substrInd[[actLevel]][2]))
 					substr(hier$code[i], substrInd[[actLevel]][1], substrInd[[actLevel]][2]) <- fixedCharVec(oldVal+1, nrDigits[actLevel])		
 				}
-			}
-			
+			}			
 		}
 		hier	
 	}	
@@ -101,22 +102,20 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 		}
 		if(length(removeInd) > 0)
 			out <- out[-removeInd,]
-		#out	<- out[,-which(colnames(out) %in% "level")]
-		#rownames(out) <- NULL
 		out
 	}		
 	
 	hier <- read.table(file, sep=";", dec=".")	
 	colnames(hier) <- c("hierarchy", varname)
 	
-	# calc hierarchy-level (0=TOT)
-	hier$level <- as.integer(nchar(as.character(hier$hierarchy)))
+	# calc hierarchy-level (1=TOT)
+	hier$level <- as.integer(nchar(as.character(hier$hierarchy))) + 1
 	
 	# Nr. of Levels
 	nrLevels <- length(unique(hier$hierarchy))+1 # +1 wg TOT
 	
 	# calculate digits
-	nrDigits <- calcDigits(hier, hierIndex, nrLevels)
+	nrDigits <- calcDigits(hier, nrLevels)
 	
 	# calculate standardized codes
 	out <- genStandardCodes(hier, nrDigits, nrLevels)
@@ -124,8 +123,6 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 	if(minimal==TRUE) 
 		out <- genMinimalCodes(out)
 	
-	#rownames(out) <- NULL
-	#out	<- out[,-which(colnames(out) %in% "level")]
 	return(list(codesOrig=out[,which(colnames(out)==varname)],
 				codesStandard=out$code,
 				levelStructure=nrDigits))

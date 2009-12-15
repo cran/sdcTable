@@ -1,73 +1,88 @@
 \name{createFullData}
 \alias{createFullData}
 \title{createFullData}
-\description{Function to generate an object of class fullData which can then be used as input object for several other functions in sdcTable such as protectTable.}
-\usage{createFullData (minimalData, indexvars, l, suppVals=FALSE, suppLimit=NULL, suppZeros=NULL) }
+\description{Function to generate an object of class fullData \cr 
+			 which can then be used as input object for several \cr
+			 other functions in sdcTable such as protectTable.}
+\usage{createFullData(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVar=NULL, suppRule_Freq=NULL, suppRule_P=NULL, suppRule_NK=NULL, l=l)}
 \arguments{
-  \item{minimalData}{ a data.frame containing a column for each hierarchical variable in a specific coding and a column for the corresponding numerical values. The values need to be integer at the moment.}
-  \item{indexvars}{a vector containing the position of the hierarchical variables within minimalData }
-  \item{l}{a list which element i defining the hierarchical structure of the i-th hierarchical variable. }
-  \item{suppVals}{should during the generation of the complete data set values be suppressed? }
-  \item{suppLimit}{if suppVals is TRUE, what is the threshold for primary suppressing values? () }
-  \item{suppZeros}{binary: should values of empty cells be suppressed as well? }
+  \item{ minimalDat }{a data.frame containing a column for each hierarchical \cr variable in a specific coding and a column specifying either the frequency of the cell or some aggregated numerical value.}
+  \item{ microDat }{a data.frame containing a column for each hierarchical variable in a specific coding and (optionally) a column for the corresponding numerical values.}
+  \item{ tableVars }{a vector containing the variable names of the dimensional variables in either microDat or minimalDat.}
+  \item{ numVar }{either NULL or a variable name of the numeric variable of the table.}
+  \item{ suppRule_Freq }{NULL or a vector of length 2. If specified, the first vector element gives the threshold at which cells should be suppressed while the second (TRUE|FALSE) tells, if zero-cells should be suppressed or not.}
+  \item{ suppRule_P }{either NULL or - if specified - a vector of length 1 specifying the p-parameter used in the p\%-rule. This parameter is only evaluated, if microdata have been provided as input.}
+  \item{ suppRule_NK }{either NULL or - if specified - a vector of length 2. The first element	specifying the n-parameter, the second element specifiying the k-parameter used in the nk-dominance-rule. This parameter is only evaluated, if microdata have been provided as input.}  
+  \item{ l }{a list which element i defining the hierarchical structure of the i-th hierarchical variable.}
 }
 \details{Have a look at the link given below.}
 \value{object of class fullData}
 \author{Bernhard Meindl}
-\note{fix me: LOTS! more primary suppression rules should be implemented; what to do with real numbers? simplify the generation of object of class fullData? }
+\note{fix me: LOTS! eg.,simplify the generation of object of class fullData? }
 \examples{
 	\dontrun{
-		# create minimalData (simple 2-dimensional Example)
-		# first hierarchical variable: sex: we have {total}-> {male, women}
-		sex <- c("00", "01", "02")
+	# generate micro-data
+	genMicroData <- function(N) {
+		V1 <- sample(c("011", "012","013","021","022"), N, replace=T)
+		V2 <- sample(c("01", "02"), N, replace=T)
+		V3 <- sample(c("01", "02"), N, replace=T)
+		V4 <- sample(c("0011", "0012", "0013","0021","0031","0041","0042", "0051","0061","0062","0071","0072","0081","0091","0101","0102","0111","0112"), N, replace=T)
 		
-		# second hierarchical variable: a total of 13 age-groups including the total: 
-		# we have {total}<- {group1-group12} 
-		age <- c("000", "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012")
+		microDat <- data.frame(V1=V1,V2=V2,V3=V3,V4=V4)
+		microDat$numVal <- abs(round(rnorm(N, 500, 200),2))
+		sInd <- sample(floor(N/20))
+		microDat$numVal[sInd] <- abs(round(rnorm(sInd, 100000, 200),2))
+		microDat
+	}	
+	# generate minimal data set (a table without subtotals)
+	genMinimalDat <- function(micro, tableVars, numVar) {
+		minimalDat <- as.data.frame(table(microDat[,which(colnames(microDat) \%in\% tableVars)]))
+		indexvars <- which(colnames(micro) \%in\% tableVars)
+		if(!is.null(numVar)) {
+			if(length(tableVars)>1) {
+				minimalDat$fac <- apply(minimalDat[,indexvars], 1, function(x) { paste(x, collapse="") } )
+				fac <- apply(microDat[,indexvars], 1, function(x) { paste(x, collapse="") } )
+			}
+			else {
+				minimalDat$fac <- minimalDat[,indexvars]
+				fac <- microDat[,indexvars]		
+			}
+		}
+		agg <- aggregate(microDat[,which(colnames(microDat)==numVar)], by=list(fac), sum)
+		colnames(agg) <- c("fac", numVar)
+		minimalDat <- merge(minimalDat, agg, all.x=T)
+		minimalDat <- minimalDat[,-which(colnames(minimalDat)=="fac")]
+		colnames(minimalDat)[1:length(tableVars)] <- tableVars
+		minimalDat
+	}		
 		
-		# for the minimal dataset we don't need the totals: 
-		# we generate each combination of sublevels of the hierarchical variables
-		minimalData <- expand.grid(sex[-1], age[-1])
+	microDat <- genMicroData(2000)
+	tableVars=c("V1","V2","V3","V4")
+	numVar <- "numVal"
+	minimalDat <- genMinimalDat(microDat, tableVars, numVar)
+	
+	suppRule_Freq <- c(3, FALSE)
+	suppRule_P <- c(80) 
+	#suppRule_NK <- c(2,75)
+	
+	l <- list()
+	l[[1]] <- c(1,1,1)
+	l[[2]] <- c(1,1)
+	l[[3]] <- c(1,1)
+	l[[4]] <- c(1,2,1)	
+	
+	# minimal Data
+	# note: specifying suppRule_P is useless!
+	result1 <- createFullData(minimalDat=minimalDat, tableVars=tableVars, numVar=numVar, suppRule_Freq=suppRule_Freq, suppRule_P=suppRule_P, l=l)
+	print(class(result1))
+	print(head(result1$data))
+	
+	# micro Data
+	result2 <- createFullData(microDat=microDat, tableVars=tableVars, numVar=numVar, suppRule_Freq=suppRule_Freq, suppRule_P=suppRule_P, l=l)
+	print(class(result2))
+	print(head(result2$data))
 
-		# the column with values is added (just random numbers in this case)
-		minimalData$value <- rpois(nrow(minimalData), 7)
-		
-		# position of the hierarchical variables in minimalData
-		indexvars <- c(1,2)		
-		
-		# level-structure of the hierarchical variables:
-		l <- list()
-		# the first level (sex) consists of a total of 2 levels (total and male/women). 
-		# Since there are only 2 characteristics in the sub-level, we need to add 1.
-		l[[1]] <- c(1, 1)
-
-		# the first level (age)consists of a total of 12 levels (total and 12 age groups). 
-		# Since we need 2 digits for the 12 age groups (01, 02,...,12)for this level, the second component of list[[2]] needs to be 2.
-		l[[2]] <- c(1, 2)
-
-		### Alternatively one could use genCodesFromFiles: ###
-		# infoSex <- genCodesFromFile(file=paste(searchpaths()[grep("sdcTable", searchpaths())], "/etc/exampleSex.hcr", sep=""), hierIndex="@", varname="Sex", minimal=TRUE)
-		# infoAge <- genCodesFromFile(file=paste(searchpaths()[grep("sdcTable", searchpaths())], "/etc/exampleAge.hcr", sep=""), hierIndex="@", varname="Age", minimal=TRUE)
-		# sex <- infoSex$codesStandard
-		# age <- infoAge$codesStandard
-		# l <- list()
-		# l[[1]] <- infoSex$levelStructure
-		# l[[2]] <- infoAge$levelStructure
-		# indexvars <- c(1,2)	
-		# minimalData <- expand.grid(sex=sex, age=age)
-		#######################################################
-
-		
-		# we generate an object of class fullData which we can then use as input object for other functions 
-		# and primary suppress all values less equal than 4, but don't mark emty cells as primary suppressed.
-		fullDat <- createFullData (minimalData, indexvars, l, suppVals=TRUE, suppLimit=4, suppZeros=FALSE)
-		class(fullDat)
-		
-		result <- protectTable(fullDat, method="GHMITER")
-		summary(result)
-		
-		# result$fullData$data is the protected dataset containing all totals. 
-		# The user needs to provide a function to recode back the hierarchical variables.
+	# result1 and result2 can now be used as input parameters for protectTable()
 	}
 }
 \keyword{methods}
