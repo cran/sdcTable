@@ -38,6 +38,8 @@ protectTable <- function(fullData, method, ...){
 			cat("the default choice \"values\" for parameter \"weight\" will be used!\n")
 	}
 
+	indexvars <- fullData$indexvars
+	
 	erg <- list()
 	erg$fullData <- fullData	
 	
@@ -81,6 +83,28 @@ protectTable <- function(fullData, method, ...){
 		
 		erg$fullData$data$geh[origPrimarySuppressions] <- "P"
 		erg$fullData$data$geh[secondarySuppressions] <- "S"	
+		
+		## NEW: additionally suppress all dimensions with only one sub-level
+		for(i in 1:length(indexvars)) {
+			dims <- erg$fullData$dimensions[[i]]
+			for(j in 1:length(dims)) {
+				if(length(dims[[j]])==2) {					
+					indTest <- which(erg$fullData$data[,indexvars[i]]%in% dims[[j]])
+					ss <- erg$fullData$data[indTest,]
+					if(length(indexvars) > 1) {
+						spl <- split(ss, ss[,indexvars[-i]])		
+						for(z in 1:length(spl))
+							if(length(unique(spl[[z]][,"geh"]))==2)
+								erg$fullData$data[rownames(spl[[z]]),"geh"] <- sort(spl[[z]][,"geh"])[2]
+					}
+					else {
+						if(length(unique(ss$geh))==2)
+							erg$fullData$data[rownames(ss),"geh"] <- sort(ss[,"geh"])[2]
+					}
+				}					
+			}
+		}
+		
 		
 		erg$counter <- counter
 	    erg$time <- sum(time)
