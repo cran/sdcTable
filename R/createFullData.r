@@ -1,4 +1,4 @@
-createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVar=NULL, suppRule_Freq=NULL, suppRule_P=NULL, suppRule_NK=NULL, l=l) {
+createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, freqVar, numVar=NULL, suppRule_Freq=NULL, suppRule_P=NULL, suppRule_NK=NULL, l=l) {
 	# p%-rule
 	# cell unsafe if cell-total - 2 largest contributors is 
 	# smaller than p% of the largest contributor
@@ -44,7 +44,7 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 		indTableVars <- which(colnames(microDat) %in% tableVars)
 		
 		if(length(tableVars) > 1)
-			microDat$fac <- apply(microDat[,indTableVars], 1, function(x) { paste(x, collapse="")})
+			microDat$fac <- pasteStrVec(as.character(unlist(microDat[,indTableVars])), length(indTableVars))
 		else
 			microDat$fac <- microDat[,indTableVars]
 		
@@ -54,7 +54,7 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 		colnames(tt)[1:(ncol(tt)-1)] <- tableVars
 		
 		if(length(indTableVars) > 1)
-			tt$fac <- apply(tt[,1:(ncol(tt)-1)], 1, function(x) { paste(x, collapse="")})
+			tt$fac <- pasteStrVec(as.character(unlist(tt[,1:(ncol(tt)-1)])), (ncol(tt)-1))
 		else
 			tt$fac <- tt[,1]
 		
@@ -70,22 +70,17 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 				geh <- rep("", nrow(tt))
 				
 				for(i in 1:length(splitMicro)) {
+					gehP <- gehNK <- FALSE
 					nRows <- nrow(splitMicro[[i]])
 					cont <- sort(splitMicro[[i]][,indNumVar], decreasing=TRUE)
-					if(!is.null(suppRule_P)){
-						if(nRows >=2) {
+					if(!is.null(suppRule_P)) {
+						if(nRows >=2)
 							gehP <- pPercRule(totVals[i], cont[1], cont[2], p)
-						}
 					} 
-					else
-						gehP <- FALSE
-					
 					if(!is.null(suppRule_NK)) {
 						if(nRows >= nk_n) 
 							gehNK <- nkRule(totVals[i], sum(cont[1:nk_n]), nk_k)
-					} 
-					else
-						gehNK <- FALSE						
+					} 			
 					
 					if(gehP==FALSE & gehNK==FALSE)
 						geh[i] <- ""
@@ -159,7 +154,7 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 		colnames(gridExistingDims) <- colnames(minimalData)[indexvars]
 		if(nrow(minimalData)!=nrow(gridExistingDims)) {
 			if(length(indexvars) > 1) 
-				gridExistingDims$fac <- apply(gridExistingDims[,indexvars], 1, function(x) { paste(x, collapse="")} )
+				gridExistingDims$fac <- pasteStrVec(as.character(unlist(gridExistingDims[,indexvars])), length(indexvars))
 			else 
 				gridExistingDims$fac <- as.character(gridExistingDims[,indexvars])
 			
@@ -184,33 +179,48 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 	# fill levels that are calculated from lower hierarchies + 
 	# if necessary, primary suppression
 	fillData <- function(compDat, fullDims, exDims, suppRule_Freq, suppRule_P, suppRule_NK, microDat, indexvars) {
-		calcMicroDataforTotal <- function(existingDims, actDims, microData, indexvars) {
+		calcMicroDataforTotal <- function(actDims, microDat, indexvars, dims) {
 			indexVals <- list()
-			str <- paste("microDat[which(", sep="")
-			for (i in 1:length(actDims)) {				
-				x <- unlist(strsplit(actDims[i],""))
-				if(sum(as.integer(x))==0)
-					indexVals[[i]] <- existingDims[[i]]
-				else {
-					ind <- max(which(x=="0"))-1
-					if(ind == 0) {
-						indexVals[[i]] <- actDims[i]
+			for (i in 1:length(actDims)) {
+				maxInd <- tmp <- NULL
+				if(length(actDims[[i]])==1) {
+					if(as.integer(actDims[[i]])==0) {
+						indexVals[[i]] <- as.character(unique(microDat[,indexvars[i]]))
+					}				
+					else {
+						tmpErg <- which(unlist(lapply(dims[[i]], function(x) {x[1]==actDims[[i]][1]} )))
+						if(length(tmpErg)>0)								
+							maxInd <- max(tmpErg)
+						
+						if(!is.null(maxInd) > 0) {
+							xx <- sort(unlist(dims[[i]][c(maxInd)]))
+							indexVals[[i]] <- xx[2:length(xx)]
+						}
+						else {
+							indexVals[[i]] <- actDims[[i]][1]		
+						}					
 					}
-					else if(ind > 1)
-						indexVals[[i]] <- existingDims[[i]][which(substr(existingDims[[i]],1,ind) %in% substr(actDims[i],1,ind))]
-					else 
-						indexVals[[i]] <- existingDims[[i]]					
 				}
-				
-				if(i==1)
-					str <- paste(str, "microDat[,indexvars[",i,"]] %in% indexVals[[",i,"]]",sep="")
-				else
-					str <- paste(str, "& microDat[,indexvars[",i,"]] %in% indexVals[[",i,"]]",sep="")
-				
+				else {				
+					for(z in 1:length(actDims[[i]])) {
+						tmpErg <- which(unlist(lapply(dims[[i]], function(x) {x[1]==actDims[[i]][z]} )))
+						if(length(tmpErg)>0)								
+							maxInd <- max(tmpErg)
+						
+						if(!is.null(maxInd)) {
+							xx <- sort(unlist(dims[[i]][c(maxInd)]))
+							tmp <- c(tmp, xx[2:length(xx)])
+						}
+						else {
+							tmp <- c(tmp, actDims[[i]][z])		
+						}					
+					}	
+					indexVals[[i]] <- unique(tmp)
+				}
+				microDat <- microDat[microDat[,indexvars[i]]%in%indexVals[[i]],]
 			}
-			str <- paste(str,"),]")
-			micro <- eval(parse(text=str))
-			micro
+			contributions <- as.numeric(microDat[,"numVal"])
+			contributions	
 		}
 		
 		# Parameter for primary suppression rules
@@ -239,16 +249,16 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 		while(runnInd==FALSE) {
 			for(i in 1:nrIndexvars) {			
 				cat("processing dimension",i,"|",nrIndexvars," ..."); flush.console()
-				tt <- Sys.time()
+				tt <- Sys.time()				
 				for(j in (length(fullDims[[i]])):1) {	
 					indRows <- which(compDat[,indexvars[i]] %in% fullDims[[i]][[j]])
 					ss <- compDat[indRows,c(indexvars, which(colnames(compDat) %in% c("Freq","numVal", "fac")))]
 					if(length(indexvars) > 2) {	
-						fac <- as.factor(apply(ss[,indexvars[-i]], 1, function(x) { paste(x, collapse="") } ))
+						fac <- pasteStrVec(as.character(unlist(ss[,indexvars[-i]])), length(indexvars)-1)
 						spl <- split(1:length(fac), fac)
 					}
 					else if(length(indexvars)==2){
-						fac <- as.factor(as.character(ss[,indexvars[-i]]))
+						fac <- as.character(ss[,indexvars[-i]])
 						spl <- split(1:length(fac), fac)	
 					}
 					# only a single dimensional variable
@@ -258,25 +268,27 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 					}
 					
 					for (z in 1:length(spl)) {
-						tmp <- ss[spl[[z]], ]						
+						tmp <- ss[spl[[z]], ]					
 						ind <- which(is.na(as.numeric(tmp[,"Freq"])))
 						if(length(ind) == 1) {
 							totFreq <- sum(as.integer(tmp[,"Freq"]), na.rm=T)
 							if(numVal==TRUE)
-								totVal <- sum(as.integer(tmp[,"numVal"]), na.rm=T)
+								totVal <- sum(as.numeric(tmp[,"numVal"]), na.rm=T)
 							rowInd <- indRows[spl[[z]][ind]]
 							vals[rowInd] <- totFreq
 							if(numVal==TRUE)
 								valsNum[rowInd] <- totVal
 							nRows <- nrow(tmp) - 1
-							
 							# only useful if cell is populated
 							if(sum(as.integer(tmp[!is.na(tmp[,"Freq"]),"Freq"]))>1 & numVal==TRUE) {
 								if(!is.null(suppRule_P) | !is.null(suppRule_NK)) {
-									subMicroDat <- calcMicroDataforTotal(exDims, tmp[which(is.na(tmp[,"Freq"])),indexvars], microDat, indexvars)
-									contributions <- sort(subMicroDat[,"numVal"], decreasing=T)
+									if(nRows > 1)
+										actDims <- apply(tmp[-ind,indexvars], 2, unique)
+									else
+										actDims <- tmp[-ind,indexvars]
+									contributions <- sort(calcMicroDataforTotal(actDims, microDat, indexvars, dimensions), decreasing=T)
 									if(!is.null(suppRule_P)) {
-										if(nRows >= 2) {
+										if(nRows >= 2) {											
 											gehP <- pPercRule(totVal, contributions[1], contributions[2], p)						
 										}	
 									}
@@ -313,7 +325,6 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 			geh <- freqRule(as.integer(compDat[,"Freq"]), freq_n , freq_zero)
 			compDat[,"geh"][which(geh==T)] <- "P"
 		}		
-		
 		compDat <- as.data.frame(compDat)
 		compDat
 	}	
@@ -326,9 +337,10 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 	}
 	else {
 		# we can't calculate dominance rules
-		if(!is.null(minimalDat)) {			
+		if(!is.null(minimalDat)) {				
 			suppRule_P <- NULL
 			suppRule_NK <- NULL		
+			colnames(minimalDat)[colnames(minimalDat) == freqVar] <- "Freq"
 		}
 	}	
 	
@@ -404,8 +416,8 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 	
 	completeData$geh <- ""	
 	if(length(indexvars) > 1) {
-		completeData$fac <- apply(completeData[,indexvars], 1, function(x) { paste(x, collapse="")} )
-		minimalDat$fac <- apply(minimalDat[,indexvars], 1, function(x) { paste(x, collapse="")} )
+		completeData$fac <- pasteStrVec(as.character(unlist(completeData[,indexvars])), length(indexvars))
+		minimalDat$fac <- pasteStrVec(as.character(unlist(minimalDat[,indexvars])), length(indexvars))
 	}
 	else {
 		completeData$fac <- as.character(completeData[,indexvars])
@@ -428,30 +440,23 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 	completeData <- completeData[,c(rev(which(substr(colnames(completeData),1,3) == "Var")), (length(indexvars)+1):ncol(completeData))]	
 	rm(tmpDat)	
 	
-	indFac <- which(colnames(completeData)=="fac")
-	if(length(indexvars) > 1) 
-		completeData$Levs <- apply(completeData[,(length(indexvars)+2):(2*length(indexvars)+1)], 1, function(x) { paste(x, collapse="")})
-	else 
-		completeData$Levs <- apply(completeData[,indFac:(indFac+1)], 1, function(x) { paste(x, collapse="")})
-	
 	# calculate complete (splitted) level structure
 	dimensions <- list()
 	for (i in 1:length(indexvars))
 		dimensions[[i]] <- createLevelStructure(allDims[[i]], levels[[i]], l[[i]])
 	
 	# fill dataset (all possible level-combinations)
+	completeData <- completeData[,which(colnames(completeData) %in% c(paste("Var", 1:length(indexvars), sep=""), "Freq", "numVal","geh"))]
 	completeData <- fillData(compDat=completeData, fullDims=dimensions, exDims=existingDims, suppRule_Freq=suppRule_Freq, suppRule_P=suppRule_P, suppRule_NK=suppRule_NK, microDat=microDat, indexvars=indexvars)
 	
 	# keep only necessary columns
 	if(is.null(numVar)) {
 		completeData <- completeData[,which(colnames(completeData) %in% c(paste("Var", 1:length(indexvars), sep=""), "Freq","geh"))]
-		colnames(completeData)[colnames(completeData)=="Freq"] <- "val"
 	}
 	else {
-		completeData <- completeData[,which(colnames(completeData) %in% c(paste("Var", 1:length(indexvars), sep=""), "numVal","geh"))]
-		colnames(completeData)[colnames(completeData)=="numVal"] <- "val"
-		
+		completeData <- completeData[,which(colnames(completeData) %in% c(paste("Var", 1:length(indexvars), sep=""), "Freq", "numVal","geh"))]
 	}
+
 	if(length(which(colnames(completeData)=="geh"))==0)
 		completeData$geh <- ""
 	
@@ -465,7 +470,9 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, numVa
 	}
 	eval(parse(text=str))
 	rownames(completeData) <- 1:nrow(completeData)
+	
 	completeData$geh <- as.character(completeData$geh)
+	colnames(completeData)[colnames(completeData)=="Freq"] <- "val"
 	completeData$val <- as.numeric(as.character(completeData$val))
 	
 	# create object of class "fullData

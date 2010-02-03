@@ -1,7 +1,8 @@
 \name{processTableHITAS}
 \alias{processTableHITAS}
 \title{processTableHITAS}
-\description{HITAS - algorithm for secondary cell suppression using optimal suppression algorithm.}
+\description{HITAS - algorithm for secondary cell suppression using optimal 
+suppression algorithm.}
 \usage{processTableHITAS (fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25, weight="values")}
 \arguments{
 	\item{fullData}{object from class fullData.}
@@ -20,10 +21,10 @@
 \author{Bernhard Meindl}
 \note{processTableHITAS() protects hierarchical tabular data using the HiTaS approach.}
 \examples{
-	\dontrun{
-		data(exampleFullData)
-		erg <- processTableHITAS(exampleFullData, UPLPerc=15, LPLPerc=15)
-		summary(erg)
-	}
+\dontrun{
+data(exampleFullData)
+erg <- processTableHITAS(exampleFullData, UPLPerc=15, LPLPerc=15)
+summary(erg)
+}
 }
 \keyword{methods}
