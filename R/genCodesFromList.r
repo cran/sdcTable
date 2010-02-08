@@ -1,4 +1,4 @@
-genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
+genCodesFromList <- function(file=NULL, dataframe=NULL, hierIndex="@", varname, minimal=FALSE) {
 	calcDigits <- function(hier, nrLevels) {		
 		# Total (always only 1 digit needed)
 		nrDigits <- 1
@@ -105,8 +105,21 @@ genCodesFromFile <- function(file, hierIndex="@", varname, minimal=FALSE) {
 		out
 	}		
 	
-	hier <- read.table(file, sep=";", dec=".")	
-	colnames(hier) <- c("hierarchy", varname)
+	if(is.null(file) & is.null(dataframe))
+		stop("please specify either a file or a dataframe with the hierachy-codes!\n")
+	
+	if(!is.null(file)) {
+		hier <- read.table(file, sep=";", dec=".", colClasses="character")
+		if(ncol(hier)> 2)
+			stop("please use a correct input file! (hint: 2 columns only!)\n")
+		colnames(hier) <- c("hierarchy", varname)		
+	}
+	if(!is.null(dataframe)) {
+		hier <- dataframe
+		if(ncol(hier)> 2)
+			stop("please use a correct input dataframe! (hint: 2 columns only!)\n")
+		colnames(hier) <- c("hierarchy", varname)		
+	}	
 	
 	# calc hierarchy-level (1=TOT)
 	hier$level <- as.integer(nchar(as.character(hier$hierarchy))) + 1

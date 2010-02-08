@@ -16,11 +16,11 @@
 \author{Bernhard Meindl}
 \note{The algorithm runs only once through the entire data set. To make completely sure that also secondary suppressions are enough protected one should use function protectTable(x, method="GHMITER") which loops through the data set to ensure protection.}
 \examples{
-	\dontrun{
-		data(exampleFullData)
-		erg <- processTableHYPERCUBE(exampleFullData, suppMethod="minSUM")
-		summary(erg)
-	}
+\dontrun{
+data(exampleFullData)
+erg <- processTableHYPERCUBE(exampleFullData, suppMethod="minSUM")
+summary(erg)
+}
 }
 \keyword{methods}
 

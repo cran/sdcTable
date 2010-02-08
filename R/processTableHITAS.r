@@ -5,47 +5,47 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 		createMatM <- function(subtab, indexvars) {
 			recodeFactor <- function(factorOrig) {
 				factorNeu <- rep(0, length(factorOrig))
-				origs <- sort(as.character(sort(unique(factorOrig))), decreasing=FALSE)
+				origs <- sort(as.character(unique(factorOrig)), decreasing=FALSE)
 				for (i in 2:length(origs)) 
-					factorNeu[which(factorOrig == origs[i])] <- (i-1)
+					factorNeu[factorOrig == origs[i]] <- (i-1)
 				factorNeu
 			}
 			
-			subtab$indexLP <- 1:nrow(subtab)
-			ltab <- length(indexvars)
 			nrVars <- nrow(subtab)
-
-			# recode
-			for (i in indexvars) 
-				subtab[,i] <- recodeFactor(subtab[,i])
+			# recode and calculate levels
+			if(length(indexvars) > 1) {
+				subtab[,indexvars] <- apply(subtab[,indexvars], 2, recodeFactor)
+				anzLevs <- apply(subtab[,indexvars], 2, function(x) { length(unique(x)) } )
+			}
+			else {
+				subtab[,indexvars] <- recodeFactor(subtab[,indexvars])
+				anzLevs <- length(unique(subtab[,indexvars]))
+			}
 			
-			anzLevs <- apply(subtab[,indexvars], 2, function(x) { length(unique(x)) } )
-			mat <- NULL
+			mm <- list()
 			for (z in 1:length(indexvars)) {
 				# create factor from other indexvars
-				ind <- indexvars[-z]
-				cmd <- "factor(paste("
-				for (j in 1:length(ind)) {
-					cmd <- paste(cmd, "subtab[,", ind[j],"], ", sep="")
+				if(length(indexvars) > 2) {
+					fac <- apply(subtab[,indexvars[-z]], 1, function(x) {paste(x, collapse="") } )	
 				}
-				cmd <- paste(cmd, "sep=\"\"))")
-				subtab$fac <- eval(parse(text=cmd))
-
-				# split data and calculate matrices and vectors for linear optimization programm
-				t <- split(subtab, subtab$fac)
+				else if(length(indexvars)==2)
+					fac <- subtab[,indexvars[-z]]
+				
+				# split data and calculate matrices and vectors 
+				# for linear optimization programm
+				t <- split(subtab, fac)
+				indexLP <- split(1:nrow(subtab), fac)
+				mm[[z]] <- matrix(0, nrow=length(t), ncol=nrVars)
 				for(i in 1:length(t)) {
-					x <- rep(0, nrVars)
-					if(t[[i]][1,z] == min(t[[i]][,z])) {
-						x[t[[i]]$indexLP] <- c(-1, rep(1, nrow(t[[i]])-1))
-					}
-					else {
-						x[t[[i]]$indexLP] <- c(rep(1, nrow(t[[i]])-1), -1)
-					}
-					mat <- rbind(mat, x)
+					if(t[[i]][1,z] == min(t[[i]][,z])) 
+						mm[[z]][i,indexLP[[i]]] <- c(-1, rep(1, nrow(t[[i]])-1))
+					else 
+						mm[[z]][i,indexLP[[i]]] <- c(rep(1, nrow(t[[i]])-1), -1)
 				}
 			}
+			mat <- do.call("rbind", mm)
 			rownames(mat) <- NULL
-			mat <- mat[sample(1:nrow(mat)),]
+			mat 
 		}
 		# the Attacker Subproblem (minimize, maximize)
 		AttackerSubproblem <- function(vals, xi, M, primSupp, LB, UB) {			
