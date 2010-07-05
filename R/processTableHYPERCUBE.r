@@ -23,11 +23,12 @@ processTableHYPERCUBE <- function(fullData, allowZeros=TRUE, randomResult=FALSE,
 			indexvars <- subtab$indexvars
 			
 			# position of the suppressed value indGeh within subtab$data
-			if(length(indexvars)>1)
-				indDat <- apply(subtab$data[,(start+1):nrCols], 1, function(x) { paste(x, collapse="") } )
-			else
-				indDat <- sapply(subtab$data[,nrCols], function(x) { paste(x, collapse="") } )
-			posIndGeh <- which(indDat %in% paste(indGeh, collapse=""))
+			#if(length(indexvars)>1)
+			#	indDat <- apply(subtab$data[,(start+1):nrCols], 1, function(x) { paste(x, collapse="-") } )
+			#else
+			#	indDat <- sapply(subtab$data[,nrCols], function(x) { paste(x, collapse="-") } )
+			indDat <- apply(subtab$data[,(start+1):nrCols,drop=FALSE], 1, function(x) { paste(x, collapse="-") } )
+			posIndGeh <- which(indDat %in% paste(indGeh, collapse="-"))
 			
 			# is the value primary (P) or secondary (S) suppressed?
 			SorP <- subtab$data[posIndGeh, "geh"]			
@@ -136,7 +137,6 @@ processTableHYPERCUBE <- function(fullData, allowZeros=TRUE, randomResult=FALSE,
 			else
 				limit <- nrow(supp$diametralIndices)
 			
-			#for (z in 1:nrow(supp$diametralIndices)) {		
 			for (z in 1:limit) {
 				# 1) we identify the quader given by supp$indGeh and supp$diametralIndices[z,]
 				if(length(indexvars)>1)

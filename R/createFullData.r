@@ -53,10 +53,12 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, freqV
 		tt <- as.data.frame(table(microDat[,indTableVars]))
 		colnames(tt)[1:(ncol(tt)-1)] <- tableVars
 		
-		if(length(indTableVars) > 1)
-			tt$fac <- pasteStrVec(as.character(unlist(tt[,1:(ncol(tt)-1)])), (ncol(tt)-1))
-		else
-			tt$fac <- tt[,1]
+		tt$fac <- pasteStrVec(as.character(unlist(tt[,1:(ncol(tt)-1), drop=FALSE])), (ncol(tt)-1))
+		
+		#if(length(indTableVars) > 1)
+		#	tt$fac <- pasteStrVec(as.character(unlist(tt[,1:(ncol(tt)-1)])), (ncol(tt)-1))
+		#else
+		#	tt$fac <- tt[,1]
 		
 		if(!is.null(numVar)) {	
 			indNumVar <- which(colnames(microDat) %in% numVar)
@@ -426,7 +428,7 @@ createFullData <- function(minimalDat=NULL, microDat=NULL, tableVars=NULL, freqV
 	
 	# check if minimalDat contains all possible combinations of minimal spanning variables
 	minimalDat <- checkMinimalData(minimalDat, existingDims, indexvars)
-	
+	minimalDat <- minimalDat[,1:ncol(completeData)]
 	colnames(minimalDat) <- colnames(completeData)
 	completeData <- rbind(completeData[which(!completeData$fac %in% minimalDat$fac),], minimalDat)	
 	
