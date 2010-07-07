@@ -1,2 +1,0 @@
-PKG_LIBS = -L/usr/lib/R/library/Rcpp/lib -lRcpp -Wl,-rpath,/usr/lib/R/library/Rcpp/lib
-PKG_CPPFLAGS = -I/usr/lib/R/library/Rcpp/lib

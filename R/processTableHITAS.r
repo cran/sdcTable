@@ -13,23 +13,26 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 			
 			nrVars <- nrow(subtab)
 			# recode and calculate levels
-			if(length(indexvars) > 1) {
-				subtab[,indexvars] <- apply(subtab[,indexvars], 2, recodeFactor)
-				anzLevs <- apply(subtab[,indexvars], 2, function(x) { length(unique(x)) } )
-			}
-			else {
-				subtab[,indexvars] <- recodeFactor(subtab[,indexvars])
-				anzLevs <- length(unique(subtab[,indexvars]))
-			}
+			#if(length(indexvars) > 1) {
+			#	subtab[,indexvars] <- apply(subtab[,indexvars], 2, recodeFactor)
+			#	anzLevs <- apply(subtab[,indexvars], 2, function(x) { length(unique(x)) } )
+			#}
+			#else {
+			#	subtab[,indexvars] <- recodeFactor(subtab[,indexvars])
+			#	anzLevs <- length(unique(subtab[,indexvars]))
+			#}
+			subtab[,indexvars] <- apply(subtab[,indexvars, drop=FALSE], 2, recodeFactor)
+			anzLevs <- apply(subtab[,indexvars, drop=FALSE], 2, function(x) { length(unique(x)) } )
 			
 			mm <- list()
 			for (z in 1:length(indexvars)) {
 				# create factor from other indexvars
-				if(length(indexvars) > 2) {
-					fac <- apply(subtab[,indexvars[-z]], 1, function(x) {paste(x, collapse="") } )	
-				}
-				else if(length(indexvars)==2)
-					fac <- subtab[,indexvars[-z]]
+				#if(length(indexvars) > 2) {
+				#	fac <- apply(subtab[,indexvars[-z]], 1, function(x) {paste(x, collapse="") } )	
+				#}
+				#else if(length(indexvars)==2)
+				#	fac <- subtab[,indexvars[-z]]
+				fac <- apply(subtab[,indexvars[-z], drop=FALSE], 1, function(x) {paste(x, collapse="") } )	
 				
 				# split data and calculate matrices and vectors 
 				# for linear optimization programm
@@ -266,7 +269,7 @@ processTableHITAS <- function(fullData, ub=NULL, lb=NULL, UPLPerc=35, LPLPerc=25
 				ind <- TRUE
 			else if(nrConstraints == nrow(res$con)) 	
 				ind <- TRUE
-		}
+		}			
 
 		# add information about primary and secondary suppressions
 		subtab$geh[which(xi==1)] <- "S"
