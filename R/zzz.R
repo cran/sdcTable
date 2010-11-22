@@ -3,5 +3,5 @@
 	#v <- citation("sdcTable")$note
 	#version <- substr(v, nchar(v)-4, nchar(v))
 	#cat("Package sdcTable", version, "has been loaded!\n")
-	cat("Package sdcTable 0.0.12 has been loaded!\n")
+	cat("Package sdcTable 0.0.14 has been loaded!\n")
 }
