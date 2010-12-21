@@ -1,2 +1,2 @@
 useDynLib(sdcTable)
-export(protectTable, processTableHYPERCUBE, processTableHITAS, roundSubtable, summary.safeTable, createFullData, genCodesFromList, pasteStrVec)
+export(protectTable, roundSubtable, summary.safeTable, createFullData, genCodesFromList, pasteStrVec)
