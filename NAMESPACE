@@ -1,2 +1,2 @@
 useDynLib(sdcTable)
-export(protectTable, roundSubtable, summary.safeTable, createFullData, genCodesFromList, pasteStrVec)
+export(protectTable, primarySuppression, changeCellStatus, protectLinkedTables, calcFullTable, calcDimInfos, setBounds, prepareInput, summary.safeTable, cellInfo, checkSuppressionPattern)
