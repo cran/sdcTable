@@ -1,116 +1,510 @@
-protectTable <- function(fullData, method, ...){
+protectTable <- function(outObj, method, ...) {
+	# if levelObj is not NULL -> complete problem
+	# else problem for subTable only
+	f.genSubTab <- function(fullTabObj, strIDs, levelObj=NULL) {
+		subTab <- list()			
+		if ( is.null(levelObj) ) {
+			subTab$strID <- strIDs
+			subTabInd <- match(subTab$strID, fullTabObj$strID)
+		}
+		else {	
+			subTabInd <- 1:length(fullTabObj$strID)
+			subTab$strID <- fullTabObj$strID[subTabInd]
+		} 
+		
+		subTab$Freq <- fullTabObj$Freq[subTabInd]
+		subTab$w <- fullTabObj$w[subTabInd]
+		subTab$numVal <- fullTabObj$numVal[subTabInd]
+		subTab$status <- fullTabObj$status[subTabInd]
+		subTab$lb <- fullTabObj$lb[subTabInd]
+		subTab$ub <- fullTabObj$ub[subTabInd]
+		subTab$LPL <- fullTabObj$LPL[subTabInd]
+		subTab$UPL <- fullTabObj$UPL[subTabInd]
+		subTab$SPL <- fullTabObj$SPL[subTabInd]		
+		subTab$UB <- fullTabObj$UB[subTabInd]
+		subTab$LB <- fullTabObj$LB[subTabInd]
+		
+		# TODO: protectTable() and HITAS() needs to be expanded to take care of this
+		#subTab$weight <- "default"
+		return(subTab)		
+	}
+	
+	# calculate the information neccessary to perform HITAS|HYPERCUBE
+	# this functions generates the correct order of the subtables to be 
+	# processed by HITAS|HYERCUBE to generate valid suppression patterns
+	# Since it is used for both approaches, it was separated from the
+	# main code and f.getSplitTables() was introduced
+	f.genSplitTables <- function(fullTabObj, levelObj) {
+		fn.tabLevels <- function(levs, levelObj) {
+			fn.prepareResult <- function(result) {
+				x <- list()
+				for ( i in 1:length(result))
+					x[[i]] <- 1:length(result[[i]])
+				combs <- expand.grid(x)
+				
+				vecs <- list()
+				for ( i in 1:nrow(combs)) {
+					str <- paste("vecs[[",i,"]] <- expand.grid(result[[1]][[",combs[i,1],"]]", sep="")
+					for ( j in 2:ncol(combs) ) {
+						str <- paste(str, ", result[[",j,"]][[",combs[i,j],"]]", sep="")
+					}	
+					str <- paste(str, ", sep='')", sep="")		
+					eval(parse(text=str))
+					vecs[[i]] <- apply(vecs[[i]], 1, paste, collapse="")
+					
+				}
+				vecs
+			}			
+			result <- list()
+			for ( i in 1:length(levelObj) ) {
+				result[[i]] <- list()
+				index <- 1:length(levelObj[[i]]$levelsOrig)
+				index <- index[which(levelObj[[i]]$levelsOrig %in% c(levs[i], levs[i]-1))]
+				levOrig <- levelObj[[i]]$levelsOrig[index]
+				codesStandard <- levelObj[[i]]$codesStandard[index]
+				
+				
+				if ( levs[i] == 1) {
+					result[[i]] <- codesStandard
+				}
+				else {
+					diffs <- c(0,diff(levOrig))
+					checkInd <- which(diffs == 1)-1
+					out <- data.frame(index=index, levOrig=levOrig, codesStandard=codesStandard, ind=NA)
+					out$ind[checkInd] <- 1
+					
+					checkInd <- c(checkInd, length(index))
+					splitVec <- rep(0, length(index))
+					for ( z in 2:length(checkInd) ) {
+						if ( z < length(checkInd) )
+							splitVec[checkInd[z-1]:(checkInd[z]-1)] <- z-1
+						else
+							splitVec[checkInd[z-1]:(checkInd[z])] <- z-1
+					}
+					spl <- split(index, splitVec)
+					
+					counter <- 1
+					for ( z in 1:length(spl) ) {
+						rowInd <- match(spl[[z]], out$index)
+						tmp <- out[rowInd,]
+						if ( any(tmp[,"levOrig"]==levs[i]) ) {					
+							tmp <- tmp[1:(max(which(tmp$levOrig==levs[i]))),]
+							result[[i]][[counter]] <- sort(unique(as.character(tmp$codesStandard)))
+							counter <- counter + 1	
+						}
+					}				
+				}
+			}
+			result	<- fn.prepareResult(result)
+			result
+		}
+		
+		# 1) create classes and groups
+		tmpDat <- expand.grid(lapply(levelObj, function(x) { 1:length(x$levelStructure) } ))
+		groups <- apply(tmpDat, 1, function(x) { paste(x, collapse="-")})
+		classes <- apply(tmpDat, 1, sum)
+		sortOrder <- order(classes)
+		classes <- classes[sortOrder]
+		classesUnique <- unique(classes)
+		groups <- groups[sortOrder]
+		splitGroups <- split(groups, classes)
+		
+		# 2) create tables for all classes and groups (fn.tabLevels)
+		counter <- 0
+		out <- list()
+		out$groups <- groups
+		out$indices <- list()
+		for ( i in 1:length(groups) ) {
+			out$indices[[i]] <- list()
+			levs <- as.integer(unlist(sapply(groups[i], strsplit, "-")))		
+			xx <- fn.tabLevels(levs, levelObj)	
+			for ( j in 1:length(xx) ) {
+				out$indices[[i]][[j]] <- xx[[j]]	
+				counter <- counter + 1
+			}
+			
+		}
+		out$nrTables <- counter	
+		out$nrGroups <- length(groups)
+		out
+	}	
+	
+	# finalize output objects
+	# -> use objects from protectTable()
+	# -> pretty formatting [TODO]
+	# -> options on how to export the data [TODO]
+	f.finalizeOutput <- function(fullTabObj, strObj, levelObj, method, solver, addSuppsInfo, end, start) {	
+		strInfo <- strObj$strInfo
+		
+		nrPrimarySupps <- length(which(fullTabObj$status == "u"))
+		nrSecondSupps <- length(which(fullTabObj$status == "x"))
+		
+		outCodes <- list()
+		for ( i in 1:length(strInfo) )
+			outCodes[[i]] <- substr(fullTabObj$strID, strInfo[[i]][1], strInfo[[i]][2])
+		
+		for ( i in 1:length(outCodes) ) {
+			levDefault <- c(levelObj[[i]]$codesStandard, levelObj[[i]]$levelsRemove)
+			codesOrig <- c(levelObj[[i]]$codesOrig, levelObj[[i]]$levelsRemoveOrig)	
+			uniqueCodes <- unique(outCodes[[i]])
+			for ( j in 1:length(uniqueCodes) ) 
+				outCodes[[i]][which(outCodes[[i]]==uniqueCodes[j])] <- codesOrig[which(levDefault==uniqueCodes[j])]
+		}	
+		
+		#outObj <- fullTabObj[c("strID","Freq","numVal")]
+		outObj <- fullTabObj
+		for ( i in 1:length(levelObj) ) {
+			if ( length(levelObj[[i]]$levelsRemoveOrig) > 0 ) {
+				orderInd <- order(levelObj[[i]]$codeRemoveOrig)
+				levelObj[[i]]$codeRemoveOrig <- levelObj[[i]]$codeRemoveOrig[orderInd]
+				levelObj[[i]]$codeRemoveOrigUp <- levelObj[[i]]$codeRemoveOrigUp[orderInd]
+				levelObj[[i]]$levelsRemoveOrig <- levelObj[[i]]$levelsRemoveOrig[orderInd]
+				levelObj[[i]]$levelsRemoveOrigUp <- levelObj[[i]]$levelsRemoveOrigUp[orderInd]
+				
+				for ( j in 1:length(levelObj[[i]]$levelsRemoveOrig) ) {
+					addIndex <- which(outCodes[[i]] == levelObj[[i]]$levelsRemoveOrigUp[j])
+					if (length(addIndex) == 0) 
+						stop("Error: i=",i,"; j=",j,"!\n")
+					outCodes[[i]] <- c(outCodes[[i]], rep(levelObj[[i]]$levelsRemoveOrig[j], length(addIndex)))
+					for ( z in setdiff(1:length(levelObj),i) )
+						outCodes[[z]] <- c(outCodes[[z]], outCodes[[z]][addIndex])
+					
+					strIDNew <- outObj$strID[addIndex]
+					substr(strIDNew, strObj$strInfo[[i]][1], strObj$strInfo[[i]][2]) <- rep(levelObj[[i]]$levelsRemoveOrig[j], length(addIndex))
+					outObj$strID <- c(outObj$strID, strIDNew)
+					outObj$Freq <- c(outObj$Freq, outObj$Freq[addIndex])
+					outObj$w <- c(outObj$w, outObj$Freq[addIndex])		
+					outObj$status <- c(outObj$status, outObj$status[addIndex])	
+					outObj$numVal <- c(outObj$numVal, outObj$numVal[addIndex])
+					outObj$lb <- c(outObj$lb, outObj$lb[addIndex])
+					outObj$ub <- c(outObj$ub, outObj$ub[addIndex])
+					outObj$LPL <- c(outObj$LPL, outObj$LPL[addIndex])
+					outObj$UPL <- c(outObj$UPL, outObj$UPL[addIndex])
+					outObj$SPL <- c(outObj$SPL, outObj$SPL[addIndex])
+					outObj$UB <- c(outObj$UB, outObj$UB[addIndex])
+					outObj$LB <- c(outObj$LB, outObj$LB[addIndex])
+				}
+			}			
+		}
+		
+		names(outCodes) <- unlist(lapply(levelObj, function(x) x$varName))
+		outObj <- c(outObj, outCodes)
+		
+		if ( all(outObj$numVal %in% c(0, NA)) )
+			outObj$numVal <- rep(NA, length(outObj$numVal))
+		
+		protectedObj <- list()
+		protectedObj$time <- formatC(round((end-start)/60,2), digits=2, format="f")
+		protectedObj$method <- method
+		protectedObj$nrPrimarySupps <- nrPrimarySupps
+		protectedObj$nrSecondSupps <- nrSecondSupps
+		protectedObj$outObj <- outObj
+		protectedObj$suppsInfo <- addSuppsInfo
+		protectedObj$solver <- solver
+		protectedObj$levelObj <- levelObj
+		protectedObj$strObj <- strObj
+		class(protectedObj) <- "safeTable"
+		return(protectedObj)				
+		protectedObj	
+	}
+	
+	#########################
+	### Start the program ###
+	#########################
+	
+	### start: preparations ###	
+	# adding additional specific parameters for HITAS|GHMITER
 	suppMethod = list(...)$suppMethod
 	protectionLevel = list(...)$protectionLevel
 	allowZeros = list(...)$allowZeros
 	randomResult = list(...)$randomResult
-	factorUp = list(...)$factorUp
-	factorDown = list(...)$factorDown
-	ub = list(...)$ub
-	lb = list(...)$lb
-	UPLPerc = list(...)$UPLPerc
-	LPLPerc = list(...)$LPLPerc
-	weight = list(...)$weight
+	solver = list(...)$solver
+	cpus = list(...)$cpus
+	if( !method %in% c("HYPERCUBE", "HITAS", "OPT") ) 
+		stop("===> Error: please choose a valid method for secondary cell suppression! Choices are \"HYPERCUBE\" and \"HITAS\"!\n"); flush.console()
 	
-	if(class(fullData) != "fullData")
-		stop("Input object needs to be of class \"fullData\"\n")
+	start <- as.numeric(proc.time())[3]
+	strObj <- outObj$strObj
+	strInfo <- strObj$strInfo
+	levelObj <- outObj$levelObj	
+	fullTabObj <- outObj$fullTabObj			
 	
-	if(!method %in% c("HYPERCUBE", "HITAS")) 
-		stop("Please choose a valid method! Choices are \"HYPERCUBE\" and \"HITAS\"!\n")
-
-	# check if all necessary parameters are set
-	if(method %in% c("HYPERCUBE")) {
-		if(is.null(suppMethod))
-			cat("the default value \"minSupps\" for parameter \"suppMethod\" will be used!\n")
-		if(is.null(protectionLevel))
-			cat("the default value of 80 for parameter \"protectionLevel\" will be used!\n")
-		if(is.null(allowZeros))	
-			cat("the default value \"TRUE\" for parameter \"allowZeros\" will be used!\n")
-		if(is.null(randomResult))	
-			cat("the default value \"FALSE\" for parameter \"randomResult\" will be used!\n")
-	}
-
-	if(method == "HITAS") {
-		if(is.null(UPLPerc))
-			cat("the default value of 15 for parameter \"UPLPerc\" will be used!\n")
-		if(is.null(LPLPerc))
-			cat("the default value of 15 for parameter \"LPLPerc\" will be used!\n")
-		if(is.null(weight))
-			cat("the default choice \"values\" for parameter \"weight\" will be used!\n")
-	}
-
-	indexvars <- fullData$indexvars
-	
-	erg <- list()
-	erg$fullData <- fullData	
-	
-	supps <- NULL
-	time <- NULL
-	
-	counter <- 1
-	
-	# original primary suppressed cells
-	origPrimarySuppressions <- fullData$supps2check
-
-	if(method=="HITAS") {
-		time <- Sys.time()
-		erg <- processTableHITAS(erg$fullData, ...) 
-		time <- Sys.time() - time
-	
-		erg$time <- time
-		erg$counter <- 1
-		erg$method <- method
-		erg$totSupps <- length(which(erg$fullData$data$geh=="S"))
-	}
-	else {  
-		ind <- FALSE	
-	    while(ind==FALSE) {					
-	        cat("Cycle",counter,"to protect values is now started ...\n")
-			if(method=="HYPERCUBE"){
-				erg$fullData$counter <- counter
-				erg <- processTableHYPERCUBE(erg$fullData, ...)
-			}
-			
-			time <- cbind(time, as.numeric(erg$time))
-			supps <- cbind(supps, erg$anzSecSupp)
-	        if(erg$anzSecSupp == 0)
-	            ind <- TRUE
-			counter <- counter + 1
-	    }	    
-	    
-		# which cells are primary/secondary suppressed?
-		suppressions <- which(erg$fullData$data$geh != "")
-		secondarySuppressions <- suppressions[which(! suppressions %in% origPrimarySuppressions)]
-		
-		erg$fullData$data$geh[origPrimarySuppressions] <- "P"
-		erg$fullData$data$geh[secondarySuppressions] <- "S"	
-		
-		## NEW: additionally suppress all dimensions with only one sub-level
-		for(i in 1:length(indexvars)) {
-			dims <- erg$fullData$dimensions[[i]]
-			for(j in 1:length(dims)) {
-				if(length(dims[[j]])==2) {					
-					indTest <- which(erg$fullData$data[,indexvars[i]]%in% dims[[j]])
-					ss <- erg$fullData$data[indTest,]
-					if(length(indexvars) > 1) {
-						spl <- split(ss, ss[,indexvars[-i]])		
-						for(z in 1:length(spl))
-							if(length(unique(spl[[z]][,"geh"]))==2)
-								erg$fullData$data[rownames(spl[[z]]),"geh"] <- sort(spl[[z]][,"geh"])[2]
-					}
-					else {
-						if(length(unique(ss$geh))==2)
-							erg$fullData$data[rownames(ss),"geh"] <- sort(ss[,"geh"])[2]
-					}
-				}					
+	if ( method %in% c("HITAS", "OPT") ) {
+		if ( !is.null(solver) ) {
+			if ( !solver %in% c("lpsolve", "glpk", "symphony" ,"cplex") ) {
+				cat("===> Warning: the solver you have chosen must be one of \"lpsolve\"|\"symphony\"|\"cplex\"|\"glpk\"! Therefore, the default choice \"glpk\" will be used.\n"); flush.console()					
+				solver <- "glpk"
 			}
 		}
-		
-		
-		erg$counter <- counter
-	    erg$time <- sum(time)
-		erg$method <- method
-		erg$totSupps <- sum(supps)	
+		if( is.null(solver) )  {
+			cat("===> Note: the default choice \"glpk\" for parameter \"solver\" will be used!\n"); flush.console()
+			solver <- "glpk"
+		}				
+		if ( solver == "cplex" &  get("indCplex", pos=which(search()=="myGlobalEnv")) == FALSE ) {
+			solver <- "gplk"
+			cat("===> Note: the default choice \"glpk\" for parameter \"solver\" will be used because library 'Rcplex' is not available!\n"); flush.console()
+		}
+		if ( solver == "symphony" & get("indSymphony", pos=which(search()=="myGlobalEnv")) == FALSE ) {
+			solver <- "gplk"
+			cat("===> Note: the default choice \"glpk\" for parameter \"solver\" will be used because library 'RSymphony' is not available!\n"); flush.console()
+		}			
+		if ( solver == "lpsolve" & get("indLpSolveAPI", pos=which(search()=="myGlobalEnv")) == FALSE ) {
+			solver <- "gplk"
+			cat("===> Note: the default choice \"glpk\" for parameter \"solver\" will be used because library 'lpSolveAPI' is not available!\n"); flush.console()
+		}				
+		# check if fullTabObj is a valid object
+		if ( any(
+				is.null(fullTabObj$lb), 
+				is.null(fullTabObj$ub), 
+				is.null(fullTabObj$LPL), 
+				is.null(fullTabObj$UPL)) )
+			stop("Error: please add information about lower|upper bounds|protection levels to fullTabObj using setBounds()"); flush.console()
 	}	
-	class(erg) <- "safeTable"
-    return(erg)
+	if( is.null(cpus) )  {
+		cat("===> Note: the default choice \"1\" for parameter \"cpus\" will be used!\n"); flush.console()
+		cpus <- 1
+	}			
+	if ( cpus > 1 & get("indSnowfall", pos=which(search()=="myGlobalEnv")) == FALSE ) {
+		cpus <- 1	
+		cat("===> Note: the default choice \"1\" for parameter \"cpus\" will be used because library 'snowfall' is not availabe!\n"); flush.console()
+	}		
+	
+	if ( method == "HYPERCUBE" ) {
+		solver <- NULL
+		if( is.null(suppMethod) )
+			suppMethod <- "minSupps"; cat("===> NOTE: the default value \"minSupps\" for parameter \"suppMethod\" will be used!\n")
+		if( is.null(protectionLevel) )
+			protectionLevel <- 80; cat("===> NOTE: the default value of 80 for parameter \"protectionLevel\" will be used!\n")
+		if( is.null(allowZeros) )	
+			allowZeros <- FALSE; cat("===> NOTE: the default value \"FALSE\" for parameter \"allowZeros\" will be used!\n")
+		if( is.null(randomResult) )	
+			randomResult <- FALSE; cat("===> NOTE: the default value \"FALSE\" for parameter \"randomResult\" will be used!\n")
+	}			
+	### end: preparations ###
+	
+	### start: declare common objects ###
+	# save original primary suppressed cells
+	origPrimSupps <- which(fullTabObj$status=="u")
+	origSecondSupps <- which(fullTabObj$status=="x")
+	origProtectedCells <- which(fullTabObj$status=="z")			
+	addSuppsInfo <- suppPattern <- NA		
+	### end: declare common objects ###
+	
+	if ( any(fullTabObj$status == "u") ) {
+		addSuppsInfo <- suppPattern <- list()
+		
+		### start: HITAS procedure ###
+		if ( method == "HITAS" ) {
+			suppPattern <- addSuppsInfo <- list()
+			addSupps <- c()
+			splitInfo <- f.genSplitTables(fullTabObj, levelObj)
+			nrGroups <- splitInfo$nrGroups
+			counter <- 0
+			i <- j <- 1		
+			while ( i <= nrGroups ) {
+				cat("working on group",i,"|",nrGroups,"\n")
+				j <- 1
+				lenTabs <- length(splitInfo$indices[[i]])
+				while ( j <= lenTabs ) {	
+					error <- FALSE
+					counter <- counter + 1 
+					addSuppsInfo[[counter]] <- list()
+					subTab <- f.genSubTab(fullTabObj, splitInfo$indices[[i]][[j]], levelObj=NULL)
+					# do primary supps (status=="u") exist in marginals? if so -> "x"
+					cellInfo <- isMarginalSum(subTab$strID, strInfo) 
+					indX <- which(subTab$status=="x" & subTab$Freq != 1)
+					indXTot <- indX[which(indX %in% cellInfo$indexTotCells)]					
+					if ( length(indXTot) > 0 )
+						subTab$status[indXTot] <- "u"
+					
+					# standard case: primary suppressions exist
+					if ( any(subTab$status %in% c("u","x")) ) {						
+						M <- genMatM(subTab$strID, strObj$strInfo)
+						subTab <- protectHITAS(subTab, M, solver, verbose=FALSE, cpus, method)
+						
+						if ( is.null(subTab) ) {
+							# subTab was NULL -> recalculate 
+							subTab <- f.genSubTab(fullTabObj, splitInfo$indices[[i]][[j]], levelObj=NULL)
+							totCellIndexChanged <- cellInfo$indexTotCells[na.omit(match(which(subTab$status=="z"), cellInfo$indexTotCells))]
+							subTab$status[totCellIndexChanged] <- "s"
+							
+							# protect the "relaxed" subTab
+							subTab <- protectHITAS(subTab, M, solver, verbose=FALSE, cpus, method)
+							
+							# if there is a solution now
+							if ( !is.null(subTab) ) {
+								changed <- subTab$strID[totCellIndexChanged[subTab$status[totCellIndexChanged]=="x"]]
+								if ( length(changed) > 0 ) {
+									addSupps <- c(addSupps, match(changed, fullTabObj$strID))
+									fullTabObj <- outObj$fullTabObj	
+									fullTabObj$status[addSupps] <- "u"
+									error <- TRUE
+								}									
+							}	
+							else
+								stop("something is terribly wrong!\n")
+						}
+					}				
+					if ( error == TRUE ) {
+						j <- lenTabs+1
+						i <- 0
+					}
+					else {
+						j <- j + 1						
+						# else : we update the suppression pattern
+						secondSuppInd <- match(subTab$strID[which(subTab$status=="x")], fullTabObj$strID)
+						addSuppsInfo[[counter]]$primSupps <- NA
+						addSuppsInfo[[counter]]$secondSupps <- NA	
+						if ( length(secondSuppInd) > 0 ) {
+							fullTabObj$status[secondSuppInd] <- "x"
+							addSuppsInfo[[counter]]$primSupps <- subTab$strID[subTab$status=="u"]
+							addSuppsInfo[[counter]]$secondSupps <- fullTabObj$strID[secondSuppInd]					
+						}
+						
+						# new in HITAS: 
+						# all levels already dealt with need to be set to 'publishable' temporarily
+						vecNotChangable <- match(subTab$strID[which(subTab$status%in%c("s","z"))], fullTabObj$strID)
+						if ( length(vecNotChangable) > 0 )
+							fullTabObj$status[vecNotChangable] <- "z"	
+					}				
+				}		
+				i <- i + 1
+			}			
+		}	
+		### end: HITAS procedure ###
+		
+		
+		### start: HYPERCUBE procedure ###
+		if ( method == "HYPERCUBE" ) {
+			runInd <- TRUE
+			nrRuns <- 1
+			while ( runInd == TRUE ) { 	
+				primSupps <- which(fullTabObj$status=="u")
+				secondSupps <- which(fullTabObj$status=="x")
+				protectedCells <- which(fullTabObj$status=="z")
+				if ( any(fullTabObj$status == "u") ) {
+					suppPattern <- addSuppsInfo <- list()
+					splitInfo <- f.genSplitTables(fullTabObj, levelObj)
+					nrGroups <- splitInfo$nrGroups
+					counter <- 0
+					i <- j <- 1		
+					for ( i in 1:nrGroups ) {
+						lenTabs <- length(splitInfo$indices[[i]])
+						for ( j in 1:lenTabs ) {	
+							error <- FALSE
+							counter <- counter + 1 
+							addSuppsInfo[[counter]] <- list()
+							subTab <- f.genSubTab(fullTabObj, splitInfo$indices[[i]][[j]], levelObj=NULL)
+							# do primary supps (status=="u") exist in marginals? if so -> "x"
+							cellInfo <- isMarginalSum(subTab$strID, strInfo) 
+							
+							indX <- which(subTab$status=="x" & subTab$Freq != 1)
+							indXTot <- indX[which(indX %in% cellInfo$indexTotCells)]
+							
+							if ( length(indXTot) > 0 ) 
+								subTab$status[indXTot] <- "u"
+							
+							# standard case: primary suppressions exist
+							if ( any(subTab$status =="u") ) {
+								subTab <- protectHYPERCUBE(subTab, levelObj, strObj, allowZeros, protectionLevel, suppMethod, debug=FALSE)
+								if ( !is.null(subTab) )  {
+									secondSuppInd <- match(subTab$strID[which(subTab$status=="x")], fullTabObj$strID)
+									addSuppsInfo[[counter]]$primSupps <- NA
+									addSuppsInfo[[counter]]$secondSupps <- NA	
+									if ( length(secondSuppInd) > 0 ) {
+										fullTabObj$status[secondSuppInd] <- "x"
+										addSuppsInfo[[counter]]$primSupps <- subTab$strID[subTab$status=="u"]
+										addSuppsInfo[[counter]]$secondSupps <- fullTabObj$strID[secondSuppInd]					
+									}						
+								}
+								else 
+									stop("Error with subTab (i=",i,"|j=",j,")!\n")
+							}				
+						}		
+					}		
+				}
+				# else: return input-data as they are, nothing to do
+				end <- as.numeric(proc.time())[3]	
+				
+				newSupps <- setdiff(which(fullTabObj$status %in% c("u","x")),  c(primSupps, secondSupps))
+				
+				if ( length(newSupps) == 0 ) {
+					runInd <- FALSE
+				}
+				else {
+					protectionLevel <- 1
+					fullTabObj$status <- rep("s", length(fullTabObj$status))
+					fullTabObj$status[newSupps] <- "u"
+					fullTabObj$status[unique(c(primSupps, secondSupps))] <- "x"
+					fullTabObj$status[protectedCells] <- "z"
+					nrRuns <- nrRuns + 1
+				}
+			}			
+			
+			# restore original primary suppressed cells
+			# index of cells that were set to "u" in the heuristic process
+			# but are in fact secondary suppressions
+			index <- which(fullTabObj$status %in% c("x","u"))
+			
+			# restore original state of cells that are forced to be published
+			fullTabObj$status <- rep("s", length(fullTabObj$status))
+			if ( length(origProtectedCells) > 0 )
+				fullTabObj$status[origProtectedCells] <- "z"	
+			
+			if ( length(index) > 0 )
+				fullTabObj$status[index] <- "x"
+			
+			if ( length(origPrimSupps) > 0 )
+				fullTabObj$status[origPrimSupps] <- "u"			
+			
+		}		
+		### end: HYPERCUBE procedure ###	
+		
+		
+		### start: OPT procedure ###
+		if ( method == "OPT" ) {
+			#subTab <- f.genSubtab(fullTabObj, currentLevel=NULL, dimObj=NULL, levelObj)
+			subTab <- f.genSubTab(fullTabObj, strIDs=NULL, levelObj)
+			M <- genMatMFull(subTab$strID, levelObj, check=FALSE)			
+			subTab <- protectHITAS(subTab, M, solver, verbose=FALSE, cpus, method)
+			secondSuppInd <- match(subTab$strID[which(subTab$status=="x")], fullTabObj$strID)
+			if ( length(secondSuppInd) > 0 ) {
+				fullTabObj$status[secondSuppInd] <- "x"
+				addSuppsInfo$primSupps <- subTab$strID[subTab$status=="u"]
+				addSuppsInfo$secondSupps <- fullTabObj$strID[secondSuppInd]					
+			}
+			else {
+				addSuppsInfo$primSupps <- NA
+				addSuppsInfo$secondSupps <- NA							
+			}			
+		}			
+		### end: OPT procedure ###				
+		
+		### start: restore original cell states ###
+		# restore original primary suppressed cells
+		# index of cells that were set to "u" in the heuristic process
+		# but are in fact secondary suppressions
+		index <- which(fullTabObj$status %in% c("x","u"))
+		
+		# restore original state of cells that are forced to be published
+		fullTabObj$status <- rep("s", length(fullTabObj$status))
+		if ( length(origProtectedCells) > 0 )
+			fullTabObj$status[origProtectedCells] <- "z"	
+		
+		if ( length(index) > 0 )
+			fullTabObj$status[index] <- "x"
+		
+		if ( length(origPrimSupps) > 0 )
+			fullTabObj$status[origPrimSupps] <- "u"		
+		### end: restore original cell states ###
+		
+	}
+	# else: return input-data as they are, nothing to do
+	end <- as.numeric(proc.time())[3]
+	
+	# TODO: what should we do with NA-Cells? 
+	# possibility: mark them as secondary suppressions with temporary value > 1	
+	protectedObj <- f.finalizeOutput(fullTabObj, strObj, levelObj, method, solver, addSuppsInfo, end, start)
+	cat("\n===>",protectedObj$nrPrimarySupps,"primary sensitive cells have been protected with",protectedObj$nrSecondSupps,"secondary cell-suppressions using", method, "algorithm. [Finished]\n")			
+	return(protectedObj)	
 }

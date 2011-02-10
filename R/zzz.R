@@ -1,7 +1,45 @@
 .onLoad <- function(lib, pkg) {
 	library.dynam("sdcTable", pkg, lib)
-	#v <- citation("sdcTable")$note
-	#version <- substr(v, nchar(v)-4, nchar(v))
-	#cat("Package sdcTable", version, "has been loaded!\n")
-	cat("Package sdcTable 0.0.16 has been loaded!\n")
+	
+	myGlobalEnv <- indCplex <- indSymphony <- indLpSolveAPI <- indSnowfall <- NULL
+	
+	#suppressWarnings(indCplex <- require(Rcplex, quietly=TRUE))
+	suppressWarnings(indSymphony <- require(Rsymphony, quietly=TRUE))
+	suppressWarnings(indLpSolveAPI <- require(lpSolveAPI, quietly=TRUE))
+	suppressWarnings(indSnowfall <- require(snowfall, quietly=TRUE))
+	
+	myGlobalEnv <- new.env()
+	attach(myGlobalEnv)	
+	indCplex <- FALSE # temp: remove Cplex support
+	assign("indCplex", indCplex, pos=which(search()=="myGlobalEnv"))
+	assign("indSymphony", indSymphony, pos=which(search()=="myGlobalEnv"))
+	assign("indLpSolveAPI", indLpSolveAPI, pos=which(search()=="myGlobalEnv"))
+	assign("indSnowfall", indSnowfall, pos=which(search()=="myGlobalEnv"))
+	
+	#cat("Is package 'Rcplex' available? --> ")
+	#if ( indCplex==TRUE )
+	#	cat("Yes (package loaded)")
+	#else cat("No")
+	#cat("\n")
+	
+	cat("Is package 'RSymphony' available? --> ")
+	if ( indSymphony==TRUE )
+		cat("Yes (package loaded)")
+	else cat("No")	
+	cat("\n")
+	
+	cat("Is package 'lpSolveAPI' available? --> ")
+	if ( indLpSolveAPI==TRUE )
+		cat("Yes (package loaded)")
+	else cat("No")	
+	cat("\n")
+	
+	cat("Is package 'snowfall' available? --> ")
+	if ( indSnowfall==TRUE )
+		cat("Yes (package loaded)")
+	else cat("No")	
+	cat("\n\n")		
+		
+	cat("Package sdcTable 0.6.0 has been loaded!\n")
+	cat("Note: RCplex support not yet available. Please manually install and load this package if you need to.\n")
 }

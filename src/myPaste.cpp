@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-using namespace Rcpp ;
+using namespace Rcpp;
 
 RcppExport SEXP myPaste(SEXP stringvec, SEXP nrKeyVars) {
 	BEGIN_RCPP
