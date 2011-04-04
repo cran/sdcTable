@@ -26,18 +26,18 @@ if return is set to FALSE, this information is only printed to the screen.
 protectedData <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/protectedData.RData", sep="")))
 
 # check state of some cells...
-a <- cellInfo(protectedData, c("011","B","0112","w"), c("V1", "V3", "V4", "V2"), return=TRUE) 
-b <- cellInfo(protectedData, c("011","w","B","0112"), c("V1", "V2", "V3", "V4"), return=TRUE) 
+a <- cellInfo(protectedData, c("011","B","Kb","w"), c("V1", "V3", "V4", "V2"), return=TRUE) 
+b <- cellInfo(protectedData, c("011","w","B","Kb"), c("V1", "V2", "V3", "V4"), return=TRUE) 
 
-print(a$problematicPrimaryCells)
-print(b$problematicPrimaryCells)
+str(a$problematicPrimaryCells)
+str(b$problematicPrimaryCells)
 
 # publishable cell
-cellInfo(protectedData, c("A","013","0013","w"), c("V3", "V1", "V4", "V2"), return=FALSE) 
+cellInfo(protectedData, c("A","013","Ac","w"), c("V3", "V1", "V4", "V2"), return=FALSE) 
 # a primary suppressed cell
-cellInfo(protectedData, c("0013","m","A","021"), c("V4", "V2", "V3", "V1"), return=FALSE) 
+cellInfo(protectedData, c("Aa","m","A","011"), c("V4", "V2", "V3", "V1"), return=FALSE) 
 
 # a secondary suppressed cell
-cellInfo(protectedData, c("0011","m","A","011"), c("V4", "V2", "V3", "V1"), return=FALSE) 
+cellInfo(protectedData, c("Ac","m","A","021"), c("V4", "V2", "V3", "V1"), return=FALSE) 
 }
 \keyword{methods}

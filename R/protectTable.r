@@ -45,9 +45,11 @@ protectTable <- function(outObj, method, ...) {
 				vecs <- list()
 				for ( i in 1:nrow(combs)) {
 					str <- paste("vecs[[",i,"]] <- expand.grid(result[[1]][[",combs[i,1],"]]", sep="")
-					for ( j in 2:ncol(combs) ) {
-						str <- paste(str, ", result[[",j,"]][[",combs[i,j],"]]", sep="")
-					}	
+					if ( ncol(combs) > 1) {
+						for ( j in 2:ncol(combs) ) {
+							str <- paste(str, ", result[[",j,"]][[",combs[i,j],"]]", sep="")
+						}	
+					}
 					str <- paste(str, ", sep='')", sep="")		
 					eval(parse(text=str))
 					vecs[[i]] <- apply(vecs[[i]], 1, paste, collapse="")
@@ -139,38 +141,55 @@ protectTable <- function(outObj, method, ...) {
 		nrPrimarySupps <- length(which(fullTabObj$status == "u"))
 		nrSecondSupps <- length(which(fullTabObj$status == "x"))
 		
-		outCodes <- list()
-		for ( i in 1:length(strInfo) )
-			outCodes[[i]] <- substr(fullTabObj$strID, strInfo[[i]][1], strInfo[[i]][2])
-		
-		for ( i in 1:length(outCodes) ) {
-			levDefault <- c(levelObj[[i]]$codesStandard, levelObj[[i]]$levelsRemove)
-			codesOrig <- c(levelObj[[i]]$codesOrig, levelObj[[i]]$levelsRemoveOrig)	
-			uniqueCodes <- unique(outCodes[[i]])
-			for ( j in 1:length(uniqueCodes) ) 
-				outCodes[[i]][which(outCodes[[i]]==uniqueCodes[j])] <- codesOrig[which(levDefault==uniqueCodes[j])]
+		allCodes <- list()
+		for ( i in 1:length(levelObj) ) {
+			allCodes[[i]] <- list()
+			if ( length(levelObj[[i]]$dups) == 0 ) {
+				x <- levelObj[[i]]$codesStandard[match(levelObj[[i]]$dupsUp, levelObj[[i]]$codesOrig)]
+				levDefault <- c(levelObj[[i]]$codesStandard, as.character(sapply(x, calcUpperLev, levelObj[[i]])))
+				codesOrig <- c(levelObj[[i]]$codesOrig, levelObj[[i]]$dups)	
+				allCodes[[i]]$codesStandard <- levDefault
+				allCodes[[i]]$codesOrig <- codesOrig
+			}
+			else {
+				dupsUp <- levelObj[[i]]$dupsUp
+				dups <- levelObj[[i]]$dups
+				codesOrig <- levelObj[[i]]$codesOrig
+				levDefault <- levelObj[[i]]$codesStandard
+				while( length(dupsUp) > 0 ) {
+					matchInd <- match(dupsUp, codesOrig)
+					x <- levDefault[na.omit(matchInd)]
+					
+					levDefault <- c(levDefault, as.character(sapply(x, calcUpperLev, levelObj[[i]])))
+					codesOrig <- c(codesOrig, dups[!is.na(matchInd)])	
+
+					dupsUp <- setdiff(dupsUp,  dupsUp[!is.na(matchInd)])
+					dups <- setdiff(dups,  dups[!is.na(matchInd)])
+				}	
+				allCodes[[i]]$codesStandard <- levDefault
+				allCodes[[i]]$codesOrig <- codesOrig
+			}			
 		}	
 		
-		#outObj <- fullTabObj[c("strID","Freq","numVal")]
 		outObj <- fullTabObj
 		for ( i in 1:length(levelObj) ) {
-			if ( length(levelObj[[i]]$levelsRemoveOrig) > 0 ) {
-				orderInd <- order(levelObj[[i]]$codeRemoveOrig)
-				levelObj[[i]]$codeRemoveOrig <- levelObj[[i]]$codeRemoveOrig[orderInd]
-				levelObj[[i]]$codeRemoveOrigUp <- levelObj[[i]]$codeRemoveOrigUp[orderInd]
-				levelObj[[i]]$levelsRemoveOrig <- levelObj[[i]]$levelsRemoveOrig[orderInd]
-				levelObj[[i]]$levelsRemoveOrigUp <- levelObj[[i]]$levelsRemoveOrigUp[orderInd]
-				
-				for ( j in 1:length(levelObj[[i]]$levelsRemoveOrig) ) {
-					addIndex <- which(outCodes[[i]] == levelObj[[i]]$levelsRemoveOrigUp[j])
-					if (length(addIndex) == 0) 
-						stop("Error: i=",i,"; j=",j,"!\n")
-					outCodes[[i]] <- c(outCodes[[i]], rep(levelObj[[i]]$levelsRemoveOrig[j], length(addIndex)))
-					for ( z in setdiff(1:length(levelObj),i) )
-						outCodes[[z]] <- c(outCodes[[z]], outCodes[[z]][addIndex])
+			if ( length(levelObj[[i]]$dups) > 0 ) {
+				orderInd <- order(match(levelObj[[i]]$dupsUp, levelObj[[i]]$codesStandard), decreasing=TRUE)
+				levelObj[[i]]$dups <- levelObj[[i]]$dups[orderInd]
+				levelObj[[i]]$dupsUp <- levelObj[[i]]$dupsUp[orderInd]
+
+				for ( j in 1:length(levelObj[[i]]$dups) ) {
+					code <- levelObj[[i]]$dupsUp[j]
+					codeS <- allCodes[[i]]$codesStandard[match(code, allCodes[[i]]$codesOrig)]
+					codeU <- calcUpperLev(codeS, levelObj[[i]])
 					
+					addIndex <- which(substr(outObj$strID, strInfo[[i]][1], strInfo[[i]][2]) == codeS)
+									
+					if ( length(addIndex) == 0 ) 
+						stop("Error: i=",i,"; j=",j,"!\n")
+
 					strIDNew <- outObj$strID[addIndex]
-					substr(strIDNew, strObj$strInfo[[i]][1], strObj$strInfo[[i]][2]) <- rep(levelObj[[i]]$levelsRemoveOrig[j], length(addIndex))
+					substr(strIDNew, strObj$strInfo[[i]][1], strObj$strInfo[[i]][2]) <- rep(codeU, length(addIndex))
 					outObj$strID <- c(outObj$strID, strIDNew)
 					outObj$Freq <- c(outObj$Freq, outObj$Freq[addIndex])
 					outObj$w <- c(outObj$w, outObj$Freq[addIndex])		
@@ -187,6 +206,12 @@ protectTable <- function(outObj, method, ...) {
 			}			
 		}
 		
+		# Merge Bezeichnungen und Codes
+		outCodes <- list()
+		for ( i in 1:length(levelObj) ) {
+			outCodes[[i]] <- substr(outObj$strID, strInfo[[i]][1], strInfo[[i]][2])
+			outCodes[[i]] <- allCodes[[i]]$codesOrig[match(outCodes[[i]], allCodes[[i]]$codesStandard)]
+		}
 		names(outCodes) <- unlist(lapply(levelObj, function(x) x$varName))
 		outObj <- c(outObj, outCodes)
 		
@@ -318,9 +343,13 @@ protectTable <- function(outObj, method, ...) {
 						subTab$status[indXTot] <- "u"
 					
 					# standard case: primary suppressions exist
-					if ( any(subTab$status %in% c("u","x")) ) {						
+					if ( any(subTab$status %in% c("u","x")) && any(subTab$status %in% c("z","s")) ) {						
 						M <- genMatM(subTab$strID, strObj$strInfo)
 						subTab <- protectHITAS(subTab, M, solver, verbose=FALSE, cpus, method)
+						
+						#cat("temporarily saving protected subTab....")
+						#save(subTab, file=paste("protectedSubTab-",i,"-",j,".RData", sep=""))
+						#cat("Done!\n")						
 						
 						if ( is.null(subTab) ) {
 							# subTab was NULL -> recalculate 
@@ -394,7 +423,11 @@ protectTable <- function(outObj, method, ...) {
 							error <- FALSE
 							counter <- counter + 1 
 							addSuppsInfo[[counter]] <- list()
+							addSuppsInfo[[counter]]$primSupps <- NA
+							addSuppsInfo[[counter]]$secondSupps <- NA	
+							
 							subTab <- f.genSubTab(fullTabObj, splitInfo$indices[[i]][[j]], levelObj=NULL)
+							
 							# do primary supps (status=="u") exist in marginals? if so -> "x"
 							cellInfo <- isMarginalSum(subTab$strID, strInfo) 
 							
@@ -402,24 +435,21 @@ protectTable <- function(outObj, method, ...) {
 							indXTot <- indX[which(indX %in% cellInfo$indexTotCells)]
 							
 							if ( length(indXTot) > 0 ) 
-								subTab$status[indXTot] <- "u"
-							
+								subTab$status[indXTot] <- "u"							
 							# standard case: primary suppressions exist
-							if ( any(subTab$status =="u") ) {
+	
+							if ( any(subTab$status =="u") && any(subTab$status != "u") ) {
 								subTab <- protectHYPERCUBE(subTab, levelObj, strObj, allowZeros, protectionLevel, suppMethod, debug=FALSE)
 								if ( !is.null(subTab) )  {
 									secondSuppInd <- match(subTab$strID[which(subTab$status=="x")], fullTabObj$strID)
-									addSuppsInfo[[counter]]$primSupps <- NA
-									addSuppsInfo[[counter]]$secondSupps <- NA	
 									if ( length(secondSuppInd) > 0 ) {
 										fullTabObj$status[secondSuppInd] <- "x"
 										addSuppsInfo[[counter]]$primSupps <- subTab$strID[subTab$status=="u"]
 										addSuppsInfo[[counter]]$secondSupps <- fullTabObj$strID[secondSuppInd]					
-									}						
-								}
-								else 
+									}
+								} else 
 									stop("Error with subTab (i=",i,"|j=",j,")!\n")
-							}				
+							}			
 						}		
 					}		
 				}
@@ -465,7 +495,7 @@ protectTable <- function(outObj, method, ...) {
 		if ( method == "OPT" ) {
 			#subTab <- f.genSubtab(fullTabObj, currentLevel=NULL, dimObj=NULL, levelObj)
 			subTab <- f.genSubTab(fullTabObj, strIDs=NULL, levelObj)
-			M <- genMatMFull(subTab$strID, levelObj, check=FALSE)			
+			M <- genMatMFull(subTab$strID, levelObj)			
 			subTab <- protectHITAS(subTab, M, solver, verbose=FALSE, cpus, method)
 			secondSuppInd <- match(subTab$strID[which(subTab$status=="x")], fullTabObj$strID)
 			if ( length(secondSuppInd) > 0 ) {
