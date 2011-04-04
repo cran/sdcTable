@@ -40,6 +40,6 @@
 	else cat("No")	
 	cat("\n\n")		
 		
-	cat("Package sdcTable 0.6.0 has been loaded!\n")
+	cat("Package sdcTable 0.6.4 has been loaded!\n")
 	cat("Note: RCplex support not yet available. Please manually install and load this package if you need to.\n")
 }

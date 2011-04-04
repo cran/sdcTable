@@ -83,3 +83,31 @@ isMarginalSum <- function(strIDs, strInfo) {
 	indexInnerCells <- match(innerCells, strIDs)
 	return(list(innerCells=innerCells, totCells=totCells, indexInnerCells=indexInnerCells, indexTotCells=indexTotCells))
 }
+
+# TODO: write S4-Class
+# returns the upper level of "duplicates" given the corresponding
+# levelObj
+calcUpperLev <- function(SCode, lO) {						
+	levStruct <- lO$levelStructure	
+	if ( nchar(SCode) != sum(levStruct))
+		stop("Falscher Input!\n")
+	
+	# which level?
+	x <- unlist(strsplit(SCode, ""))
+	ind <- which(x != "0")
+	if ( length(ind) > 0 ) 
+		indMax <- max(ind)							
+	else 
+		indMax <- 1
+	
+	cs <- cumsum(levStruct)
+	
+	currentLev <- which(indMax <= cs)[1]
+	if ( currentLev == length(levStruct) ) 
+		stop("max-level reached!\n")
+	else {
+		codeN <- SCode
+		substr(codeN, cs[currentLev]+1, cs[currentLev+1	]) <- paste(rep("0", levStruct[currentLev+1	]-1), "1", sep="")		
+	}	
+	codeN
+}

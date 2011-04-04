@@ -14,26 +14,26 @@
 \value{ manipulated data. }
 \author{Bernhard Meindl}
 \examples{
-	# the level object (information about dimensions)
-	levelObj <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/levelObj.RData", sep="")))
-	
-	# micro data
-	microDat <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/microDat.RData", sep="")))
-	print(head(microDat))
-	
-	# aggregated data
-	aggDat <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/aggregatedDat.RData", sep="")))
-	print(head(aggDat))	
-	
-	out1 <- calcFullTable(microDat, levelObj, freqVar=NULL, numVar="numVal", weightVar=NULL)
-	out2 <- calcFullTable(aggDat, levelObj, freqVar="Freq", numVar="numVal", weightVar=NULL)
-	
-	# compare
-	print(identical(out1$fullTabObj, out2$fullTabObj))
-	print(str(out1))
-	print(str(out2))
-	
-	aggDat$sampWeight <- sample(rpois(nrow(aggDat), 10), replace=TRUE)
-	out3 <- calcFullTable(aggDat, levelObj, freqVar="Freq", numVar="numVal", sampWeight="sampWeight")
+# micro data
+microDat <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/microDat.RData", sep="")))
+print(head(microDat))
+
+# the level object (information about dimensions)
+levelObj <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/levelObj.RData", sep="")))
+
+# aggregated data
+aggDat <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/aggregatedDat.RData", sep="")))
+print(head(aggDat))	
+
+out1 <- calcFullTable(microDat, levelObj, freqVar=NULL, numVar="numVal", weightVar=NULL)
+out2 <- calcFullTable(aggDat, levelObj, freqVar="Freq", numVar="numVal", weightVar=NULL)
+
+# compare
+print(identical(out1$fullTabObj, out2$fullTabObj))
+print(str(out1))
+print(str(out2))
+
+aggDat$sampWeight <- sample(rpois(nrow(aggDat), 10), replace=TRUE)
+out3 <- calcFullTable(aggDat, levelObj, freqVar="Freq", numVar="numVal", sampWeight="sampWeight")
 }
 \keyword{methods}

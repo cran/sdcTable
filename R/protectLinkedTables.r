@@ -8,22 +8,24 @@ protectLinkedTables <- function(inputObj1, inputObj2, commonCells, method="HITAS
 		varsNotUsed1 <- setdiff(1:length(levelObj1), varsUsed1)
 		varsNotUsed2 <- setdiff(1:length(levelObj2), varsUsed2)
 		
+		startVar <- which(names(res1)=="LB")
+		
 		for ( i in 1:length(commonCells) ) {
 			# it is not te same variable --> different characterisics
 			if ( length(commonCells[[i]]) != 3 ) {
-				commonInd1 <- setdiff(commonInd1, which(!outObj1[[5+as.numeric(commonCells[[i]][[1]])]] %in% commonCells[[i]][[3]]))			
-				commonInd2 <- setdiff(commonInd2, which(!outObj2[[5+as.numeric(commonCells[[i]][[2]])]] %in% commonCells[[i]][[4]]))			
+				commonInd1 <- setdiff(commonInd1, which(!outObj1[[startVar+as.numeric(commonCells[[i]][[1]])]] %in% commonCells[[i]][[3]]))			
+				commonInd2 <- setdiff(commonInd2, which(!outObj2[[startVar+as.numeric(commonCells[[i]][[2]])]] %in% commonCells[[i]][[4]]))			
 			}		
 		}	
 		
 		if ( length(varsNotUsed1) > 0 ) {
 			for ( i in varsNotUsed1 ) 			
-				commonInd1 <- setdiff(commonInd1, which(outObj1[[5+i]] != levelObj1[[c(varsNotUsed1[i])]]$codesStandard[1]))				
+				commonInd1 <- setdiff(commonInd1, which(outObj1[[startVar+i]] != levelObj1[[c(varsNotUsed1[i])]]$codesStandard[1]))				
 		}
 		
 		if ( length(varsNotUsed2) > 0 ) {
 			for ( i in varsNotUsed2 ) 			
-				commonInd2 <- setdiff(commonInd2, which(outObj2[[5+i]] != levelObj2[[c(i)]]$codesOrig[1]))				
+				commonInd2 <- setdiff(commonInd2, which(outObj2[[startVar+i]] != levelObj2[[c(i)]]$codesOrig[1]))				
 		}
 		
 		if ( length(commonInd1) != length(commonInd2) )
@@ -68,28 +70,21 @@ protectLinkedTables <- function(inputObj1, inputObj2, commonCells, method="HITAS
 		runInd <- TRUE
 		counter <- 1
 		while ( runInd == TRUE ) {
-			tmpInd <- which(suppPattern1[commonCellIndices[[1]]] + suppPattern2[commonCellIndices[[2]]] == 1)
-			
-			i1 <- which(suppPattern1[commonCellIndices[[1]]] == 1 & suppPattern2[commonCellIndices[[2]]]==0)
-			i2 <- which(suppPattern2[commonCellIndices[[2]]] == 1 & suppPattern1[commonCellIndices[[1]]]==0)
-			
+			x <- cbind(suppPattern1[commonCellIndices[[1]]], suppPattern2[commonCellIndices[[2]]])
 			index <- list()
-			if ( length(i2) > 0 )
-				index[[1]] <- commonCellIndices[[1]][i2]
-			else
-				index[[1]] <- NA
-			if ( length(i1) > 0 )			
-				index[[2]] <- commonCellIndices[[2]][i1]
-			else
-				index[[2]] <- NA
+			i1 <- which(x[,1] == 0 & x[,2]==1)
+			i2 <- which(x[,1] == 1 & x[,1]==0)
+			index[[1]] <- commonCellIndices[[1]][i1]
+			index[[2]] <- commonCellIndices[[2]][i2]
+			
 			for ( j in 1:2 ) {
-				if ( !all(is.na(index[[j]])) ) {
+				if ( length(index[[j]]) > 0 ) {
 					if ( j == 1 ) {
-						inputObj1$gehObj1$secondSupps[na.omit(match(outObj1$outObj$strID[index[[j]]], inputObj1$fullTabObj1$strID))] <- TRUE
+						inputObj1$fullTabObj$status[na.omit(match(outObj1$outObj$strID[index[[j]]], inputObj1$fullTabObj$strID))] <- "u"
 						outObj1 <- protectTable(outObj=inputObj1, method=method)	
 					}
 					else {
-						inputObj1$gehObj2$secondSupps[na.omit(match(outObj2$outObj$strID[index[[j]]], inputObj2$fullTabObj2$strID))] <- TRUE
+						inputObj2$fullTabObj$status[na.omit(match(outObj2$outObj$strID[index[[j]]], inputObj2$fullTabObj$strID))] <- "u"
 						outObj2 <- protectTable(outObj=inputObj2, method=method)	
 					}					
 				}				
@@ -98,8 +93,7 @@ protectLinkedTables <- function(inputObj1, inputObj2, commonCells, method="HITAS
 			suppPattern1[which(outObj1$outObj$status %in% c("u","x"))] <- 1
 			suppPattern2 <- rep(0, length(outObj2$outObj$status))
 			suppPattern2[which(outObj2$outObj$status %in% c("u","x"))] <- 1				
-			
-			
+						
 			cbind(suppPattern1[commonCellIndices[[1]]], suppPattern2[commonCellIndices[[2]]])
 			indOK <- f.checkCommonCells(suppPattern1, suppPattern2, commonCellIndices)
 			if ( indOK == TRUE)
@@ -110,10 +104,9 @@ protectLinkedTables <- function(inputObj1, inputObj2, commonCells, method="HITAS
 			}				
 			counter <- counter + 1			
 		}		
-	}
-	else 
+	} else { 
 		cat("\n===> all common cells have the same anonymity-state in both tables! [Finished]\n")
-	
+	}
 	# return objects	
 	#ind1 <- which(outObj1$outObj$primSupp[-origPrimSupp1Index]==TRUE)
 	#ind2 <- which(outObj2$outObj$primSupp[-origPrimSupp2Index]==TRUE)

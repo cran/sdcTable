@@ -86,8 +86,14 @@ genMatM <- function(strID, strInfo) {
 genMatMFull <- function(strID, levelObj, check=FALSE) {
 	if ( check==FALSE )
 		m <- do.call("expand.grid", lapply(levelObj, function(x) { x$codesStandard}))
-	else
-		m <- do.call("expand.grid", lapply(levelObj, function(x) { c(x$codesStandard, x$codeRemoveOrig)}))
+	else {
+		ll <- list()
+		for ( i in 1:length(levelObj)) {
+			x <- levelObj[[i]]$codesStandard[match(levelObj[[i]]$dupsUp, levelObj[[i]]$codesOrig)]
+			ll[[i]] <- c(levelObj[[i]]$codesStandard, as.character(sapply(x, calcUpperLev, levelObj[[i]])))
+		}
+		m <- do.call("expand.grid", ll)
+	}
 	nrVars <- ncol(m)
 	nrCells <- nrow(m)
 	constraintM <- list()

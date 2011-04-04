@@ -39,5 +39,12 @@ print(dim.Sex)
 dataAge <- read.table(paste(searchpaths()[grep("sdcTable", searchpaths())], "/etc/exampleAge.hcr", sep=""), sep=";", dec=".", colClasses="character")	
 dim.Age <- calcDimInfos(dat,dataframe=dataAge, vName="age")
 print(dim.Age)
+
+# duplicate levels ("BroadAgeGroup 1" is identical to Total Age"
+# thus it is listed as list-element "dups" in dim.Age2
+dataAge$V1[2:nrow(dataAge)] <- "@@@" 
+dataAge <- rbind(dataAge[1,], c("@@", "broad Age Group 1"), dataAge[2:nrow(dataAge),])
+dim.Age2 <- calcDimInfos(dat,dataframe=dataAge, vName="age")
+print(dim.Age2)
 }
 \keyword{methods}

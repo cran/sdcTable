@@ -21,15 +21,15 @@ The second possibility has to be used if different variables have common (sub)to
 # generate some micro-data
 # NOTE: we do this in a way that EcoOld and EcoNew have common cells when
 # aggregating over the other dimensions.
-N <- 200
+N <- 100
 Region <- sample(c("01","02"), N, replace=TRUE)
-Sex <- sample(c("01","02"), N, replace=TRUE)
+Sex <- sample(c("m","f"), N, replace=TRUE)
 EcoOld <- sample(c("011","012","021","022"), N, replace=TRUE)
 microDat <- data.frame(Region,Sex,EcoOld, EcoNew=NA)
 
 spl <- split(microDat, apply(microDat[,1:2], 1, paste, collapse=""))
 for ( i in 1:length(spl) ) {
-	ind1 <- which(substr(spl[[i]]$NaceOld,1,2)=="01")		
+	ind1 <- which(substr(spl[[i]]$EcoOld,1,2)=="01")		
 	ind2 <- setdiff(1:nrow(spl[[i]]), ind1)
 	if ( length(ind1) > 0 )
 		spl[[i]]$EcoNew[ind1] <- sample(c("011", "012","013"), length(ind1), replace=TRUE)
@@ -69,13 +69,19 @@ levelObj1 <- list(dim2a, dim31a)			# Sex, EcoOld
 levelObj2 <- list(dim1b, dim2b, dim32b)		# Region, Sex, EcoNew
 
 numVar <- "numVal"	# the variable name of the numeric variable
-suppRule_Freq <- c(15, 0)	# a simple rule for primary suppression
+
+suppRule_Freq <- c(5, 0)	# a simple rule for primary suppression
 
 inputObj1 <- calcFullTable(microDat1, levelObj1, numVar)
 inputObj1 <- primarySuppression(inputObj1, suppRule_Freq=suppRule_Freq)
 
 inputObj2 <- calcFullTable(microDat2, levelObj2, numVar)
 inputObj2 <- primarySuppression(inputObj2, suppRule_Freq=suppRule_Freq)
+
+inputObj2 <- changeCellStatus(
+	inputObj2, c("Region","Sex","EcoNew"), 
+	characteristics=c("TOT","m","D"), 
+	rule="u", codesOrig=TRUE)
 
 # specifiying common cells
 commonCells <- list()
@@ -90,7 +96,14 @@ commonCells[[2]][[1]] <- 2	# economic classification (old version) is second col
 commonCells[[2]][[2]] <- 3	# economic classification (new version) is third column in microDat2
 commonCells[[2]][[3]] <- c("A","B")	# vector of common characteristics: A and B in ecoOld
 commonCells[[2]][[4]] <- c("C","D") # correspond to C and D in ecoNew!
-out <- protectLinkedTables(inputObj1, inputObj2, commonCells, method="HITAS")
-print(str(out))
+out <- protectLinkedTables(inputObj1, inputObj2, commonCells, method="HYPERCUBE")
+print(summary(out$outObj1))
+print(summary(out$outObj2))
+cellInfo(
+	out$outObj2, c("Region","Sex","EcoNew"), 
+	characteristics=c("TOT","m","D"))
+cellInfo(
+	out$outObj1, c("Sex","EcoOld"), 
+	characteristics=c("m","B"))	
 }
 \keyword{methods}

@@ -25,9 +25,10 @@ If 'HITAS' is used, the parameter 'solver' (which can be 'glpk', 'lpsolve', 'sym
 N <- 2500
 set.seed(123)
 V1 <- sample(c("011","012","013","021","022"), N, replace=TRUE)
-V2 <- sample(c("01","02"), N, replace=TRUE)
+V2 <- sample(c("m","w"), N, replace=TRUE)
 V3 <- sample(c("01","02"), N, replace=TRUE)
-V4 <- sample(c("0011","0012", "0013","0021","0031","0041","0042", "0051","0061","0062","0071","0072","0081","0091","0101","0102","0111","0112"), N, replace=TRUE)
+V4 <- sample(c("Aa","Ab", "Ac","Ba","Ca","Da","Db", "Ea","Fa","Fb",
+"Ga","Gb","Ha","Ia","Ja","Jb","Ka","Kb"), N, replace=TRUE)
 	
 microDat <- data.frame(V1=V1,V2=V2,V3=V3,V4=V4)
 microDat$numVal <- abs(round(rnorm(N, 500, 200),2))
@@ -56,9 +57,9 @@ hier3 <- calcDimInfos(microDat, file=NULL, dataframe=df3, vName="V3")
 h4 <- c("@@","@@@","@@@","@@@","@@","@@@","@@","@@@","@@","@@@","@@@",
 		"@@","@@@","@@","@@@","@@@","@@","@@@","@@@","@@","@@@",
 		"@@","@@@","@@","@@@","@@@","@@","@@@","@@@") 
-l4 <- c("0010","0011","0012","0013","0020","0021","0030","0031","0040","0041","0042",
-		"0050","0051","0060","0061","0062","0070","0071","0072","0080","0081",
-		"0090","0091","0100","0101","0102","0110","0111","0112")
+l4 <- c("A","Aa","Ab","Ac","B","Ba","C","Ca","D","Da","Db",
+		"E","Ea","F","Fa","Fb","G","Ga","Gb","H","Ha",
+		"I","Ia","J","Ja","Jb","K","Ka","Kb")
 df4 <- data.frame(h=h4, l=l4)
 hier4 <- calcDimInfos(microDat, file=NULL, dataframe=df4, vName="V4") 
 

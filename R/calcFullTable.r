@@ -55,23 +55,22 @@ calcFullTable <- function(dataset, levelObj, freqVar=NULL, numVar=NULL, weightVa
 			dat[,ll$varName] <- as.character(dat[,ll$varName])
 			
 			# Fix: dat needs to have levelsOrig (not standard codes!)
-			lDown <- ll$levelsRemoveOrig
-			lUp	<- ll$levelsRemoveOrigUp
+			lDown <- ll$dups
+			lUp	<- ll$dupsUp
 			if ( length(lDown) > 0 ) {
 				# order by standard codes decreasingly!
-				orderInd <- order(ll$codeRemoveOrig, decreasing=TRUE)
+				orderInd <- order(match(ll$dupsUp, ll$codesStandard), decreasing=TRUE)
 				lDown <- lDown[orderInd]
 				lUp <- lUp[orderInd]					
 				for ( j in 1:length(lDown) ) {
 					index <- which(dat[,ll$varName] == lDown[j])
 					# otherwise, the index has already been removed from the data
 					if ( length(index) > 0 ) {
-						if ( !is.null(freqVar) & !is.na(freqVarInd) )
-							dat <- dat[-index,]
-						else
-							dat[index, ll$varName] <- lUp[j]
-						#if ( !is.null(freqVar) & !is.na(freqVarInd) )
-						#	dat[index, freqVarInd] <- rep(0, length(index))
+						dat[index, ll$varName] <- lUp[j]	
+					#	if ( !is.null(freqVar) & !is.na(freqVarInd) )
+					#		dat <- dat[-index,]
+					#	else
+					#		dat[index, ll$varName] <- lUp[j]
 					}							
 				}
 			}			

@@ -3,23 +3,6 @@
 ### given any valid input-object (file or dataframe) in advance ###
 ###################################################################
 calcDimInfos <- function(inputDat, file=NULL, dataframe=NULL, vName) {
-	# add the variable-name of the hierarchy and its position in the 
-	# data-set to to levelInfo -> neccessary!
-	# TODO: is this used multiple times or only in hierInfo()?
-	f.setPosition <- function(levelInfo, inputDat, vName) {
-		if(class(levelInfo) != "levelInfo")
-			stop("please use an appropriate input object derived from f.hierInfo()\n")
-		
-		posIndex <- which( colnames(inputDat) == vName )
-		if( length(posIndex) != 1 ) 
-			stop("please check if 'vname' exists in 'inputDat'!\n")
-		else {
-			levelInfo$varName <- vName		
-			levelInfo$posIndex <- posIndex		
-		}		
-		levelInfo
-	}	
-	
 	f.calcInfo <- function(dataframe, hierIndex, vName) {
 		genLevel <- function(level, dimStructure) {
 			cums <- cumsum(dimStructure)
@@ -184,103 +167,7 @@ calcDimInfos <- function(inputDat, file=NULL, dataframe=NULL, vName) {
 				dimensions=dimensions,
 				codesMinimal=codesMinimal)		
 		out		
-	}
-	
-	f.cleanStructure <- function(dataframe, hierIndex, out) {
-		hier <- dataframe
-		colnames(hier) <- c("hierarchy", vName)	
-		hier[,1] <- as.character(hier[,1])
-		hier[,2] <- as.character(hier[,2])
-		if ( length(out$levelsRemoveOrig) > 0 ) {
-			for ( i in 1:length(out$levelsRemoveOrig) )	{
-				# remove level from hier
-				index <- which(hier[,2] == out$levelsRemoveOrig[i])
-				if ( nchar(hier[index,1]) > nchar(hier[index+1,1]) ) 
-					hier <- hier[-index,]
-				else {
-					x1 <- which(nchar(hier[,1]) == nchar(hier[index+1,1]))
-					x1 <- x1[x1>index]
-					tmpResult <- diff(x1)
-					levChangeInd <- (index+1):(index+1+min(which(tmpResult!=1))-1)
-					hier[levChangeInd,1] <- substr(hier[levChangeInd,1],2,nchar(hier[index+1,1]))
-					hier <- hier[-index,]
-				}				
-			}
-		}
-		
-		#correct levels:
-		if ( any(diff(nchar(hier[,1]))>1) ) {
-			startInd <- which(diff(nchar(hier[,1]))>1)+1
-			for ( i in 1:length(startInd) ) {
-				curLev <- nchar(hier[startInd[i],1])
-				runInd <- TRUE
-				x <- startInd[i]
-				while (runInd==TRUE) {
-					if ( nchar(hier[x,1]) == curLev )
-						hier[x,1]	<- substr(hier[x,1], 2, nchar(hier[x,1]))
-					else
-						runInd <- FALSE
-					x <- x+1					
-				}				
-			}
-			
-		}		
-		hier	
-	}
-	
-	f.simplify <- function(out) {
-		changes <- FALSE	
-		dims <- out$dimensions
-		levelsRemove <- levelsRemoveUp <- levelsRemoveOrig <- levelsRemoveOrigUp <- NULL
-		indexRemove <- NULL
-		# levels with length 2
-		lev.len2 <- which(unlist(lapply(dims, length))==2)
-		if( length(lev.len2) > 0 ) {
-			changes <- TRUE
-			nonNecc <- NULL
-			for ( i in length(lev.len2):1 ) {
-				up <- dims[[lev.len2[i]]][1]
-				down <- dims[[lev.len2[i]]][2]	
-				
-				# is the current level available in the original levels?
-				indUp <- which(out$codesStandard == up)
-				indDown <- which(out$codesStandard == down)
-				
-				## both levels are available in the original levels
-				if( length(indUp) == 1 & length(indDown) == 1 ) {
-					# save and remove the lower level
-					levelsRemove <- c(levelsRemove, as.character(out$codesStandard)[indDown])
-					levelsRemoveUp <- c(levelsRemoveUp, as.character(out$codesStandard)[indUp])
-					levelsRemoveOrig <- c(levelsRemoveOrig, as.character(out$codesOrig)[indDown])
-					levelsRemoveOrigUp <- c(levelsRemoveOrigUp, as.character(out$codesOrig)[indUp])
-					
-					indexRemove <- c(indexRemove, indDown)
-					
-					### aus testweise
-				}
-				## only one level is available in the original levels
-				else {
-					# if the lower level is listed: change the levels!
-					if( length(indDown) == 1 )
-						out$levelsOrig[indDown] <- 	out$levelsOrig[indDown]-1
-				}
-			}
-		}
-		if ( length(indexRemove) > 0 ) {
-			out$codesOrig <- out$codesOrig[-indexRemove]
-			out$codesStandard <- out$codesStandard[-indexRemove]
-			out$levelsOrig <- out$levelsOrig[-indexRemove]				
-		}	
-		
-		outObj <- list(
-				out=out, 
-				levelsRemove=levelsRemove, 
-				levelsRemoveUp=levelsRemoveUp,
-				levelsRemoveOrig=levelsRemoveOrig, 
-				levelsRemoveOrigUp=levelsRemoveOrigUp, 
-				changes=changes)
-		outObj
-	}		
+	}	
 	
 	hierIndex <- "@"
 	if( is.null(file) & is.null(dataframe) )
@@ -302,99 +189,60 @@ calcDimInfos <- function(inputDat, file=NULL, dataframe=NULL, vName) {
 	
 	if ( substr(hh[1,1],1,1) != "@" )
 		stop("please check your input data. The character specifiying level-information must be '@'!\n")
-		
+	
 	# if grand total (eg. 00000x) is not specified! -> "@" is the grand total
 	if ( nchar(as.character(hh[1,1])) > 1 ) 
 		hh <- rbind(c(hierIndex,"TOT"), hh)
+	
+	#hh <- subset(hh, substr(hh[,2],1,1)=="D")
+ 	#hh[,1] <- sapply(hh[,1], function(x) { substr(x, 2, nchar(x)) } )
 	dataframe <- as.data.frame(hh)
 	colnames(dataframe) <-  c("hierarchy", vName)
+	dataframe[,1] <- as.character(dataframe[,1])
 	file <- NULL
 	
-	out <- f.calcInfo(dataframe, hierIndex, vName)
-	levelsRemove <- levelsRemoveUp <- levelsRemoveOrig <- levelsRemoveOrigUp <- NULL
-	changes <- TRUE
-	while( changes==TRUE ) {
-		outS <- f.simplify(out)	
-		if( outS$changes == TRUE ) {
-			df <- data.frame(x=sapply(outS$out$levelsOrig, function(x) { paste(rep("@",x), collapse="") } ), y=outS$out$codesOrig)
-			out <- f.calcInfo(dataframe=df, hierIndex, vName)	
-			levelsRemove <- c(levelsRemove, outS$levelsRemove)
-			levelsRemoveUp <- c(levelsRemoveUp, outS$levelsRemoveUp)
-			levelsRemoveOrig <- c(levelsRemoveOrig, outS$levelsRemoveOrig)	
-			levelsRemoveOrigUp <- c(levelsRemoveOrigUp, outS$levelsRemoveOrigUp)			
-		}
-		else 
-			changes <- FALSE
-	}
+	### calc entire level-structure ###
+	infoComplete <- f.calcInfo(dataframe, hierIndex, vName)
 	
-	if ( !is.null(outS) ) {
-		out <- outS$out	
-		out$levelsRemoveOrig <- levelsRemoveOrig
-		out$levelsRemoveOrigUp <- levelsRemoveOrigUp	
-	}
-	
-	df <- f.cleanStructure(dataframe, hierIndex, out)
-	out <- f.calcInfo(dataframe=df, hierIndex, vName)
-	
-	if( length(levelsRemoveOrig) > 0 ) {
-		ls <- out$levelStructure
-		cs <- cumsum(ls)
-		
-		levRem <- levUp <- codeRem <- codeUp <- NULL
-		#ordering <- order(levelsRemoveOrig)
-		ordering <- order(levelsRemove)
-	
-		levelsRemoveOrig <- levelsRemoveOrig[ordering]
-		levelsRemoveOrigUp <- levelsRemoveOrigUp[ordering]
-		
-		for ( i in 1:length(levelsRemoveOrig) ) {
-			xx <- list()
-			curLevel <- levelsRemoveOrigUp[i]			
-			index <- which(out$codesOrig == curLevel)
+	### search for duplicates ####
+	dimLen <- sapply(infoComplete$dimensions, length)
+	dups <- dupsUp <- NULL
+	removeInd <- NULL
+	if ( any(dimLen == 2 ) ) {
+		index <- which(dimLen==2)	
+		for ( i in 1:length(index)) {
+			indexInOrig1 <- match(infoComplete$dimensions[[index[i]]][2], infoComplete$codesStandard)
+			levDiff <- setdiff(which(infoComplete$levels < infoComplete$levels[indexInOrig1]), 1:indexInOrig1)
+			if ( length(levDiff) > 0 ) 
+				indexInOrig2 <- min(levDiff)				
+			else 
+				indexInOrig2 <- nrow(dataframe)+1
 			
-			# check if upper level is removed too
-			if ( length(index) == 0 ) {
-				index2 <- which(levRem == curLevel)
-				if (length(index2) == 0)
-					stop("error in calcHierarchyInfos(), i=",i,"!\n")
-				codeDown <- codeRem[index2]
-				digit <- max(which(unlist(strsplit(codeDown, "")) != "0")) + 1
-				from <- cs[max(which(cs < digit))] + 1
-				to <- cs[min(which(cs >= from))]
-				if ( to - from == 0 )
-					substr(codeDown, from, to) <- "1"
-				else
-					substr(codeDown, from, to) <- paste(paste(rep("0", to - from), collapse=""), "1", sep="")
-				xx[[1]] <- levelsRemoveOrig[i]
-				xx[[2]] <- levelsRemoveOrigUp[i]
-				xx[[3]] <- codeUp[index2]
-				xx[[4]] <- codeDown				
-			} 
-			else {
-				codeDown <- out$codesStandard[index]
-				digit <- max(which(unlist(strsplit(codeDown, "")) != "0")) + 1
-				from <- cs[max(which(cs < digit))] + 1
-				to <- cs[min(which(cs >= from))]
-				if ( to - from == 0)
-					substr(codeDown, from, to) <- "1"
-				else
-					substr(codeDown, from, to) <- paste(paste(rep("0", to - from), collapse=""), "1", sep="")
-				xx[[1]] <- levelsRemoveOrig[i]
-				xx[[2]] <- levelsRemoveOrigUp[i]
-				xx[[3]] <- out$codesStandard[index]
-				xx[[4]] <- codeDown				
-			}	
-			levRem <- c(levRem, xx[[1]])
-			levUp <- c(levUp, xx[[2]])
-			codeUp <- c(codeUp, xx[[3]])
-			codeRem <- c(codeRem, xx[[4]])				
-		}			
-		out$levelsRemoveOrig <- levRem
-		out$levelsRemoveOrigUp <- levUp
-		out$codeRemoveOrig <- codeRem
-		out$codeRemoveOrigUp <- codeUp
-	}	
-	class(out) <- "levelInfo"	
-	out <- f.setPosition(out, inputDat, vName)
-	out
+			# move one level up
+			if ( indexInOrig2 - indexInOrig1 > 1 ) {
+				ind <- (indexInOrig1+1):(indexInOrig2-1)
+				dataframe[ind,1] <- substr(dataframe[ind,1], 2, nchar(dataframe[ind,1]))
+			}		
+	
+			# add info
+			dups <- c(dups, infoComplete$codesOrig[indexInOrig1])
+			dupsUp <- c(dupsUp, infoComplete$codesOrig[indexInOrig1-1])
+			removeInd <- c(removeInd, indexInOrig1)
+		}
+		dataframe <- dataframe[-removeInd,]
+	}
+	
+	info <- f.calcInfo(dataframe, hierIndex, vName)
+	info$dups <- dups
+	info$dupsUp <- dupsUp
+	
+	# set position
+	posIndex <- which( colnames(inputDat) == vName )
+	if( length(posIndex) != 1 ) 
+		stop("please check if 'vname' exists in 'inputDat'!\n")
+	else {
+		info$varName <- vName		
+		info$posIndex <- posIndex		
+	}		
+	info
 }
