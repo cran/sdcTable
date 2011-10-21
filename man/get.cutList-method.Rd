@@ -1,0 +1,34 @@
+\docType{methods}
+\name{get.cutList}
+\alias{get.cutList}
+\alias{get.cutList,cutList,character-method}
+\title{query \code{cutList}-objects depending on argument \code{type}}
+\arguments{
+  \item{object}{an object of class \code{cutList}}
+
+  \item{type}{a character vector of length 1 defining what
+  to calculate|return|modify. Allowed types are:} \itemize{
+  \item constraints: constraint matrix of object \item
+  direction: directions of the constraints \item rhs: right
+  hand side of the constraints \item nrConstraints: total
+  number of constraints}
+}
+\value{
+  information from objects of class \code{cutList}
+  depending on argument \code{type} \itemize{ \item object
+  of class \code{simpleTriplet} if argument \code{type}
+  matches 'constraints' \item character vector if argument
+  \code{type} matches 'direction' \item numeric vector if
+  argument \code{type} matches 'objective' or 'rhs'}
+}
+\description{
+  query \code{cutList}-objects depending on argument
+  \code{type}
+}
+\note{
+  internal function
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+

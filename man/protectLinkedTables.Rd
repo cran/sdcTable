@@ -1,109 +1,146 @@
 \name{protectLinkedTables}
 \alias{protectLinkedTables}
-\title{protectLinkedTables}
-\description{protectLinkedTables() allows to protect linked data-object. 'Linked' means that e.g tables feature at least one common cell. Therefore, if the aim is to protect the data under consideration, it is neccessary to take special care of the common cells since these cells need to have the same status (suppressed or not suppressed) after the protection procedure.\cr
-The common cells are specified using the input object 'commonCells' which needs to be a list in a specific format.\cr
-The algorithm iteratively protects the data-sets and checks if the stop criterion (all common cells have the same suppression status) is fulfilled. If so, the procedure stops. If at least one common cell has different status, the this cell is set to primary suppressed in the other dataset and the protection procedure starts again. Please note, that this iterative algorithm may lead to significant over-suppression. }
-\usage{protectLinkedTables(inputObj1, inputObj2, commonCells, method="HITAS", weight=NULL)}
+\title{protect two \code{\link{sdcProblem-class}} objects that have common cells}
+\usage{
+  protectLinkedTables(objectA, objectB, commonCells,
+  method, ...)
+}
 \arguments{
-\item{ inputObj1 }{ a data-object created by calcFullTable() and primarySuppression() }
-\item{ inputObj2 }{ a data-object created by calcFullTable() and primarySuppression() }
-\item{ commonCells }{ a list object specifying 'common cells' between inputObj1 and inputObj2.\cr
-Each list element of 'commonCells' has to be a list element too. For each of these list-elements there are two possible choices.\cr
-The first choice has to be used if a dimension exists in both input-data objects. In this case a list-object of length 3 has to be specified. The first element specifies the position of the variable under consideration in the first dataset, the second list element its position in the second (micro)dataset (see example below). The third element consists of the keyword 'ALL' which tells protectLinkedTables that the variable under consideration is equal in both input datasets.\cr
-The second possibility has to be used if different variables have common (sub)totals or cells. In this case a list-object of length 4 has to be specified. Element 1 and 2 specify the position of the variables in data-set 1 and two (just as described before). The third list-element is a vector of the characteristics of the variable in dataset 1 for which identical entries exist in dataset 2. The fourth list-element is a vector too, specifying the corresponding characteristics for the dimensional variable from dataset 2 (please have a look at the example provided below!). }
-\item{ method }{ choice of suppression algorithm. Currently 'HITAS' and 'HYPERCUBE' are valid choices. }
-\item{ weight }{ currently not used. }
+  \item{objectA}{a \code{\link{sdcProblem-class}} object}
+
+  \item{objectB}{a \code{\link{sdcProblem-class}} object}
+
+  \item{commonCells}{a list object defining common cells in
+  code{objectA} and \code{objectB}. For each variable that
+  has one or more common codes in both tables, a list
+  element needs to be specified. \itemize{ \item
+  List-elements of length 3: Variable has exact same levels
+  and structure in both tables \itemize{ \item \code{first
+  element}: character vector of length 1 specifying the
+  variable name in argument \code{objectA} \item
+  \code{second element}: character vector of length 1
+  specifying the variable name in argument \code{objectB}
+  \item \code{third element}: character vector of length 1
+  being with keyword \code{ALL} } \item List-elements of
+  length 4: Variable has different codes and levels in
+  tables \code{objectA} and \code{objectB} \itemize{ \item
+  \code{first element}: character vector of length 1
+  specifying the variable name in argument \code{objectA}
+  \item \code{second element}: character vector of length 1
+  specifying the variable name in argument \code{objectB}
+  \item \code{third element}: character vector defining
+  codes within \code{objectA} \item \code{fourth element}:
+  character vector with length that equals the length of
+  the third list-element. The vector defines codes of the
+  variable in \code{objectB} that match the codes given in
+  the third list-element for \code{objectA}. } }}
+
+  \item{method}{a character vector of length 1 specifying
+  the algorithm that should be used to protect the primary
+  sensitive table cells. Allowed values are: \itemize{
+  \item \code{HITAS}: \item \code{HYPERCUBE}: \item
+  \code{OPT}: }}
+
+  \item{...}{additional arguments to control the secondary
+  cell suppression algorithm. For details, see
+  \code{\link{protectTable}}.}
 }
-\value{ manipulated data. }
-\author{Bernhard Meindl}
+\value{
+  a list of length 2 with each list-element being an
+  \code{\link{safeObj-class}} object
+}
+\description{
+  \code{\link{protectLinkedTables}} can be used to protect
+  tables, that have common cells. It is of course required
+  that after the anonymization process has finished, all
+  common cells have the same anonymization state in both
+  tables.
+}
 \examples{
-# generate some micro-data
-# NOTE: we do this in a way that EcoOld and EcoNew have common cells when
-# aggregating over the other dimensions.
-N <- 100
-Region <- sample(c("01","02"), N, replace=TRUE)
-Sex <- sample(c("m","f"), N, replace=TRUE)
-EcoOld <- sample(c("011","012","021","022"), N, replace=TRUE)
-microDat <- data.frame(Region,Sex,EcoOld, EcoNew=NA)
+\dontrun{
+# load micro data for further processing
+sp <- searchpaths()
+fn <- paste(sp[grep("sdcTable", sp)], "/data/microData2.RData", sep="")
+microData <- get(load(fn))
 
-spl <- split(microDat, apply(microDat[,1:2], 1, paste, collapse=""))
-for ( i in 1:length(spl) ) {
-	ind1 <- which(substr(spl[[i]]$EcoOld,1,2)=="01")		
-	ind2 <- setdiff(1:nrow(spl[[i]]), ind1)
-	if ( length(ind1) > 0 )
-		spl[[i]]$EcoNew[ind1] <- sample(c("011", "012","013"), length(ind1), replace=TRUE)
-	if ( length(ind2) > 0 )
-		spl[[i]]$EcoNew[ind2] <- sample(c("021","022","023"), length(ind2), replace=TRUE)
-}
-microDat <- do.call("rbind", spl)
-rownames(microDat) <- 1:N
-microDat$numVal <- abs(round(rnorm(N, 500, 200),2))
-	
-microDat1 <- microDat[,c(2,3,5)] 	# Sex, EcoOld and numVal
-microDat2 <- microDat[,c(1,2,4,5)]	# Region, Sex, EcoNew and newVal
-		
-# Region: exists only in microDat2
-df1 <- data.frame(h=c("@@","@@"), l=c("R1","R2"))
-dim1b <- calcDimInfos(microDat2, file=NULL, dataframe=df1, vName="Region") 
-	
-# Sex: exists in microDat1 and microDat2
-df2 <- data.frame(h=c("@@","@@"), l=c("m","f"))
-dim2a <- calcDimInfos(microDat1, file=NULL, dataframe=df2, vName="Sex") 
-dim2b <- calcDimInfos(microDat2, file=NULL, dataframe=df2, vName="Sex") 
-	
-# Economic classification: (old version, exists only in microDat1)
-df31 <- data.frame(
-		h=c("@@","@@@","@@@","@@","@@@","@@@"), 
-		l=c("A","Aa","Ab","B","Ba","Bb"))
-dim31a <- calcDimInfos(microDat1, file=NULL, dataframe=df31, vName="EcoOld") 
+# table1: defined by variables 'gender' and 'ecoOld'
+microData1 <- microData[,c(2,3,5)]
 
-#Economic classification: (new version, exists only in microDat2)
-df32 <- data.frame(
-		h=c("@@","@@@","@@@","@@@","@@","@@@","@@@","@@@"), 
-		l=c("C","Ca","Cb","Cc","D","Da","Db","Dc"))
-dim32b <- calcDimInfos(microDat2, file=NULL, dataframe=df32, vName="EcoNew") 
-		
-# the complete levelObjects
-levelObj1 <- list(dim2a, dim31a)			# Sex, EcoOld	
-levelObj2 <- list(dim1b, dim2b, dim32b)		# Region, Sex, EcoNew
+# table2: defined by variables 'region', 'gender' and 'ecoNew'
+microData2 <- microData[,c(1,2,4,5)]
 
-numVar <- "numVal"	# the variable name of the numeric variable
+# we need to create information on the hierarchies
+# variable 'region': exists only in microDat2
+dim.region <- data.frame(h=c('@','@@','@@'), l=c('Tot', 'R1','R2'))
 
-suppRule_Freq <- c(5, 0)	# a simple rule for primary suppression
+# variable 'gender': exists in both datasets
+dim.gender <- data.frame(h=c('@','@@','@@'), l=c('Tot', 'm','f'))
 
-inputObj1 <- calcFullTable(microDat1, levelObj1, numVar)
-inputObj1 <- primarySuppression(inputObj1, suppRule_Freq=suppRule_Freq)
+# variable 'ecoOld': exists only in microDat1
+dim.ecoOld <- data.frame(
+h=c('@','@@','@@@','@@@','@@','@@@','@@@'),
+l=c('Tot','A','Aa','Ab','B','Ba','Bb'))
 
-inputObj2 <- calcFullTable(microDat2, levelObj2, numVar)
-inputObj2 <- primarySuppression(inputObj2, suppRule_Freq=suppRule_Freq)
+# variable 'ecoNew': exists only in microDat2
+dim.ecoNew <- data.frame(
+h=c('@','@@','@@@','@@@','@@@','@@','@@@','@@@','@@@'),
+l=c('Tot','C','Ca','Cb','Cc','D','Da','Db','Dc'))
 
-inputObj2 <- changeCellStatus(
-	inputObj2, c("Region","Sex","EcoNew"), 
-	characteristics=c("TOT","m","D"), 
-	rule="u", codesOrig=TRUE)
+# creating objects holding information on dimensions
+dimList1 <- list(gender=dim.gender, ecoOld=dim.ecoOld)
+dimList2 <- list(region=dim.region, gender=dim.gender, ecoNew=dim.ecoNew)
 
-# specifiying common cells
+# creating input objects for further processing. For details have a look at
+# \\code{\\link{makeProblem}}.
+problem1 <- makeProblem(data=microData1, dimList=dimList1, dimVarInd=c(1,2),
+numVarInd=3, isMicroData=TRUE)
+problem2 <- makeProblem(data=microData2, dimList=dimList2, dimVarInd=c(1,2,3),
+numVarInd=4, isMicroData=TRUE)
+
+# the cell specified by gender=='Tot' and ecoOld=='A'
+# is one of the common cells! -> we mark it as primary suppression
+problem1 <- changeCellStatus(problem1, characteristics=c('Tot', 'A'),
+varNames=c('gender','ecoOld'), rule='u', verbose=FALSE)
+
+# the cell specified by region=='Tot' and gender=='f' and ecoNew=='C'
+# is one of the common cells! -> we mark it as primary suppression
+problem2 <- changeCellStatus(problem2, characteristics=c('Tot', 'f', 'C'),
+varNames=c('region','gender', 'ecoNew'), rule='u', verbose=FALSE)
+
+# specifying input to define common cells
 commonCells <- list()
-# variable "Sex"
-commonCells[[1]] <- list()
-commonCells[[1]][[1]] <- 1 # first column in microDat1
-commonCells[[1]][[2]] <- 2 # second column in microDat2
-commonCells[[1]][[3]] <- "ALL" # Sex has equal characteristics on both datasets
-# Economic classification
-commonCells[[2]] <- list()
-commonCells[[2]][[1]] <- 2	# economic classification (old version) is second column in microDat1
-commonCells[[2]][[2]] <- 3	# economic classification (new version) is third column in microDat2
-commonCells[[2]][[3]] <- c("A","B")	# vector of common characteristics: A and B in ecoOld
-commonCells[[2]][[4]] <- c("C","D") # correspond to C and D in ecoNew!
-out <- protectLinkedTables(inputObj1, inputObj2, commonCells, method="HYPERCUBE")
-print(summary(out$outObj1))
-print(summary(out$outObj2))
-cellInfo(
-	out$outObj2, c("Region","Sex","EcoNew"), 
-	characteristics=c("TOT","m","D"))
-cellInfo(
-	out$outObj1, c("Sex","EcoOld"), 
-	characteristics=c("m","B"))	
+
+# variable "gender"
+commonCells$v.gender <- list()
+commonCells$v.gender[[1]] <- 'gender' # variable name in 'problem1'
+commonCells$v.gender[[2]] <- 'gender' # variable name in 'problem2'
+# 'gender' has equal characteristics on both datasets -> keyword 'ALL'
+commonCells$v.gender[[3]] <- 'ALL'
+
+# variable: ecoOld and ecoNew
+commonCells$v.eco <- list()
+commonCells$v.eco[[1]] <- 'ecoOld'	# variable name in 'problem1'
+commonCells$v.eco[[2]] <- 'ecoNew'	# variable name in 'problem2'
+
+# vector of common characteristics: A and B in variable 'ecoOld' in 'problem1'
+commonCells$v.eco[[3]] <- c("A","B")
+# correspond to characteristics 'C' and 'D' in variable 'ecoNew' in 'problem2'
+commonCells$v.eco[[4]] <- c("C","D")
+
+# protect the linked data
+result <- protectLinkedTables(problem1, problem2, commonCells, method='HITAS', verbose=TRUE)
+
+# having a look at the results
+result.tab1 <- result[[1]]
+result.tab2 <- result[[2]]
+summary(result.tab1)
+summary(result.tab2)
 }
-\keyword{methods}
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+\seealso{
+  \code{\link{protectTable}}
+}
+
