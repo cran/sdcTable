@@ -1,0 +1,44 @@
+\docType{methods}
+\name{calc.dimVar}
+\alias{calc.dimVar}
+\alias{calc.dimVar,dimVar,character,character-method}
+\title{modify \code{dimVar}-objects depending on argument \code{type}}
+\arguments{
+  \item{object}{an object of class \code{dimVar}}
+
+  \item{type}{a character vector of length 1 defining what
+  to calculate|return|modify. Allowed types are:} \itemize{
+  \item hasDefaultCodes: calculates if a vector of codes
+  (specified by argument \code{input}) corresponds to
+  default codes in \code{object} \item matchCodeOrig:
+  obtain default|standard codes for a vector of original
+  codes specified by argument \code{input} \item
+  matchCodeDefault: obtain original codes for a vector of
+  default|standard codes specified by argument \code{input}
+  \item standardize: perform standardization of level-codes
+  (temporarily removing duplicates,..) \item
+  requiredMinimalCodes: calculate a set of minimal codes
+  that are required to calculate a specific (sub)total
+  specified by argument \code{input}}
+
+  \item{input}{a character vector}
+}
+\value{
+  information from \code{object} depending on \code{type}
+  \itemize{ \item a character vector if type matches
+  'matchCodeOrig', 'matchCodeDefault', 'standardize' or
+  'requiredMinimalCodes' \item a logical vector of length 1
+  if type matches 'hasDefaultCodes' being TRUE if argument
+  \code{input} are default codes and FALSE otherwise }
+}
+\description{
+  modify \code{dimVar}-objects depending on argument
+  \code{type}
+}
+\note{
+  internal function
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+

@@ -1,0 +1,24 @@
+\docType{methods}
+\name{init.dimVar}
+\alias{init.dimVar}
+\alias{init.dimVar,list-method}
+\title{initialize \code{dimVar}-object}
+\arguments{
+  \item{input}{a list with 2 elements} \itemize{ \item
+  first element: either an object of class 'matrix' or a
+  data.frame or a link to a file. The input data need to be
+  in a specific format (2 columns) with the first column
+  defining the level-structure and the second column
+  defining the level-codes. \item second element: a
+  character vector of length 1 specifying a variable name}
+}
+\description{
+  initialize \code{dimVar}-object
+}
+\note{
+  internal function
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+

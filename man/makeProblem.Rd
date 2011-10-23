@@ -1,0 +1,135 @@
+\name{makeProblem}
+\alias{makeProblem}
+\title{create \code{\link{sdcProblem-class}}-objects}
+\usage{
+  makeProblem(data, dimList, dimVarInd, freqVarInd = NULL,
+  numVarInd = NULL, weightInd = NULL, sampWeightInd = NULL,
+  isMicroData)
+}
+\arguments{
+  \item{data}{a data frame featuring at least one column
+  for each desired dimensional variable. Optionally the
+  input data can feature variables that contain information
+  on cell counts, weights that should be used during the
+  cut and branch algorithm, additional numeric variables or
+  variables that hold information on sampling weights.}
+
+  \item{dimList}{a named list with each list element being
+  either a data-frame or a link to a .csv-file containing
+  the complete level-hierarchy of a dimensional variable
+  using a top-to-bottom approach. The list names correspond
+  to variable names that must exist in argument
+  \code{data}. The level-hierarchy must be specified as
+  follows: \itemize{ \item list-element is a data-frame
+  that must contain exactly 2 columns with the first column
+  specifying levels and the second column holding
+  variable-codes. \itemize{ \item first column: a character
+  vector specifying levels with each vector element being a
+  string only containing of '@'s from length 1 to n. If a
+  vector element consists of \code{i}-chars, the
+  corresponding code is of level \code{i}. The code '@'
+  (one character) equals the grand total (level=1). \item
+  second column: a character vector specifying level codes
+  } \item list-element is full path to a .csv-file with two
+  columns seperated by semicolons (;) having the same
+  structure as the data.frame described above }}
+
+  \item{dimVarInd}{numeric vector (or NULL) defining the
+  column-indices of dimensional variables (defining the
+  table) within argument \code{data}}
+
+  \item{freqVarInd}{numeric vector (or NULL) defining the
+  column-indices of a variable holding counts within
+  argument \code{data}}
+
+  \item{numVarInd}{numeric vector (or NULL) defining the
+  column-indices of additional numeric variables available
+  in argument \code{data}}
+
+  \item{weightInd}{numeric vector of length 1 (or NULL)
+  defining the column-index of a variable holding weights
+  that should be used during as objective coefficients
+  during the cut and branch algorithm to protect primary
+  sensitive cells within argument \code{data}}
+
+  \item{sampWeightInd}{numeric vector of length 1 (or NULL)
+  defining the column-index of a variable holding sampling
+  weights within argument \code{data}}
+
+  \item{isMicroData}{logical vector of length 1 that is
+  'TRUE' if argument \code{data} are micro data and 'FALSE'
+  otherwise}
+}
+\value{
+  a \code{\link{sdcProblem-class}}-object
+}
+\description{
+  Function \code{\link{makeProblem}} is used to create
+  \code{\link{sdcProblem-class}}-objects.
+}
+\examples{
+\dontrun{
+# loading micro data
+sp <- searchpaths()
+fn <- paste(sp[grep("sdcTable", sp)], "/data/microData1.RData", sep="")
+microData <- get(load(fn))
+
+having a look at the data structure
+str(microData)
+
+# specify structure of hierarchical variable 'region'
+# levels 'A' to 'D' sum up to a Total
+dim.region <- data.frame(
+levels=c('@','@@','@@','@@','@@'),
+codes=c('Total', 'A','B','C','D'),
+stringsAsFactors=FALSE)
+
+# specify structure of hierarchical variable 'gender'
+# levels 'male' and 'female' sum up to a Total
+dim.gender <- data.frame(
+levels=c('@','@@','@@'),
+codes=c('Total', 'male','female'),
+stringsAsFactors=FALSE)
+
+# create a list with each element being a data-frame containing information
+# on a dimensional variables
+dimList <- list(dim.region, dim.gender)
+
+# name the list:
+# - first list-element: corresponds to variable 'region'
+# - second list-element: corresponds to variable 'gender'
+names(dimList) <- c('region', 'gender')
+
+# specify the indices where dimensional variables are located
+# within the input data
+
+# - variable 'region': first column
+# - variable 'gender': second column
+dimVarInd <- c(1,2)
+
+# no variables holding counts, numeric values, weights or sampling
+# weights are available in the input data
+freqVarInd <- numVarInd <- weightInd <- sampWeightInd <- NULL
+
+# but we are dealing with micro data!
+isMicroData <- TRUE
+
+# creating an object of class \\code{\\link{sdcProblem-class}}
+problem <- makeProblem(
+data=microData,
+dimList=dimList,
+dimVarInd=dimVarInd,
+freqVarInd=freqVarInd,
+numVarInd=numVarInd,
+weightInd=weightInd,
+sampWeightInd=sampWeightInd,
+isMicroData=isMicroData)
+
+what do we have?
+print(class(problem))
+}
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+

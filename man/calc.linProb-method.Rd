@@ -1,0 +1,44 @@
+\docType{methods}
+\name{calc.linProb}
+\alias{calc.linProb}
+\alias{calc.linProb,linProb,character,list-method}
+\title{perform calculations on \code{linProb}-objects depending on argument \code{type}}
+\arguments{
+  \item{object}{an object of class \code{linProb}}
+
+  \item{type}{a character vector of length 1 defining what
+  to calculate|return|modify. Allowed types are:} \itemize{
+  \item solveProblem: solve the linear problem (minimize
+  objective function) \item fixVariables: try to fix
+  objective variables to 0|1 based on dual costs depending
+  on input}
+
+  \item{input}{a list depending on argument \code{type}.}
+  \itemize{ \item type==solveProblem: a list of length 1
+  \itemize{ \item first element: character vector of length
+  1 specifying the solver to use. } \item
+  type==fixVariables: a list of length 3 \itemize{ \item
+  first element: numeric vector specifying lower bounds for
+  the objective variables \item second element: numeric
+  vector specifying upper bounds for the objective
+  variables \item third element: numeric vector specifying
+  indices of primary suppressed cells }}
+}
+\value{
+  manipulated data based on argument \code{type} \itemize{
+  \item list containing the solution and additional
+  information if argument \code{type} matches 'solveProblem
+  \item a numeric vector of indices if argument \code{type}
+  matches 'fixVariables' }
+}
+\description{
+  perform calculations on \code{linProb}-objects depending
+  on argument \code{type}
+}
+\note{
+  internal function
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+

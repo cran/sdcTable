@@ -1,33 +1,69 @@
 \name{changeCellStatus}
 \alias{changeCellStatus}
-\title{changeCellStatus}
-\description{....}
-\usage{changeCellStatus(outObj, varNames, characteristics, rule, codesOrig=TRUE, suppZero=FALSE) }
+\title{change anonymization status of a specific cell}
+\usage{
+  changeCellStatus(object, characteristics, varNames, rule,
+  verbose = FALSE)
+}
 \arguments{
-\item{ outObj }{ an object created by createFullTable() and possible changed by primarySuppression(). }
-\item{ varNames }{ a vector of variable names which need to exist in outObj$levelObj. }
-\item{ characteristics }{ for the corresponding element in varNames, the characteristic (either original or standardized code) of the cell that needs to be suppressed. }
-\item{ rule }{ defines to which status a given cell is changed. Allowed choices are 'u' (mark cell as primary suppressed), 'z' (force publication of cell), 's' (allowed candidate for secondary suppression and 'x' (set cell as secondary suppressed).}
-\item{ codesOrig }{ defines if original codes (codesOrig=TRUE) or standardized codes (codesOrig=FALSE) specified in parameter 'characteristics'. }
-\item{ suppZero }{ if set to TRUE, a cell is set primary protected even if it has frequency 0. If FALSE, it will not be set protected in this case. }
+  \item{object}{an object of class
+  \code{\link{sdcProblem-class}}}
+
+  \item{characteristics}{a character vector specifying
+  characteristics of the table cell that should be
+  identified for each dimensional variable defining the
+  table}
+
+  \item{varNames}{a character vector specifying variable
+  names of dimensional variables defining the tables}
+
+  \item{rule}{character vector of length 1 specifying a
+  valid anonymization code ('u', 'z', 'x', 's') to which
+  the the cell under consideration should be set.}
+
+  \item{verbose}{logical vector of length 1 defining
+  verbosity, defaults to 'FALSE'}
 }
-\details{for given characteristics of the dimensional variables spanning the input-table, the index of the cell that needs to be set to primary unsafe is calculated. \cr
-The corresponding cell is finally marked as primary unsafe.}
-\value{ manipulated data. }
-\author{Bernhard Meindl}
+\value{
+  a \code{\link{sdcProblem-class}} object
+}
+\description{
+  Function \code{\link{changeCellStatus}} allows to
+  change|modify the anonymization state of single table
+  cells for objects ofs class
+  \code{\link{sdcProblem-class}}.
+}
+\note{
+  Important: the \code{i}-th element of argument
+  \code{characteristics} is uses as the desired
+  characteristic for the dimensional variable specified at
+  the \code{i}-th position of argument \code{varNames}!
+}
 \examples{
-datObj <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/testObj.RData", sep="")))
+\dontrun{
+# load primary suppressed data (as created in the example
+of \\code{\\link{primarySuppression}})
+sp <- searchpaths()
+fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
+problem <- get(load(fn))
 
-# force some cells to be published/not suppressed
-varNames <- c("V3","V2","V1","V4")
-characteristics <- c("B","m", "010","0011")
-rule <- "z"
-datObj <- changeCellStatus(datObj, varNames, characteristics, rule, codesOrig=TRUE, suppZero=FALSE)
+# we want to mark the cell region='D' and gender='male' primary sensitive
+characteristics <- c('D', 'male')
+varNames <- c('region', 'gender')
+verbose <- TRUE
+rule <- 'u'
 
-# set cells to be candidates for secondary suppression
-varNames <- c("V1","V2")
-characteristics <- c("010","m") # for V3 and V4 the absolute top-level is used
-rule <- "s"
-datObj <- changeCellStatus(datObj, varNames, characteristics, rule, codesOrig=TRUE, suppZero=FALSE)
+# looking at the distribution of anonymization states before...
+print(table(getInfo(problem, 'sdcStatus')))
+
+# setting the specific cell as primary sensitive
+problem <- changeCellStatus(problem, characteristics, varNames, rule, verbose)
+
+# having a second look at the anonymization states
+print(table(getInfo(problem, 'sdcStatus')))
 }
-\keyword{methods}
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+

@@ -1,0 +1,39 @@
+\docType{methods}
+\name{set.problemInstance}
+\alias{set.problemInstance}
+\alias{set.problemInstance,problemInstance,character,list-method}
+\title{modify \code{problemInstance}-objects depending on argument \code{type}}
+\arguments{
+  \item{object}{an object of class \code{problemInstance}}
+
+  \item{type}{a character vector of length 1 defining what
+  to calculate|return|modify. Allowed types are:} \itemize{
+  \item lb: set assumed to be known lower bounds \item ub:
+  set assumed to be upper lower bounds \item LPL: set lower
+  protection levels \item UPL: set upper protection levels
+  \item SPL: set sliding protection levels \item sdcStatus:
+  change anonymization status}
+
+  \item{input}{a list with elements 'indices' and
+  'values'.}
+
+  \itemize{ \item element 'indices': numeric vector
+  defining the indices of the cells that should be modified
+  \item element 'values': numeric vector whose values are
+  going to replace current values for cells defined by
+  'indices' depending on argument \code{type}}
+}
+\value{
+  an object of class \code{problemInstance}
+}
+\description{
+  modify \code{problemInstance}-objects depending on
+  argument \code{type}
+}
+\note{
+  internal function
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+

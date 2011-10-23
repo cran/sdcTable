@@ -1,43 +1,65 @@
 \name{cellInfo}
 \alias{cellInfo}
-\title{cellInfo}
-\description{cellInfo() calculates the anonymity state of a given cell.}
-\usage{cellInfo(outObj, characteristics, varNames, return=FALSE) }
+\title{query information for a specific cell in \code{\link{safeObj-class}} objects}
+\usage{
+  cellInfo(object, characteristics, varNames, verbose =
+  FALSE)
+}
 \arguments{
-\item{outObj}{a data-object derived from primarySuppression (of class 'outObj')\cr
-or protectTable (of class 'safeTable')}
-\item{characteristics}{for each dimensional variable a given characteristic.\cr
-It is important that the characteristics are in the same order as specified\cr
-in input object 'varNames'}
-\item{varNames}{vector of variable names of the dimensional variables which needs\cr
-to be of exact same length as the number of dimensional variables and \cr
-the length of input object 'characteristics'.}
-\item{return}{if set to TRUE, an object containing the information calculated \cr
-is returned, else the information is only printed}
-}
-\details{
-if return is set to TRUE, a list-object is returned which containes interesting anonymity-information about the selected table cell.\cr
-if return is set to FALSE, this information is only printed to the screen.
-}
-\value{manipulated data.}
+  \item{object}{an object of class
+  \code{\link{safeObj-class}}}
 
-\author{Bernhard Meindl}
+  \item{characteristics}{a character vector specifying
+  characteristics of the table cell that should be
+  identified for each dimensional variable defining the
+  table}
+
+  \item{varNames}{a character vector specifying variable
+  names of dimensional variables defining the tables}
+
+  \item{verbose}{logical vector of length 1 defining
+  verbosity, defaults to 'FALSE'}
+}
+\value{
+  a list containing the following calculated information
+  \itemize{ \item \code{cellID}: numeric vector of length 1
+  specifying the index of the cell within the final result
+  dataset \item \code{data}: a data.frame containing a
+  single row with the index of the table cell of interest
+  \item \code{primSupp}: logical vector of length 1 that is
+  'TRUE' if the cell is a primary sensitive cell and
+  'FALSE' otherwise \item \code{secondSupp}: logical vector
+  of length 1 that is 'TRUE' if the cell is a secondary
+  suppressed cell and 'FALSE' otherwise }
+}
+\description{
+  Function \code{\link{cellInfo}} is used to query
+  information for a single table cell for objects of class
+  \code{\link{safeObj-class}}.
+}
+\note{
+  Important: the \code{i}-th element of argument
+  \code{characteristics} is uses as the desired
+  characteristic for the dimensional variable specified at
+  the \code{i}-th position of argument \code{varNames}!
+}
 \examples{
-protectedData <- get(load(paste(searchpaths()[grep("sdcTable", searchpaths())], "/data/protectedData.RData", sep="")))
+\dontrun{
+# load protected data (as created in the example
+of \\code{\\link{protectTable}})
+sp <- searchpaths()
+fn <- paste(sp[grep("sdcTable", sp)], "/data/protectedData.RData", sep="")
+protectedData <- get(load(fn))
+characteristics <- c('male', 'D')
+varNames <- c('gender', 'region')
+verbose <- TRUE
+info <- cellInfo(protectedData, characteristics, varNames, verbose)
 
-# check state of some cells...
-a <- cellInfo(protectedData, c("011","B","Kb","w"), c("V1", "V3", "V4", "V2"), return=TRUE) 
-b <- cellInfo(protectedData, c("011","w","B","Kb"), c("V1", "V2", "V3", "V4"), return=TRUE) 
-
-str(a$problematicPrimaryCells)
-str(b$problematicPrimaryCells)
-
-# publishable cell
-cellInfo(protectedData, c("A","013","Ac","w"), c("V3", "V1", "V4", "V2"), return=FALSE) 
-# a primary suppressed cell
-cellInfo(protectedData, c("Aa","m","A","011"), c("V4", "V2", "V3", "V1"), return=FALSE) 
-
-# a secondary suppressed cell
-cellInfo(protectedData, c("Ac","m","A","021"), c("V4", "V2", "V3", "V1"), return=FALSE) 
+# show the info about this cell
+str(info)
 }
-\keyword{methods}
+}
+\author{
+  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}
+
