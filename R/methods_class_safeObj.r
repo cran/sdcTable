@@ -43,25 +43,25 @@ setMethod(f='get.safeObj', signature=c('safeObj', 'character', 'list'),
 			if ( cellStatus == "u" ) {
 				primSupp <- TRUE
 				secondSupp <- FALSE
-				if ( paraList[[3]] )
+				if ( input[[3]] )
 					cat ("The cell is a sensitive cell!\n")		
 			}				
 			if ( cellStatus == "s" ) {
 				primSupp <- FALSE
 				secondSupp <- FALSE				
-				if ( paraList[[3]] )
+				if ( input[[3]] )
 					cat ("The cell can be published!\n")
 			}
 			if ( cellStatus == "z" ) {
 				primSupp <- FALSE
 				secondSupp <- FALSE		
-				if ( paraList[[3]] )
+				if ( input[[3]] )
 					cat ("The cell will be enforced for publication!\n")			
 			}	
 			if ( cellStatus == "x" ) {
 				primSupp <- FALSE
 				secondSupp <- TRUE		
-				if ( paraList[[3]] )
+				if ( input[[3]] )
 					cat ("The cell has been secondary suppressed!\n")			
 			}				
 			return(list(cellID=cellID, data=finalData[cellID,], primSupp=primSupp, secondSupp=secondSupp))
