@@ -81,10 +81,15 @@ setMethod(f='init.dataObj', signature=c('list'),
 		if ( is.null(freqVarInd) ) {
 			rawData$Freq <- rep(1, length(rawData[[1]]))
 			freqVarInd <- length(rawData)
-			
+			if ( !is.null(sampWeightInd) ) {
+				rawData[[freqVarInd]] <- rawData$Freq*rawData[[sampWeightInd]]
+			}				
 		} else {
 			freqVarInd <- (last+1):((last)+length(freqVarInd))
 			last <- last+1
+			if ( !is.null(sampWeightInd) ) {
+				rawData[[freqVarInd]] <- rawData[[freqVarInd]]*rawData[[sampWeightInd]]
+			}				
 		}
 		if ( !is.null(numVarInd) ) {
 			numVarInd <- (last+1):((last)+length(numVarInd))

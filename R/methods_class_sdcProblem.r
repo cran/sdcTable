@@ -188,7 +188,7 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 			numVal <- get.dataObj(dataObj, type='rawData')[[numVarInds[input$numVarInd]]]
 			
 			# calculate contributing indices
-			indices <- lapply(1:get.problemInstance(pI, type='nrVars'), function(x) { getContributingIndices(object, type='contributingIndices', input=list(strIDs[x])) } )
+			indices <- lapply(1:get.problemInstance(pI, type='nrVars'), function(x) { calc.sdcProblem(object, type='contributingIndices', input=list(strIDs[x])) } )
 			
 			# values of contributing units
 			valueList <- lapply(1:get.problemInstance(pI, type='nrVars'), function(x) { rev(tail(sort(numVal[indices[[x]]]),2)) } ) 
@@ -1084,11 +1084,13 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 							
 							### cells with status 'u' or 'x' exist
 							pI <- get.sdcProblem(object, type='problemInstance')
-							if ( any(get.problemInstance(pI, type='sdcStatus')[currentIndices] %in% c("u","x")) & length(currentIndices) > 1 ) {
+							# when using HYPERCUBE: we only check primary suppressions because we
+							# temporarily set secondary suppressions to "u"
+							if ( any(get.problemInstance(pI, type='sdcStatus')[currentIndices] == "u") & length(currentIndices) > 1 ) {
 								if ( verbose )
 									cat("starting to solve problem",j,"(total=",length(ind),") in this group!\n")
 								
-								### if we have cells with "u" or "x" we need to protect
+								### if we have cells with "u",  we need to protect
 								### the corresponding subtable
 								### reduce problemInstance
 								probNew <- calc.sdcProblem(object, type='reduceProblem', input=list(currentIndices))
@@ -1137,6 +1139,7 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 					if ( length(newSupps) == 0 ) {
 						runInd <- FALSE
 						newSdcStatus <- rep('s', length=nrVars)
+						newSdcStatus[forcedCells] <- 'z'
 						newSdcStatus[tmpSupps] <- 'x'
 						newSdcStatus[primSuppsOrig] <- 'u'
 						pI <- set.problemInstance(pI, type='sdcStatus', input=list(index=1:nrVars, values=newSdcStatus))

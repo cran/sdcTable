@@ -1,4 +1,4 @@
-ba9b167113e951ae5e5964528eb70096 *DESCRIPTION
+e5785990d2e62a4467d21e12bbd5dc60 *DESCRIPTION
 50d5652fd8f833ec8063903bc034e465 *NAMESPACE
 4cd6081c417c3973ba1a2f8238121a99 *R/classes.r
 502763cb12146061ad3277573305d324 *R/data.r
@@ -15,16 +15,16 @@ b514c0001a995a261bd7a3f10517a4aa *R/generics_dimVar.r
 0769c5d2ccf61d769416e23ec043d4ea *R/generics_simpleTriplet.r
 147ac55b0f7e8aa6f84aad28013dc35f *R/helper_functions.r
 7ece224e650eda14eacadc956a0efce1 *R/methods_class_cutList.r
-265c2f1cbf89d4c3621cbb4b542b96b2 *R/methods_class_dataObj.r
+0ed789eb2badf7c4edb054bbcbc419b6 *R/methods_class_dataObj.r
 1d73568881f2bdbc228434a67af1a406 *R/methods_class_dimInfo.r
 636f831b5d54885440f58f10abf65725 *R/methods_class_dimVar.r
 1b58b1ca1f0c2b95d5e6030eccacea7a *R/methods_class_linProb.r
 7e28c9dc50f056365672b341280a6e5d *R/methods_class_problemInstance.r
-04dba12279abf6a246e2bb1a2dd8ebee *R/methods_class_safeObj.r
-9c9200922fee552a1bfb7ade6bb4b029 *R/methods_class_sdcProblem.r
+25f62686c167a80bc3fea35196eb27b6 *R/methods_class_safeObj.r
+eacc53cc8eabba77e3363567ae7289b0 *R/methods_class_sdcProblem.r
 8c6704425e8e8092c882834cc3287e51 *R/methods_class_simpleTriplet.r
 05b99a7a7c31464750b849d041a70fcf *R/methods_multiple_classes.r
-c6e18f84c774b7a3127a1b14e7b82970 *R/zzz.r
+ae7ea717932feda8f9a360826d849dd3 *R/zzz.r
 b206b92a55161debb048f16378febd47 *data/microData1.RData
 07d8292f7d7f8ef4c4720eda8e78eeb9 *data/microData2.RData
 1bc78c334ce5edad699e76474bd40979 *data/problem.RData
