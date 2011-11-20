@@ -140,8 +140,8 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 			# calculate contributing indices
 			indices <- lapply(1:get.problemInstance(pI, type='nrVars'), function(x) { calc.sdcProblem(object, type='contributingIndices', input=list(strIDs[x])) } )
 			
-			minContributingUnits <- min(sapply(indices, length))
-			
+			minContributingUnits <- min(setdiff(unique(sapply(indices, length)), 0))		
+	
 			if ( input$n < 1 | input$n > minContributingUnits ) {
 				stop("set.sdcProblem:: parameter 'n' must be >= 1 and <",minContributingUnits,"!\n")
 			}		
