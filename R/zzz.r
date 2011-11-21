@@ -1,4 +1,4 @@
 .onLoad <- function(lib, pkg) {
 	#library.dynam("sdcTable", pkg, lib)
-	cat("Package sdcTable 0.9.8 has been loaded!\n")
+	packageStartupMessage("Package sdcTable 0.9.9 has been loaded!\n")
 }
