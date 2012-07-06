@@ -21,7 +21,9 @@
   problem by protecting sub-tables with a fast heuristic
   that is based on finding and suppressing geometric
   structures (n-dimensional cubes) that are required to
-  protect primary sensitive table cells. }}
+  protect primary sensitive table cells. \item
+  \code{SIMPLEPROTECT}: heuristic, quick procedure which
+  might be applied to very large problem instances }}
 
   \item{...}{parameters used in the protection algorithm
   that has been selected. Parameters that can be changed

@@ -293,7 +293,8 @@ setMethod(f='calc.multiple', signature=c('character', 'list'),
 			
 			#fullTabObj$w <- NULL
 			if ( !is.null(get.dataObj(x, type='weightVarInd')) ) {
-				fullTabObj$w <- c(weightList, rep(NA, length(subTotals)))
+				fullTabObj$w <- c(unlist(weightList), rep(NA, length(subTotals)))
+				attributes(fullTabObj) <- NULL
 			}
 			
 			numVarsList <- NULL
@@ -351,7 +352,7 @@ setMethod(f='calc.multiple', signature=c('character', 'list'),
 					for ( k in 1:length(numVarsList) ) {
 						numVarsList[[k]][z] <- res[[k]]
 					} 
-				}					
+				}	
 			}
 			nrV <- length(fullTabObj$strID)
 			
