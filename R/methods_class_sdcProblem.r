@@ -152,6 +152,11 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 			# suppStatus: TRUE:unsafe, FALSE: safe
 			nkState <- sapply(1:get.problemInstance(pI, type='nrVars'), function(x) {  nkRule(cellTotals[x], valueList[[x]], input$k) } ) 
 			
+			addSupps <- which(sapply(indices, length) %in% 1:input$n)
+			if ( length(addSupps) > 0 ) {
+				nkState[addSupps] <- TRUE
+			}
+			
 			suppIndex <- which(nkState==TRUE)
 			if ( length(suppIndex) > 0 ) {
 				pI <- set.problemInstance(pI, type='sdcStatus', input=list(index=suppIndex, values=rep("u", length(suppIndex))))	
@@ -656,7 +661,8 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 						
 						v <- (alpha.down+alpha.up)*UB + (beta.down+beta.up)*LB
 						v[which(is.zero(v))] <- 0
-						newCuts <- set.cutList(newCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[3]))))
+						if ( any(v != 0) )
+							newCuts <- set.cutList(newCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[3]))))
 					} else  {
 						if ( limits[1] != 0 & freqs[primSupps[i]] - AttProbDown[i] < limits[1] ) { # LPL
 							status <- c(status, down$status)
@@ -665,7 +671,8 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 							
 							v <- alpha.down*UB + beta.down*LB
 							v[which(is.zero(v))] <- 0
-							newCuts <- set.cutList(newCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[1]))))
+							if ( any(v != 0) )
+								newCuts <- set.cutList(newCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[1]))))
 						}
 						if ( limits[2] != 0 & AttProbUp[i] - freqs[primSupps[i]] < limits[2] ) { # UPL
 							status <- c(status, up$status)
@@ -674,7 +681,8 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 							
 							v <- alpha.up*UB + beta.up*LB
 							v[which(is.zero(v))] <- 0
-							newCuts <- set.cutList(newCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[2]))))
+							if ( any(v != 0) )
+								newCuts <- set.cutList(newCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[2]))))
 						}
 					}
 					#cat('limits ( origValue=',weights[cellInd],') : [',AttProbDown[i],':',AttProbUp[i],']\n')
@@ -1136,6 +1144,7 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 
 					pI <- get.sdcProblem(object, type='problemInstance')
 					
+					nrVars <- length(get.problemInstance(pI, 'freq'))
 					if ( length(newSupps) == 0 ) {
 						runInd <- FALSE
 						newSdcStatus <- rep('s', length=nrVars)
@@ -1145,7 +1154,6 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 						pI <- set.problemInstance(pI, type='sdcStatus', input=list(index=1:nrVars, values=newSdcStatus))
 						object <- set.sdcProblem(object, type='problemInstance', input=list(pI))
 					} else {
-						nrVars <- length(get.problemInstance(pI, 'freq'))
 						
 						newSdcStatus <- rep('s', length=nrVars)
 						newSdcStatus[forcedCells] <- 'z'
@@ -1292,17 +1300,20 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 				if ( limits[1] != 0 ) { # LPL
 					v <- alpha.down*UB + beta.down*LB
 					v[which(is.zero(v))] <- 0
-					validCuts <- set.cutList(validCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[1]))))
+					if ( any(v > 0) )
+						validCuts <- set.cutList(validCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[1]))))
 				}
 				if ( limits[2] != 0 ) { # UPL
 					v <- alpha.up*UB + beta.up*LB
 					v[which(is.zero(v))] <- 0
-					validCuts <- set.cutList(validCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[2]))))
+					if ( any(v > 0) )
+						validCuts <- set.cutList(validCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[2]))))
 				}
 				if ( limits[3] != 0 & calcUp - calcDown < limits[3] ) { # SPL
 					v <- (alpha.down+alpha.up)*UB + (beta.down+beta.up)*LB
 					v[which(is.zero(v))] <- 0
-					validCuts <- set.cutList(validCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[3]))))
+					if ( any(v > 0) )
+						validCuts <- set.cutList(validCuts, type='addCompleteConstraint', input=list(init.cutList(type='singleCut', input=list(vals=v, dir=">=", rhs=limits[3]))))
 				}
 			}
 			
@@ -1509,7 +1520,7 @@ setMethod(f='calc.sdcProblem', signature=c('sdcProblem', 'character', 'list'),
 				quader <- expand(lapply(1:numberIndexVars, function(x) { c(g[x],d[x]) }  ), vector=FALSE)
 				
 				quader <- matrix(unlist(quader), length(quader[[1]]), length(quader))
-				quader <- quader[!duplicated(quader),]
+				quader <- quader[!duplicated(quader),,drop=FALSE]
 				quader <- lapply(1:ncol(quader), function(x) quader[,x])
 				
 				### normquader

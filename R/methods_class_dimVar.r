@@ -128,7 +128,12 @@ setMethod(f='calc.dimVar', signature=c('dimVar', 'character', 'character'),
 				stop("requiredMinimalCodes:: length of argument 'code' must equal 1!\n")
 			}
 			if ( as.numeric(input) == 0 ) {
-				out <- get.dimVar(object, type='codesDefault')[get.dimVar(object, type='codesMinimal')==TRUE]
+				dI <- get.dimVar(object, type='codesDefault')
+				if ( length(dI) == 1 ) {
+					out <- dI
+				} else {
+					out <- get.dimVar(object, type='codesDefault')[get.dimVar(object, type='codesMinimal')==TRUE]
+				}
 			} else {
 				isMinimal <- get.dimVar(object, type='codesMinimal')[which(get.dimVar(object, type='codesDefault')==input)]
 				if ( isMinimal ) {

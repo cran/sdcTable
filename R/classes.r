@@ -614,8 +614,8 @@ setClass(
 		if ( length(get.safeObj(object, type='suppMethod', input=list())) != 1 ) {
 			stop("safeObj:: length of 'suppMethod' must equal 1!\n")
 		}
-		if ( !get.safeObj(object, type='suppMethod', input=list()) %in% c('HITAS', 'OPT', 'HYPERCUBE') ) {
-			stop("safeObj:: 'suppMethod' must bei either 'HITAS', 'HYPERCUBE' or 'OPT'!\n")
+		if ( !get.safeObj(object, type='suppMethod', input=list()) %in% c('SIMPLEHEURISTIC', 'HITAS', 'OPT', 'HYPERCUBE') ) {
+			stop("safeObj:: 'suppMethod' must bei either 'SIMPLEHEURISTIC', 'HITAS', 'HYPERCUBE' or 'OPT'!\n")
 		}	
 		if ( length(get.safeObj(object, type='elapsedTime', input=list())) != 1 ) {
 			stop("safeObj:: length of 'elapsedTime' must equal 1!\n")

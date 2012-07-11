@@ -90,9 +90,9 @@ setMethod(f='set.problemInstance', signature=c('problemInstance', 'character', '
 		index <- input[[1]]
 		values <- input[[2]]
 		if ( !type %in% c('lb', 'ub', 'LPL', 'UPL', 'SPL', 'sdcStatus') ) {
-			stop("set.problemInstance:: check rgument 'type'!\n" )
+			stop("set.problemInstance:: check argument 'type'!\n" )
 		}
-		if ( length(values) != length(index) ) {
+		if ( !is.null(index) & length(values) != length(index) ) {
 			stop("set.problemInstance:: arguments 'values' and 'index' differ in length!\n")
 		} 
 		if ( !all(index %in% 1:get.problemInstance(object, type='nrVars')) ) {
@@ -122,14 +122,15 @@ setMethod(f='set.problemInstance', signature=c('problemInstance', 'character', '
 				indexVec <- 1:length(sdcStatus)
 				if ( length(values) != length(sdcStatus) ) {
 					stop("set.problemInstance (type==sdcStatus):: length of 'values' must be ==",length(sdcStatus), "if 'index' is NULL!\n")
-				}			
+				}	
+				object@sdcStatus[indexVec] <- values
 			}
 			if ( !is.null(index) ) {
 				if ( !all(index %in% 1:length(sdcStatus)) ) {
 					stop("set.problemInstance (type==sdcStatus):: elements of 'index' must be in 1:",length(sdcStatus),"!\n")
 				}
+				object@sdcStatus[index] <- values
 			}		
-			object@sdcStatus[index] <- values
 		}			
 		validObject(object)
 		object		
