@@ -345,7 +345,7 @@ genParaObj <- function(selection, ...) {
 # object (class=sdcProblem)
 performQuickSuppression <- function(object, input) {
 	suppMultDimTable <- function(dat, dimVars, freqInd) {
-		# 5dimensionale Tabelle geheimhalten
+		# protect n-dimensional table
 		simpleSupp <- function(splList, freqInd) {
 			runInd <- TRUE
 			counter <- 0
@@ -365,11 +365,16 @@ performQuickSuppression <- function(object, input) {
 						toSupp <- ind.x[order(f[ind.x], decreasing=FALSE)[1]]
 						#cat("toSupp:", toSupp,"\n")
 						if ( is.na(toSupp) ) {
-							#cat("Problem bei i=",i,"\n")
+							cat("Problem bei i=",i,"\n")
 							ind.x <- which(splList[[i]]$sdcStatus %in% c('s','z') & splList[[i]]$freq!=0)
 							f <- splList[[i]][,freqInd]
 							toSupp <- ind.x[order(f[ind.x], decreasing=FALSE)[1]]	
 							override <- TRUE
+							
+							if ( splList[[i]]$freq[toSupp]==0) {
+								stop("Fehler!\n")
+							}
+							
 						}
 						splList[[i]]$sdcStatus[toSupp] <- 'x'
 					}
@@ -440,20 +445,14 @@ performQuickSuppression <- function(object, input) {
 	
 	dimVars <- 1:length(vNames)
 	dat <- cbind(dat[,5:ncol(dat)], dat[,1:4])
-	freqInd <- length(vNames)+2
-	
+	#freqInd <- length(vNames)+3
+	freqInd <- match("freq", colnames(dat))	
+
 	runInd <- TRUE
 	while( runInd ) {
 		override <- FALSE
 		for ( i in 1:length(indices) ) {
-			if ( verbose ) {
-				cat("i=",i,"|",length(indices)," (override=",override,")\n")	
-			}
-			
 			for ( j in 1:length(indices[[i]]) ) {
-				if ( verbose ) {
-					cat("j: ",j,"|",length(indices[[i]]),"\n")
-				}
 				curIndices <- indices[[i]][[j]]
 				subDat <- dat[curIndices,]
 				
@@ -461,8 +460,11 @@ performQuickSuppression <- function(object, input) {
 				
 				if ( nrSupps > 0 ) {
 					if ( verbose ) {
-						cat("length(table): ",length(curIndices),"\n")
-						cat("length(sdcStatus=='u'): ",nrSupps,"\n")
+						cat("group:",i,"| ")
+						cat("table",j,"/",length(indices[[i]]),"| ")
+						cat("nrCells:",length(curIndices),"| ")
+						cat("nrPrimSupps:",nrSupps,"| ")
+						cat("override:",override,"\n")
 					}
 					
 					res <- suppMultDimTable(subDat, dimVars, freqInd)
@@ -476,10 +478,15 @@ performQuickSuppression <- function(object, input) {
 					dat$sdcStatus[curIndices[ind]] <- "z"
 				}
 			}
+			if ( length(which(dat$freq==0 & dat$sdcStatus%in%c("u","x"))) > 0 ) {
+				stop("fehler2!\n")
+			}
 		}
 		if ( override == TRUE ) {
 			# alle zellen %in% c("s", "z") muessen auf "s" gesetzt werden
 			dat[dat$sdcStatus %in% c("s","z"),"sdcStatus"] <- "s"
+			# new
+			dat$sdcStatus[dat$freq==0] <- "z"
 		} else {
 			if ( verbose ) {
 				cat("finished!\n")	

@@ -3,8 +3,8 @@
 \title{create \code{\link{sdcProblem-class}}-objects}
 \usage{
   makeProblem(data, dimList, dimVarInd, freqVarInd = NULL,
-  numVarInd = NULL, weightInd = NULL, sampWeightInd = NULL,
-  isMicroData)
+    numVarInd = NULL, weightInd = NULL,
+    sampWeightInd = NULL, isMicroData)
 }
 \arguments{
   \item{data}{a data frame featuring at least one column
@@ -80,16 +80,16 @@ str(microData)
 # specify structure of hierarchical variable 'region'
 # levels 'A' to 'D' sum up to a Total
 dim.region <- data.frame(
-levels=c('@','@@','@@','@@','@@'),
-codes=c('Total', 'A','B','C','D'),
-stringsAsFactors=FALSE)
+	levels=c('@','@@','@@','@@','@@'),
+	codes=c('Total', 'A','B','C','D'),
+	stringsAsFactors=FALSE)
 
 # specify structure of hierarchical variable 'gender'
 # levels 'male' and 'female' sum up to a Total
 dim.gender <- data.frame(
-levels=c('@','@@','@@'),
-codes=c('Total', 'male','female'),
-stringsAsFactors=FALSE)
+	levels=c('@','@@','@@'),
+	codes=c('Total', 'male','female'),
+	stringsAsFactors=FALSE)
 
 # create a list with each element being a data-frame containing information
 # on a dimensional variables
@@ -116,14 +116,14 @@ isMicroData <- TRUE
 
 # creating an object of class \\code{\\link{sdcProblem-class}}
 problem <- makeProblem(
-data=microData,
-dimList=dimList,
-dimVarInd=dimVarInd,
-freqVarInd=freqVarInd,
-numVarInd=numVarInd,
-weightInd=weightInd,
-sampWeightInd=sampWeightInd,
-isMicroData=isMicroData)
+	data=microData,
+	dimList=dimList,
+	dimVarInd=dimVarInd,
+	freqVarInd=freqVarInd,
+	numVarInd=numVarInd,
+	weightInd=weightInd,
+	sampWeightInd=sampWeightInd,
+	isMicroData=isMicroData)
 
 what do we have?
 print(class(problem))

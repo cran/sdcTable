@@ -1,6 +1,6 @@
 Package: sdcTable
-Version: 0.10.1
-Date: 2012-07-06
+Version: 0.10.2
+Date: 2012-08-02
 Title: Methods for SDC (statistical disclosure control) in tabular data
 Description: Implementation of methods for SDC (statistical disclosure
         control) in tabular data
@@ -22,6 +22,6 @@ Collate: 'classes.r' 'data.r' 'export_functions.r' 'generics_cutList.r'
         'methods_class_problemInstance.r' 'methods_class_safeObj.r'
         'methods_class_sdcProblem.r' 'methods_class_simpleTriplet.r'
         'methods_multiple_classes.r' 'zzz.r'
-Packaged: 2012-07-11 12:57:15 UTC; bernhard
+Packaged: 2012-08-03 07:44:46 UTC; bernhard
 Repository: CRAN
-Date/Publication: 2012-07-11 13:10:00
+Date/Publication: 2012-08-03 08:52:40
