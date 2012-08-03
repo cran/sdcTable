@@ -2,8 +2,8 @@
 \alias{cellInfo}
 \title{query information for a specific cell in \code{\link{safeObj-class}} objects}
 \usage{
-  cellInfo(object, characteristics, varNames, verbose =
-  FALSE)
+  cellInfo(object, characteristics, varNames,
+    verbose = FALSE)
 }
 \arguments{
   \item{object}{an object of class

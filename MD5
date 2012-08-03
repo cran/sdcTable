@@ -1,4 +1,4 @@
-b222c61b7e657569464bd6e4f08fd31f *DESCRIPTION
+7fc5409ef42085f0da3a91de97bfa859 *DESCRIPTION
 cd8e38e01a184b6db9396a73e437b35e *NAMESPACE
 401a4aa73efbd53fa77442bbd2216e3d *R/classes.r
 502763cb12146061ad3277573305d324 *R/data.r
@@ -13,7 +13,7 @@ b514c0001a995a261bd7a3f10517a4aa *R/generics_dimVar.r
 7c9d34a4679d14ffdc13306ed63a7206 *R/generics_safeObj.r
 76483f970f0c94f9dd2a68dfacc8286e *R/generics_sdcProblem.r
 0769c5d2ccf61d769416e23ec043d4ea *R/generics_simpleTriplet.r
-2c5b1d7055802f4f037f527aab93605d *R/helper_functions.r
+33f290117d7cd1bc6167e4750ebb6028 *R/helper_functions.r
 7ece224e650eda14eacadc956a0efce1 *R/methods_class_cutList.r
 0ed789eb2badf7c4edb054bbcbc419b6 *R/methods_class_dataObj.r
 1d73568881f2bdbc228434a67af1a406 *R/methods_class_dimInfo.r
@@ -32,9 +32,9 @@ b206b92a55161debb048f16378febd47 *data/microData1.RData
 a48669182630207a44486aa53e8930ee *data/protectedData.RData
 6b0ef79c49ba9ed01b576426523658c0 *inst/doc/overview.eps
 183993c59b009898ca98a309e414d2c2 *inst/doc/overview.pdf
-110f30b734c77f159617ecb4cdf725cb *inst/doc/sdcTable.Rnw
+899b70bf2476ba459d7e891355253a7b *inst/doc/sdcTable.Rnw
 26b1126b667e23848d94e43bb4488d51 *inst/doc/sdcTable.bib
-e014c92fb1911a39fbe4ade0b4642b81 *inst/doc/sdcTable.pdf
+bc7acc42d6115f027b8c99627f967578 *inst/doc/sdcTable.pdf
 fa4d01afe8814398f58e9432c3fa8189 *inst/doc/workDat.RData
 239e60883864ecb91a338a6f1aa8ff3d *man/calc.cutList-method.Rd
 6bb1f125c051165dcb7be9cc7886b1f6 *man/calc.dimVar-method.Rd
@@ -43,8 +43,8 @@ c8b45e013002a2f37bbb477f6ae7fb47 *man/calc.multiple-method.Rd
 a58012d6b518aa453d7fc723aecdadd5 *man/calc.problemInstance-method.Rd
 8d9dcde670941b4beec4ac24901089ff *man/calc.sdcProblem-method.Rd
 30436bced35d11f35d43d1dc728599ec *man/calc.simpleTriplet-method.Rd
-21e7fc6113fea03cecae8c7ed3d068e5 *man/cellInfo.Rd
-c5a858eb9c8bd478080eb3baef5de0a6 *man/changeCellStatus.Rd
+87de86ac5a6b1613821f32a5da2dea97 *man/cellInfo.Rd
+16bd7003045cd3acfd30d6521d3d785c *man/changeCellStatus.Rd
 07e2f80d2cf6a9aa34988f557892c7a1 *man/cutList-class.Rd
 c8d5aa1beb056a3e8f77844fcf437729 *man/dataObj-class.Rd
 9ce8b712a62a1be1907fe62b076b71c7 *man/dimInfo-class.Rd
@@ -58,13 +58,13 @@ dac6bc023836ff30099b03af2289b1a5 *man/get.problemInstance-method.Rd
 b42aedc857e3d0a37a3355c0f06b82b9 *man/get.safeObj-method.Rd
 bc05929bc85c11c19c8e6d5449113871 *man/get.sdcProblem-method.Rd
 cee97d60491ee7877e1942f8a28b4553 *man/get.simpleTriplet-method.Rd
-11bac0b46f1dbadff5dff98098401622 *man/getInfo.Rd
+6fcec811423f4d9a171a91c2dd8eb932 *man/getInfo.Rd
 d084dd706c0d2e6213056913176481c6 *man/init.cutList-method.Rd
 f442cfe97f00334e4502c3d215523d6f *man/init.dataObj-method.Rd
 855e5764f54837146740b33743c64191 *man/init.dimVar-method.Rd
 b7acf69ca62615fa2da861c9b0cb2110 *man/init.simpleTriplet-method.Rd
 57f127f4f84581e726d636f087688b86 *man/linProb-class.Rd
-f31e34698c029ef5efe31011542a7699 *man/makeProblem.Rd
+317255eab69c2bc59f7c432d8e5d9f22 *man/makeProblem.Rd
 3fdd449b5371e140dd133e6a869f1a6f *man/microData1.Rd
 f1c33affcd815b598e62eaa924b47999 *man/microData2.Rd
 f288c16ebbdc7104ecf9efeea3bda52d *man/primarySuppression.Rd
@@ -72,7 +72,7 @@ c168053a7c70c0be9c32bd897e19b0bc *man/print-method.Rd
 74ce6a63d16d29e06e3612eeb95bb954 *man/problem.Rd
 a41877828c88e0148ee098708f435651 *man/problemInstance-class.Rd
 bea445ce7d76390a470a00419c0ac013 *man/problemWithSupps.Rd
-27c78fa8c6d1fff571d04f77ff7d1041 *man/protectLinkedTables.Rd
+11b335a7e5175abb9616efc93ce2b472 *man/protectLinkedTables.Rd
 997269e7fe6b68a77c85d4e216cee17c *man/protectTable.Rd
 b69bfde9c74bf063919bcf3e90ca48ad *man/protectedData.Rd
 aaea71de433050c35dc83e8871842b81 *man/safeObj-class.Rd

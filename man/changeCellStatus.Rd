@@ -3,7 +3,7 @@
 \title{change anonymization status of a specific cell}
 \usage{
   changeCellStatus(object, characteristics, varNames, rule,
-  verbose = FALSE)
+    verbose = FALSE)
 }
 \arguments{
   \item{object}{an object of class

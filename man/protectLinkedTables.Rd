@@ -3,7 +3,7 @@
 \title{protect two \code{\link{sdcProblem-class}} objects that have common cells}
 \usage{
   protectLinkedTables(objectA, objectB, commonCells,
-  method, ...)
+    method, ...)
 }
 \arguments{
   \item{objectA}{a \code{\link{sdcProblem-class}} object}
@@ -78,13 +78,13 @@ dim.gender <- data.frame(h=c('@','@@','@@'), l=c('Tot', 'm','f'))
 
 # variable 'ecoOld': exists only in microDat1
 dim.ecoOld <- data.frame(
-h=c('@','@@','@@@','@@@','@@','@@@','@@@'),
-l=c('Tot','A','Aa','Ab','B','Ba','Bb'))
+	h=c('@','@@','@@@','@@@','@@','@@@','@@@'),
+	l=c('Tot','A','Aa','Ab','B','Ba','Bb'))
 
 # variable 'ecoNew': exists only in microDat2
 dim.ecoNew <- data.frame(
-h=c('@','@@','@@@','@@@','@@@','@@','@@@','@@@','@@@'),
-l=c('Tot','C','Ca','Cb','Cc','D','Da','Db','Dc'))
+	h=c('@','@@','@@@','@@@','@@@','@@','@@@','@@@','@@@'),
+	l=c('Tot','C','Ca','Cb','Cc','D','Da','Db','Dc'))
 
 # creating objects holding information on dimensions
 dimList1 <- list(gender=dim.gender, ecoOld=dim.ecoOld)
@@ -93,19 +93,19 @@ dimList2 <- list(region=dim.region, gender=dim.gender, ecoNew=dim.ecoNew)
 # creating input objects for further processing. For details have a look at
 # \\code{\\link{makeProblem}}.
 problem1 <- makeProblem(data=microData1, dimList=dimList1, dimVarInd=c(1,2),
-numVarInd=3, isMicroData=TRUE)
+			numVarInd=3, isMicroData=TRUE)
 problem2 <- makeProblem(data=microData2, dimList=dimList2, dimVarInd=c(1,2,3),
-numVarInd=4, isMicroData=TRUE)
+			numVarInd=4, isMicroData=TRUE)
 
 # the cell specified by gender=='Tot' and ecoOld=='A'
 # is one of the common cells! -> we mark it as primary suppression
 problem1 <- changeCellStatus(problem1, characteristics=c('Tot', 'A'),
-varNames=c('gender','ecoOld'), rule='u', verbose=FALSE)
+		varNames=c('gender','ecoOld'), rule='u', verbose=FALSE)
 
 # the cell specified by region=='Tot' and gender=='f' and ecoNew=='C'
 # is one of the common cells! -> we mark it as primary suppression
 problem2 <- changeCellStatus(problem2, characteristics=c('Tot', 'f', 'C'),
-varNames=c('region','gender', 'ecoNew'), rule='u', verbose=FALSE)
+	varNames=c('region','gender', 'ecoNew'), rule='u', verbose=FALSE)
 
 # specifying input to define common cells
 commonCells <- list()

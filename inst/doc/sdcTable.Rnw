@@ -65,11 +65,11 @@ with currently 3 implemented algorithms.
 The main functions that are exported to users are shown in Figure (\ref{fig:overview}). \\
 
 Function {\tt makeProblem()} is used to create objects of class {\tt sdcProblem}.
-Instances class {\tt sdcProblem} hold the entire information that is required to 
-perform primary or secondary cell suppression such as assumed to be known upper
+Instances of class {\tt sdcProblem} hold the entire information that is required
+to perform primary or secondary cell suppression such as assumed to be known upper
 and lower cell bounds or upper-, lower- or sliding protection levels that are 
-required to fulfill when solving the secondary cell suppression problem. All these
-information can be modified using function {\tt setInfo()}. \\
+required to fulfill when solving the secondary cell suppression problem. All
+this information can be modified using function {\tt setInfo()}. \\
 
 {\tt primarySuppression()} is applied to objects of class {\tt sdcProblem}. By 
 setting function parameters users can choose and apply a pre-defined primary
@@ -113,7 +113,7 @@ and (\ref{ex1:aggDat}). Then we continue by discussing how to define and
 describe dimensional variables in (\ref{ex1:hier}) which is a crucial 
 step in the entire procedure. Once the hierarchies are defined it is necessary
 to create suitable objects (\ref{ex1:makeProb}) that can be used to identify 
-and suppress primary sensitive cells. This is shown in section in section 
+and suppress primary sensitive cells. This is shown in section 
 (\ref{ex1:primSupp}). Finally we discuss how to protect cells that are primary 
 sensitive in section (\ref{ex1:secondSupp}). \\
 
@@ -127,7 +127,7 @@ individuals. A subset of the available data is shown below:
 print(head(microData), row.names=FALSE)
 @
 We note that the information we have obtained for any individual corresponds to 
-exactly one row in the input data.frame. That is supposed to available in 
+exactly one row in the input data.frame. That is supposed to be available in 
 {\tt R}. \\
 
 The micro data consist of \Sexpr{ncol(microData)} variables. The first 3 variables
@@ -196,12 +196,12 @@ were specified for each dimensional variable. This information is given below:
 print(levComp.V1)
 @
 	\item Variable 'V2': this variable has a total of \Sexpr{length(levComp.V2)} 
-	codes including all possible which are listed below:
+	codes including all possible subtotals which are listed below:
 <<keep.source=FALSE, echo=FALSE>>=
 print(levComp.V2)
 @	
 	\item Variable 'V3': this variable has a total of \Sexpr{length(levComp.V3)} 
-	codes including all possible which are listed below:
+	codes including all possible subtotals which are listed below:
 <<keep.source=FALSE, echo=FALSE>>=
 print(levComp.V3)
 @
@@ -214,7 +214,7 @@ x <- completeData[nrow(completeData),]
 We also note that in {\tt completeData} a variable 'Freq' is available which 
 gives information on the corresponding cell counts. This means that for example
 a total of \Sexpr{x$Freq} individuals contribute to the table cell where variable
-'V1' equals '\Sexpr{x$V1}', variable 'V2' is '\Sexpr{x$V2}' and variable 'V2' is
+'V1' equals '\Sexpr{x$V1}', variable 'V2' is '\Sexpr{x$V2}' and variable 'V3' is
 equal to '\Sexpr{x$V3}'. \\
 
 Whether or not one starts to work with micro data or already with a complete, 
@@ -223,7 +223,7 @@ defining the tabular structure.
 
 \subsection{Defining hierarchies}\label{ex1:hier} 
 We could see in (\ref{ex1:microDat}) and (\ref{ex1:aggDat}) that the set of codes
-available in the input data for varaiables 'V1', 'V2' and 'V3' differ since in
+available in the input data for variables 'V1', 'V2' and 'V3' differ since in
 the case where micro data are used as input data, no codes for subtotals are 
 included in the micro data while in the case where pre-aggregated data are used 
 those subtotals must already be included in the input data set. \\
@@ -304,7 +304,7 @@ The next step is to add additional codes. As mentioned before, codes 'A', 'B',
 'C' and 'D' contribute the the overall total. Therefore we know that these codes
 are considered as level 2 codes and must be (according to the top-down approach)
 listed below the overall total code. Adding these codes to object {\tt dimV1} 
-{\tt dimV1} is shown below:
+is shown below:
 <<>>=
 mat <- matrix(nrow=4, ncol=2)
 mat[,1] <- rep('@@',4)
@@ -385,7 +385,7 @@ print(dimV3, row.names=FALSE)
 @
 
 It is required to create an object defining the complete structure and 
-hierarchies for each dimensional variable. One this step has been done, the 
+hierarchies for each dimensional variable. Once this step has been done, the 
 multidimensional tabular structure that is required to apply any statistical 
 disclosure methods can be created using {\tt makeProblem()}.
 
@@ -401,7 +401,7 @@ explain how to create instances of class {\tt sdcProblem} from both  {\tt microD
 and {\tt completeData} and describe the required and optional parameters of 
 function {\tt makeProblem}.\\
 
-We start building an suitable object of class {\tt sdcProblem} starting with 
+We start building a suitable object of class {\tt sdcProblem} starting with 
 the micro data set {\tt microData} discussed in section (\ref{ex1:microDat}).
 << >>=
 dimInfo <- list(V1=dimV1, V2=dimV2, V3=dimV3) 
@@ -468,7 +468,7 @@ information on cell counts. Also the indices of argument 'numVarInd' are differe
 that in the first example and argument 'isMicroData' is now of course {\tt FALSE}
 since we are dealing with pre-aggregated data.\\
 
-In any case, both procedure return an object of class {\tt sdcProblem} as can
+In any case, both procedures return an object of class {\tt sdcProblem} as can
 easily be checked:
 <<>>=
 all(c(class(prob.microDat), class(prob.completeDat))=='sdcProblem')
@@ -490,7 +490,7 @@ available, it is possible to identify and suppress sensitive table cells as
 we demonstrate in the next section using object {\tt prob.completeDat}. 
 
 \subsection{Primary suppression}\label{ex1:primSupp}
-Identifying and suppression primary sensitive cells is usually done by applying
+Identifying and suppressing primary sensitive cells is usually done by applying
 function {\tt primarySuppression()}.  \\
 
 Having a look at the cell counts in table {\tt prob.completeDat} shows that a 
@@ -615,12 +615,12 @@ A lot of work has gone into the rewrite of \sdcTable~using S4-classes and method
 in order to robustify the code and in order to make it easier in future to add
 new algorithms such as rounding- or cell-perturbation methods and features.\\
 
-I would really like to hear any kind of feedback and wil be more than happy to 
+I would really like to hear any kind of feedback and will be more than happy to 
 work in patches you submit or ideas any one might have which would make it easier to 
 work \sdcTable. Also, the next step in the evolution of the package will be performance
 optimization, evaluation for possibilities of parallel computing and so on. I would really
 like to hear any kind of feedback on package users on these kind of things. Thus, 
-for any remarks, plesae do not hesitate to contact me using my e-mail adress
+for any remarks, please do not hesitate to contact me using my e-mail adress
 \url{bernhard.meindl@statistik.gv.at}.
 
 %\bibliographystyle{plainnat}
