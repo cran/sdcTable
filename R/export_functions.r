@@ -22,7 +22,6 @@
 #' @param numVarInd numeric vector (or NULL) defining the column-indices of additional numeric variables available in argument \code{data} 
 #' @param weightInd numeric vector of length 1 (or NULL) defining the column-index of a variable holding weights that should be used during as objective coefficients during the cut and branch algorithm to protect primary sensitive cells within argument \code{data} 
 #' @param sampWeightInd numeric vector of length 1 (or NULL) defining the column-index of a variable holding sampling weights within argument \code{data} 
-#' @param isMicroData logical vector of length 1 that is 'TRUE' if argument \code{data} are micro data and 'FALSE' otherwise
 #' 
 #' @return a \code{\link{sdcProblem-class}}-object
 #' 
@@ -70,8 +69,7 @@
 #' # weights are available in the input data
 #' freqVarInd <- numVarInd <- weightInd <- sampWeightInd <- NULL
 #' 
-#' # but we are dealing with micro data!
-#' isMicroData <- TRUE
+#' # we are dealing with micro data!
 #' 
 #' # creating an object of class \code{\link{sdcProblem-class}}
 #' problem <- makeProblem(
@@ -81,8 +79,7 @@
 #' 	freqVarInd=freqVarInd, 
 #' 	numVarInd=numVarInd, 
 #' 	weightInd=weightInd,
-#' 	sampWeightInd=sampWeightInd,
-#' 	isMicroData=isMicroData) 
+#' 	sampWeightInd=sampWeightInd) 
 #' 
 #' what do we have?
 #' print(class(problem))
@@ -90,17 +87,24 @@
 #' @rdname makeProblem
 #' @export makeProblem
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
-makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NULL, weightInd=NULL,sampWeightInd=NULL,isMicroData) {
+makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NULL, weightInd=NULL,sampWeightInd=NULL) {
 	# returns an object of class 'sdcProblem'
 	# 'doPrep()' is the old function 'newDimInfo()'
 	# since it also recodes inputData eventually, it was renamed
-	doPrep <- function(inputData, inputDims, varNames) {
+	doPrep <- function(inputData, inputDims) {
 		if ( any(sapply(inputDims, class) != "dimVar") ) {
 			stop("Error: all elements of 'inputDims' must be of class 'dimVar'!\n")
 		} 	
 		if ( class(inputData) != "dataObj") {
 			stop("Error: 'inputData' be of class 'dataObj'!\n")
 		}
+		
+		varNames <- get.dataObj(inputData, type='varName')
+		varNamesInDims <- sapply(1:length(dimList), function(x) { get.dimVar(dimList[[x]], type='varName') })
+		
+		if ( !all(varNamesInDims %in% varNames) ) {
+			stop("makeProblem::doPrep() mismatch in variable names in 'inputData' and 'inputDims'!\n")
+		}	
 		
 		rawData <- get.dataObj(inputData, type='rawData')
 		
@@ -149,7 +153,7 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
 							rawData[[dimVarInd[i]]][ind] <- dupsUp[k]
 						}
 					}
-					inputData <- set.dataObj(inputData, type='rawData', input=rawData)
+					inputData <- set.dataObj(inputData, type='rawData', input=list(rawData))
 				}
 				ss[[i]] <- calc.dimVar(inputDims[[i]], type='standardize', input=rawData[[dimVarInd[i]]])
 			} else {
@@ -174,8 +178,7 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
 				strInfo=strInfo,
 				vNames=vNamesInData,# because of ordering
 				posIndex=dimVarInd # because dimVars are re-ordered according to input data!
-		)
-		
+		)	
 		return(list(inputData=inputData, dimInfoObj=dimInfoObj))
 	}	
 	
@@ -183,11 +186,11 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
 		dimList[[i]] <- init.dimVar(input=list(input=dimList[[i]], vName=names(dimList)[i])) 
 	}
 	
-	# generate inputData from data
-	inputData <- init.dataObj(input=list(inputData=data, dimVarInd=dimVarInd, freqVarInd=freqVarInd, numVarInd=numVarInd, weightInd=weightInd,sampWeightInd=sampWeightInd,isMicroData=isMicroData))
+	## generate inputData from data
+	inputData <- init.dataObj(input=list(inputData=data, dimVarInd=dimVarInd, freqVarInd=freqVarInd, numVarInd=numVarInd, weightInd=weightInd,sampWeightInd=sampWeightInd))
 	
-	# check if all variable names listed in inputDims exist in the 
-	# specified dimensions of the input data obj
+	## check if all variable names listed in inputDims exist in the 
+	## specified dimensions of the input data
 	varNames <- get.dataObj(inputData, type='varName')
 	varNamesInDims <- sapply(1:length(dimList), function(x) { get.dimVar(dimList[[x]], type='varName') })
 	
@@ -195,11 +198,11 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
 		stop("makeProblem:: mismatch in variable names in 'inputData' and 'inputDims'!\n")
 	}
 	
-	# calculate the dimInfoObj and eventually recode inputData
-	# (eventually recode rawData slot of inputData if 'rawData' contains 'wrong' dups)
-	out <- doPrep(inputData, dimList, varNames)
+	## calculate the dimInfoObj and eventually recode inputData
+	## (eventually recode rawData slot of inputData if "rawData" contains "wrong" dups)
+	out <- doPrep(inputData, dimList)
 	
-	# use output of newDimInfo to 
+	## use output of doPrep() to calculate an object of class "sdcProblem"
 	prob <- calc.multiple(type='calcFullProblem', input=list(objectA=out$inputData, objectB=out$dimInfoObj))
 	prob
 }
@@ -306,7 +309,7 @@ primarySuppression <- function(object, type, ...) {
 #' \item \code{OPT}: protect the complete problem at once using a cut and branch algorithm. The optimal algorithm should be used for small problem-instances only.
 #' \item \code{HITAS}: split the overall problem in smaller problems. These problems are protected using a top-down approach. 
 #' \item \code{HYPERCUBE}: protect the complete problem by protecting sub-tables with a fast heuristic that is based on finding and suppressing geometric structures (n-dimensional cubes) that are required to protect primary sensitive table cells. 
-#' \item \code{SIMPLEPROTECT}: heuristic, quick procedure which might be applied to very large problem instances
+#' \item \code{SIMPLEHEURISTIC}: heuristic, quick procedure which might be applied to very large problem instances
 #' }
 #' @param ... parameters used in the protection algorithm that has been selected. Parameters that can be changed are:
 #' \itemize{
@@ -785,13 +788,11 @@ protectLinkedTables <- function(objectA, objectB, commonCells, method, ...) {
 		
 		codesOrig1 <-  list()
 		for ( i in 1:length(codesDefault1) ) {
-				codesOrig1[[i]] <- sapply(1:length(codesDefault1[[i]]), function(x) { 
-					calc.dimVar(get.dimInfo(dI1, type='dimInfo')[[i]], type='matchCodeOrig', input=codesDefault1[[i]][x] )} )
+			codesOrig1[[i]] <- calc.dimVar(object=get.dimInfo(dI1, type='dimInfo')[[i]], type='matchCodeOrig', input=codesDefault1[[i]] )
 		}
 		codesOrig2 <-  list()
 		for ( i in 1:length(codesDefault2) ) {
-				codesOrig2[[i]] <- sapply(1:length(codesDefault2[[i]]), function(x) { 
-					calc.dimVar(get.dimInfo(dI2, type='dimInfo')[[i]], type='matchCodeOrig', input=codesDefault2[[i]][x] )} )
+			codesOrig2[[i]] <- calc.dimVar(object=get.dimInfo(dI2, type='dimInfo')[[i]], type='matchCodeOrig', input=codesDefault2[[i]] )
 		}
 		
 		### find matching indices

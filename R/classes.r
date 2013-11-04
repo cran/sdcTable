@@ -2,6 +2,9 @@
 #' @import "methods"
 #' @import "Rcpp"
 #' @import "Rglpk"
+#' @import "stringr"
+#' @import "lpSolveAPI"
+#' @import "data.table"
 
 setClassUnion('dataframeOrNULL', c('data.frame', 'NULL'))
 setClassUnion('numericOrNULL', c('numeric', 'NULL'))
@@ -397,14 +400,15 @@ setClass(
 		nrCols=numeric(0)			
 	),
 	validity=function(object) {
-		if ( length(get.simpleTriplet(object, type='rowInd', input=list())) != length(get.simpleTriplet(object, type='colInd', input=list())) )
-			stop("simpleTriplet:: Length of 'i' and 'j' differ!\n")
-		if ( length(get.simpleTriplet(object, type='rowInd', input=list())) != length(get.simpleTriplet(object, type='values', input=list())) )
-			stop("simpleTriplet:: Length of 'i' and 'v' differ!\n")	
-		if ( length(get.simpleTriplet(object, type='nrRows', input=list())) != 1 )
-			stop("simpleTriplet:: length of 'nrRows' must equal 1!\n")	
-		if ( length(get.simpleTriplet(object, type='nrCols', input=list())) != 1 )
-			stop("simpleTriplet:: length of 'nrCols' must equal 1!\n")	
+		if ( length(object@i) != length(object@j) ) {
+			stop("simpleTriplet:: length of 'i' and 'j' differ!\n")
+		}			
+		if ( length(object@i) != length(object@v) ) {
+			stop("simpleTriplet:: length of 'i' and 'v' differ!\n")	
+		}			
+		if ( length(object@nrRows) + length(object@nrCols) != 2 ) {
+			stop("simpleTriplet:: 'nrRows' and 'nrCols' must be a vector of length 1!\n")	
+		}
 		return(TRUE)
 	}
 )
@@ -466,24 +470,35 @@ setClass(
 		types=NULL		
 	),
 	validity=function(object) {
-		if ( length(get.linProb(object, type='rhs')) != length(get.linProb(object, type='direction')) )
+		if ( length(object@rhs) != length(object@direction) ) {
 			stop("linProb:: length of 'rhs' and 'direction' differ!\n")
-		if ( length(get.linProb(object, type='direction')) != get.simpleTriplet(get.linProb(object, type='constraints'), type='nrRows', input=list()) )
+		}
+		nrRows.constraints <- get.simpleTriplet(object@constraints, type='nrRows', input=list()) 
+		if ( length(object@direction) != nrRows.constraints ) {
 			stop("linProb:: length of 'direction' and number of rows of 'constraints' differ!\n")	
-		if ( length(get.linProb(object, type='objective')) != get.simpleTriplet(get.linProb(object, type='constraints'), type='nrCols', input=list()) )
+		}
+		nrCols.constraints <- get.simpleTriplet(object@constraints, type='nrCols', input=list()) 
+		if ( length(object@objective) != nrCols.constraints ) {
 			stop("linProb:: length of 'objective' and number of columns of 'constraints' differ!\n")	
-		if ( length(get.linProb(object, type='objective')) != length(get.linProb(object, type='types')) )
+		}
+		if ( length(object@objective) != length(object@types) ) {
 			stop("linProb:: Length of 'objective' and 'types' differ!\n")
-		if ( !all(get.linProb(object, type='bounds')$lower$indices %in% 1:length(get.linProb(object, type='direction'))) )
+		}			
+		if ( !all(object@bounds$lower$indices %in% 1:length(object@direction)) ) {
 			stop("linProb:: wrong indices of 'boundsLower!'\n")
-		if ( !all(get.linProb(object, type='bounds')$upper$indices %in% 1:length(get.linProb(object, type='direction'))) )
-			stop("linProb:: wrong indices of 'boundsUpper!'\n")		
-		if ( length(get.linProb(object, type='bounds')$lower$indices) != length(get.linProb(object, type='bounds')$lower$value) )
+		}			
+		if ( !all(object@bounds$upper$indices %in% 1:length(object@direction)) ) {
+			stop("linProb:: wrong indices of 'boundsUpper!'\n")
+		}					
+		if ( length(object@bounds$lower$indices) != length(object@bounds$lower$value) ) {
 			stop("linProb:: length of indices and values in 'boundsLower' differ!\n")
-		if ( length(get.linProb(object, type='bounds')$upper$indices) != length(get.linProb(object, type='bounds')$upper$value) )
+		}
+		if ( length(object@bounds$upper$indices) != length(object@bounds$upper$value) ) {
 			stop("linProb:: length of indices and values in 'boundsUpper' differ!\n")
-		if ( !all(get.linProb(object, type='direction') %in% c("==","<",">",">=","<=")) ) 
+		}			
+		if ( !all(object@direction %in% c("==","<",">",">=","<=")) ) {
 			stop("linProb:: illegal symbols in 'direction' differ!\n")
+		} 			
 		return(TRUE)
 	}
 )
@@ -527,10 +542,10 @@ setClass(
 	),
 	validity=function(object) {
 		if ( get.simpleTriplet(get.cutList(object, type='constraints'), type='nrRows', input=list()) != length(get.cutList(object, type='direction')) ) {
-			stop("cutList:: nRows of 'con' and length of 'direction' differs!\n")
+			stop("cutList:: number of rows of 'con' and length of 'direction' differs!\n")
 		}
 		if ( length(get.cutList(object, type='direction'))!= length(get.cutList(object, type='rhs')) ) {
-			stop("cutList:: length of 'direction' and length of 'rhs' differs!\n")
+			stop("cutList:: length of 'direction' and 'rhs' differ!\n")
 		}
 		if ( !all(get.cutList(object, type='direction') %in% c(">", ">=", "==", "<", "<=")) ) {
 			stop("cutList:: elements of 'direction' must only contain symbols '>', '>=', '==', '<' or '<='!\n")

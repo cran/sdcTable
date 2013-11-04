@@ -4,7 +4,7 @@
 \usage{
   makeProblem(data, dimList, dimVarInd, freqVarInd = NULL,
     numVarInd = NULL, weightInd = NULL,
-    sampWeightInd = NULL, isMicroData)
+    sampWeightInd = NULL)
 }
 \arguments{
   \item{data}{a data frame featuring at least one column
@@ -55,10 +55,6 @@
   \item{sampWeightInd}{numeric vector of length 1 (or NULL)
   defining the column-index of a variable holding sampling
   weights within argument \code{data}}
-
-  \item{isMicroData}{logical vector of length 1 that is
-  'TRUE' if argument \code{data} are micro data and 'FALSE'
-  otherwise}
 }
 \value{
   a \code{\link{sdcProblem-class}}-object
@@ -111,8 +107,7 @@ dimVarInd <- c(1,2)
 # weights are available in the input data
 freqVarInd <- numVarInd <- weightInd <- sampWeightInd <- NULL
 
-# but we are dealing with micro data!
-isMicroData <- TRUE
+# we are dealing with micro data!
 
 # creating an object of class \\code{\\link{sdcProblem-class}}
 problem <- makeProblem(
@@ -122,8 +117,7 @@ problem <- makeProblem(
 	freqVarInd=freqVarInd,
 	numVarInd=numVarInd,
 	weightInd=weightInd,
-	sampWeightInd=sampWeightInd,
-	isMicroData=isMicroData)
+	sampWeightInd=sampWeightInd)
 
 what do we have?
 print(class(problem))
