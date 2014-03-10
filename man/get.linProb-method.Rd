@@ -3,6 +3,11 @@
 \alias{get.linProb}
 \alias{get.linProb,linProb,character-method}
 \title{query \code{linProb}-objects depending on argument \code{type}}
+\usage{
+get.linProb(object, type)
+
+\S4method{get.linProb}{linProb,character}(object, type)
+}
 \arguments{
   \item{object}{an object of class \code{linProb}}
 
@@ -16,27 +21,27 @@
   objective variables}
 }
 \value{
-  information from objects of class \code{linProb}
-  depending on \code{type} \itemize{ \item an object of
-  class \code{simpleTriplet} if type matches 'constraints'
-  \item a character vector if type matches 'direction' or
-  'types' \item a numeric vector if type matches
-  'objective' or 'rhs' \item a list with elements 'lower'
-  and 'upper' if type matches 'bounds' \itemize{ \item
-  element 'lower': a list with the first element containing
-  indices and the second element containing corrsponding
-  lower bounds \item element 'upper': a list with the first
-  element containing indices and the second element
-  containing corrsponding upper bounds } }
+information from objects of class \code{linProb} depending
+on \code{type} \itemize{ \item an object of class
+\code{simpleTriplet} if type matches 'constraints' \item a
+character vector if type matches 'direction' or 'types'
+\item a numeric vector if type matches 'objective' or 'rhs'
+\item a list with elements 'lower' and 'upper' if type
+matches 'bounds' \itemize{ \item element 'lower': a list
+with the first element containing indices and the second
+element containing corrsponding lower bounds \item element
+'upper': a list with the first element containing indices
+and the second element containing corrsponding upper bounds
+} }
 }
 \description{
-  query \code{linProb}-objects depending on argument
-  \code{type}
+query \code{linProb}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

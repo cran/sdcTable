@@ -3,6 +3,11 @@
 \alias{calc.simpleTriplet}
 \alias{calc.simpleTriplet,simpleTriplet,character,list-method}
 \title{modify \code{simpleTriplet}-objects depending on argument \code{type}}
+\usage{
+calc.simpleTriplet(object, type, input)
+
+\S4method{calc.simpleTriplet}{simpleTriplet,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{simpleTriplet}}
 
@@ -59,16 +64,16 @@
   'FALSE' if a 'cbind' should be done }}
 }
 \value{
-  an object of class \code{simpleTriplet}
+an object of class \code{simpleTriplet}
 }
 \description{
-  modify \code{simpleTriplet}-objects depending on argument
-  \code{type}
+modify \code{simpleTriplet}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

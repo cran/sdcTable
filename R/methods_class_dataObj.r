@@ -78,6 +78,7 @@ setMethod(f='init.dataObj', signature=c('list'),
 		datO <- data.table(inputData, key=colnames(inputData)[dimVarInd])
 		rawData <- datO[,.N, by=key(datO)]
 		
+		dimVarInd <- 1:(ncol(rawData)-1)
 		if ( any(rawData$N != 1)  ) {
 			isMicroData <- TRUE
 			if ( is.null(freqVarInd) ) {
@@ -96,8 +97,8 @@ setMethod(f='init.dataObj', signature=c('list'),
 				rawData[, freq:=as.numeric(datO[,get(colnames(datO)[freqVarInd])])]
 			}					
 		}		
-		
 		rawData[,N:=NULL]
+		freqVarInd <- which(colnames(rawData)=="freq")
 		
 		if ( !is.null(sampWeightInd) ) {
 			sw <- datO[,list(sw=sum(get(colnames(datO)[sampWeightInd]))), by=key(datO)]$sw
@@ -107,11 +108,12 @@ setMethod(f='init.dataObj', signature=c('list'),
 		}	
 		
 		## numvars
+		nr_keys <- length(key(datO))
 		if ( !is.null(numVarInd) ) {
 			c.start <- ncol(rawData)
 			cols <- colnames(datO)[numVarInd]
 			for ( j in 1:length(cols)) {
-				v <- datO[,j=sum(get(cols[j])), by=key(datO)]$V1
+				v <- datO[,j=sum(get(cols[j])), by=key(datO)][[nr_keys+1]]
 				rawData[,j=cols[j]:=as.numeric(v)]
 			}		
 			numVarInd <- (c.start+1):ncol(rawData)			
@@ -126,12 +128,11 @@ setMethod(f='init.dataObj', signature=c('list'),
 		
 		## do not use factors
 		cols <- colnames(rawData)[dimVarInd]
-		for ( j in 1:length(cols)) {
-			set(rawData,j=j,value=as.character(rawData[[cols[j]]]))
-		}
+		rawData[,cols] <- rawData[, lapply(.SD, as.character), .SDcols=cols]
 		rm(datO)
 
 		setkeyv(rawData, colnames(rawData)[dimVarInd])
+
 		out <- new("dataObj",
 			rawData=rawData,
 			dimVarInd=dimVarInd,

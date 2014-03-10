@@ -253,6 +253,14 @@ setMethod(f='calc.multiple', signature=c('character', 'list'),
 			## merge minDat to fullDat
 			fullTabObj <- merge(fullTabObj, rawData, all.x=TRUE)
 			
+			## missing dimensions in raw data are filled up with zeros
+			ind <- which(is.na(rawData$freq))
+			if ( length(ind) > 0 ) {
+				for ( k in 1:length(cols) ) {
+					rawData[ind, cols[k]:=0]
+				}				
+			}
+			
 			## set missing combinations of lowest levels to 0
 			## problematic are all levels that should exist, but do not exist
 			## they are filled with 0 so that we can aggregate
@@ -260,27 +268,35 @@ setMethod(f='calc.multiple', signature=c('character', 'list'),
 			strID <- apply(fullTabObj[,dim.vars,with=FALSE],1,str_c, collapse="")
 			
 			if ( length(missing.codes) > 0 ) {
-				index <- which(strID==missing.codes)
+				index <- which(strID%in%missing.codes)
 				for ( i in 1:length(cols) ) {
 					fullTabObj[index, cols[i]:=0]
 				}		
 			}
-			
-			
+					
 			## fill up missing dimensions
 			not.finished <- TRUE	
 			while ( not.finished ) {
 				cols <- (nrIndexvars+1):ncol(fullTabObj)
 				col.names <- colnames(fullTabObj)[cols]
 				for ( i in 1:nrIndexvars ) {
-					setkeyv(fullTabObj, dim.vars[-i])	
+					if ( length(dim.vars) > 1 ) {
+						setkeyv(fullTabObj, dim.vars[-i])		
+					} else {
+						setkeyv(fullTabObj, dim.vars[1])	
+					}
+					
 					dat <- copy(fullTabObj) # we need to copy!
 					
 					cur.dim <- dimObj[[i]]@dims
 					for ( j in length(cur.dim):1 ) {
 						cur.levs <-  cur.dim[[j]]
 						out <- dat[dat[[ind.dimvars[i]]] %in% cur.levs[-1],]
-						out <- out[,lapply(.SD,sum), .SDcols=col.names, by=key(out)]
+						if ( length(dim.vars)==1 ) {
+							out <- out[,lapply(.SD,sum), .SDcols=col.names]
+						} else {
+							out <- out[,lapply(.SD,sum), .SDcols=col.names, by=key(out)]
+						}			
 						
 						row.ind <- which(fullTabObj[[ind.dimvars[i]]] == cur.levs[1])
 						for ( z in 1:length(col.names) ) {
@@ -310,6 +326,10 @@ setMethod(f='calc.multiple', signature=c('character', 'list'),
 				}
 			}		
 			
+			if ( length(n.ind) > 0 ) {
+				names(numVarsList) <- colnames(get.dataObj(x, type="rawData"))[n.ind]		
+			}
+						
 			## replace 0 in rawData by NA if they have been replaced earlier
 			for ( i in 1:length(ind.na) ) {
 				if ( length(ind.na[[i]]) > 0 ) {

@@ -3,6 +3,11 @@
 \alias{calc.multiple}
 \alias{calc.multiple,character,list-method}
 \title{perform calculations on multiple objects depending on argument \code{type}}
+\usage{
+calc.multiple(type, input)
+
+\S4method{calc.multiple}{character,list}(type, input)
+}
 \arguments{
   \item{type}{a character vector of length 1 defining what
   to calculate|return|modify. Allowed types are:} \itemize{
@@ -27,24 +32,24 @@
   \code{dimInfo} }}
 }
 \value{
-  manipulated data based on argument \code{type} \itemize{
-  \item list with elements 'groups', 'indices', 'strIDs',
-  'nrGroups' and 'nrTables' if argument \code{type} matches
-  'makePartitions' \item object of class
-  \code{simpleTriplet} if argument \code{type} matches
-  'genMatMFull' \item object of class \code{linProb} if
-  argument \code{type} matches 'makeAttackerProblem' \item
-  object of class \code{sdcProblem} if argument \code{type}
-  matches 'calcFullProblem' }
+manipulated data based on argument \code{type} \itemize{
+\item list with elements 'groups', 'indices', 'strIDs',
+'nrGroups' and 'nrTables' if argument \code{type} matches
+'makePartitions' \item object of class \code{simpleTriplet}
+if argument \code{type} matches 'genMatMFull' \item object
+of class \code{linProb} if argument \code{type} matches
+'makeAttackerProblem' \item object of class
+\code{sdcProblem} if argument \code{type} matches
+'calcFullProblem' }
 }
 \description{
-  perform calculations on multiple objects depending on
-  argument \code{type}
+perform calculations on multiple objects depending on
+argument \code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

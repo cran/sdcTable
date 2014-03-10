@@ -2,7 +2,7 @@
 \alias{setInfo}
 \title{set information of \code{\link{sdcProblem-class}}- or \code{\link{problemInstance-class}} objects}
 \usage{
-  setInfo(object, type, index, input)
+setInfo(object, type, index, input)
 }
 \arguments{
   \item{object}{an object of class
@@ -48,13 +48,13 @@
   type matches 'lb', 'ub', 'LPL', 'SPL' or 'UPL' }}
 }
 \value{
-  a \code{\link{sdcProblem-class}}- or
-  \code{\link{problemInstance-class}} object
+a \code{\link{sdcProblem-class}}- or
+\code{\link{problemInstance-class}} object
 }
 \description{
-  Function \code{\link{getInfo}} is used to query
-  information from \code{\link{sdcProblem-class}}- or
-  \code{\link{problemInstance-class}} objects
+Function \code{\link{getInfo}} is used to query information
+from \code{\link{sdcProblem-class}}- or
+\code{\link{problemInstance-class}} objects
 }
 \examples{
 \dontrun{
@@ -78,6 +78,6 @@ print(getInfo(problem, type='sdcStatus')[index.tot])
 }
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

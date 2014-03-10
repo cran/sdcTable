@@ -3,6 +3,11 @@
 \alias{get.simpleTriplet}
 \alias{get.simpleTriplet,simpleTriplet,character,list-method}
 \title{query \code{simpleTriplet}-objects depending on argument \code{type}}
+\usage{
+get.simpleTriplet(object, type, input)
+
+\S4method{get.simpleTriplet}{simpleTriplet,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{simpleTriplet}}
 
@@ -30,21 +35,21 @@
   else: input is not used at all (empty list)}
 }
 \value{
-  information from \code{object} depending on \code{type}
-  \itemize{ \item a numeric vector if type matches
-  'rowInd', 'colInd', 'values', 'nrRows', 'nrCols',
-  'nrCells' or 'duplicatedRows' \item an object of class
-  \code{simpleTriplet} if type matches 'transpose',
-  'getRow' or 'getCol' }
+information from \code{object} depending on \code{type}
+\itemize{ \item a numeric vector if type matches 'rowInd',
+'colInd', 'values', 'nrRows', 'nrCols', 'nrCells' or
+'duplicatedRows' \item an object of class
+\code{simpleTriplet} if type matches 'transpose', 'getRow'
+or 'getCol' }
 }
 \description{
-  query \code{simpleTriplet}-objects depending on argument
-  \code{type}
+query \code{simpleTriplet}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

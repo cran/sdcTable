@@ -3,6 +3,11 @@
 \alias{get.sdcProblem}
 \alias{get.sdcProblem,sdcProblem,character-method}
 \title{query \code{sdcProblem}-objects depending on argument \code{type}}
+\usage{
+get.sdcProblem(object, type)
+
+\S4method{get.sdcProblem}{sdcProblem,character}(object, type)
+}
 \arguments{
   \item{object}{an object of class \code{sdcProblem}}
 
@@ -27,45 +32,45 @@
   cells}
 }
 \value{
-  information from objects of class \code{sdcProblem}
-  depending on argument \code{type} \itemize{ \item an
-  object of class \code{dataObj} (or NULL) if \code{type}
-  matches 'dataObj' \item an object of class
-  \code{problemInstance} (or NULL) if \code{type} matches
-  'problemInstance' \item a list (or NULL) if argument
-  \code{type} matches 'partition' containing the following
-  elements: \itemize{ \item element 'groups': list with
-  each list-element being a character vector specifying a
-  specific level-group \item element 'indices': list with
-  each list-element being a numeric vector defining indices
-  of a subtable \item element 'strIDs': list with each
-  list-element being a character vector defining IDs of a
-  subtable \item element 'nrGroups': numeric vector of
-  length 1 defining the total number of groups that have to
-  be considered \item element 'nrTables': numeric vector of
-  length 1 defining the total number of subtables that have
-  to be considered} \item a list (or NULL) if argument
-  \code{type} matches 'innerAndMarginalCellInfo' containing
-  the following elements: \itemize{ \item element
-  'innerCells': character vector specifying ID's of inner
-  cells \item element 'totCells': character vector
-  specifying ID's of marginal cells \item element
-  'indexInnerCells': numeric vector specifying indices of
-  inner cells \item element 'indexTotCells': numeric vector
-  specifying indices of marginal cells} \item an object of
-  class \code{dimInfo} (or NULL) if \code{type} matches
-  'dimInfo' \item numeric vector if argument \code{type}
-  matches 'elapsedTime' \item numeric vector of length 1 if
-  argument \code{type} matches 'startI' or 'startJ' }
+information from objects of class \code{sdcProblem}
+depending on argument \code{type} \itemize{ \item an object
+of class \code{dataObj} (or NULL) if \code{type} matches
+'dataObj' \item an object of class \code{problemInstance}
+(or NULL) if \code{type} matches 'problemInstance' \item a
+list (or NULL) if argument \code{type} matches 'partition'
+containing the following elements: \itemize{ \item element
+'groups': list with each list-element being a character
+vector specifying a specific level-group \item element
+'indices': list with each list-element being a numeric
+vector defining indices of a subtable \item element
+'strIDs': list with each list-element being a character
+vector defining IDs of a subtable \item element 'nrGroups':
+numeric vector of length 1 defining the total number of
+groups that have to be considered \item element 'nrTables':
+numeric vector of length 1 defining the total number of
+subtables that have to be considered} \item a list (or
+NULL) if argument \code{type} matches
+'innerAndMarginalCellInfo' containing the following
+elements: \itemize{ \item element 'innerCells': character
+vector specifying ID's of inner cells \item element
+'totCells': character vector specifying ID's of marginal
+cells \item element 'indexInnerCells': numeric vector
+specifying indices of inner cells \item element
+'indexTotCells': numeric vector specifying indices of
+marginal cells} \item an object of class \code{dimInfo} (or
+NULL) if \code{type} matches 'dimInfo' \item numeric vector
+if argument \code{type} matches 'elapsedTime' \item numeric
+vector of length 1 if argument \code{type} matches 'startI'
+or 'startJ' }
 }
 \description{
-  query \code{sdcProblem}-objects depending on argument
-  \code{type}
+query \code{sdcProblem}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

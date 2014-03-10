@@ -2,7 +2,7 @@
 \alias{getInfo}
 \title{query information from objects}
 \usage{
-  getInfo(object, type)
+getInfo(object, type)
 }
 \arguments{
   \item{object}{a \code{\link{sdcProblem-class}} object,
@@ -72,15 +72,14 @@
   \code{object} of class \code{\link{safeObj-class}}} }}
 }
 \value{
-  manipulated data dependend on arguments \code{object} and
-  \code{type}
+manipulated data dependend on arguments \code{object} and
+\code{type}
 }
 \description{
-  Function \code{\link{getInfo}} is used to query
-  information from objects of class
-  \code{\link{sdcProblem-class}},
-  \code{\link{problemInstance-class}} or
-  \code{\link{safeObj-class}}
+Function \code{\link{getInfo}} is used to query information
+from objects of class \code{\link{sdcProblem-class}},
+\code{\link{problemInstance-class}} or
+\code{\link{safeObj-class}}
 }
 \examples{
 \dontrun{
@@ -110,6 +109,6 @@ for ( slot in c('finalData', 'nrNonDuplicatedCells', 'nrPrimSupps',
 }
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

@@ -3,6 +3,12 @@
 \alias{calc.problemInstance}
 \alias{calc.problemInstance,problemInstance,character,list-method}
 \title{perform calculations on \code{problemInstance}-objects depending on argument \code{type}}
+\usage{
+calc.problemInstance(object, type, input)
+
+\S4method{calc.problemInstance}{problemInstance,character,list}(object, type,
+  input)
+}
 \arguments{
   \item{object}{an object of class \code{problemInstance}}
 
@@ -24,22 +30,22 @@
   upper cell bounds (from attacker's problem) }}
 }
 \value{
-  information from objects of class \code{problemInstance}
-  depending on argument \code{type} \itemize{ \item an
-  object of class \code{linProb} if argument \code{type}
-  matches 'makeMasterProblem' \item logical vector of
-  length 1 if argument \code{type} matches
-  'isProtectedSolution' with TRUE if all primary suppressed
-  cells are adequately protected, FALSE otherwise }
+information from objects of class \code{problemInstance}
+depending on argument \code{type} \itemize{ \item an object
+of class \code{linProb} if argument \code{type} matches
+'makeMasterProblem' \item logical vector of length 1 if
+argument \code{type} matches 'isProtectedSolution' with
+TRUE if all primary suppressed cells are adequately
+protected, FALSE otherwise }
 }
 \description{
-  perform calculations on \code{problemInstance}-objects
-  depending on argument \code{type}
+perform calculations on \code{problemInstance}-objects
+depending on argument \code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

@@ -143,6 +143,7 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
 		
 		ss <- list()
 		for ( i in seq_along(dimVarInd) ) {
+			remove.vals <- FALSE
 			if ( !calc.dimVar(inputDims[[i]], type='hasDefaultCodes', input=rawData[[dimVarInd[i]]]) ) {
 				dups <- get.dimVar(inputDims[[i]], type='dups')
 				if ( length(dups) > 0 ) {
@@ -150,7 +151,14 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
 					for ( k in length(dups):1 ) {
 						ind <- which(rawData[[dimVarInd[i]]]==dups[k])
 						if ( length(ind) > 0 ) {
-							rawData[[dimVarInd[i]]][ind] <- dupsUp[k]
+							if ( i > 1 ) {
+								remove.vals <- TRUE
+							}
+							if ( length(which(rawData[[dimVarInd[i]]]==dupsUp[k])) > 0 ) {
+								rawData <- rawData[-ind,]
+							} else {
+								rawData[[dimVarInd[i]]][ind] <- dupsUp[k]
+							}			
 						}
 					}
 					inputData <- set.dataObj(inputData, type='rawData', input=list(rawData))
@@ -159,6 +167,12 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
 			} else {
 				ss[[i]] <- rawData[[dimVarInd[i]]]
 			}
+			# remove entries in ss[[1]...ss[[i-1]]
+			if ( remove.vals ) {
+				for ( z in 1:(i-1)) {
+					ss[[z]] <- ss[[z]][-ind]
+				}						
+			}			
 		}
 		strID <- pasteStrVec(as.vector(unlist(ss)), length(posIndex))		
 		
@@ -324,7 +338,8 @@ primarySuppression <- function(object, type, ...) {
 #' \item \code{maxVars}: a numeric vector of length 1 (or NULL) defining the maximum problem size in terms of decision variables for which an optimization should be tried. If the number of decision variables in the current problem are larger than parameter \code{maxVars}, only a possible non-optimal, heuristic solution is calculated. Parameter \code{safe} has a default value of 'NULL'
 #' \item \code{fastSolution}: logical vector of length 1 defining if or if not the cut and branch algorithm will be started or if the possibly non-optimal heuristic solution is returned independent of parameter \code{maxVars}. Parameter \code{fastSolution} has a default value of 'FALSE'
 #' \item \code{fixVariables}: logical vector of length 1 defining whether or not it should be tried to fix some variables to zero or one based on reduced costs early in the cut and branch algorithm. Parameter \code{fixVariables} has a default value of 'TRUE'
-#' \item \code{approxPerc}: numeric vector of length 1 that defines a percentage for which a integer solution of the cut and branch algorithm is accepted as optimal with respect to the upper bound given by the (relaxed) solution of the master problem. Its default value is set to '10'}
+#' \item \code{approxPerc}: numeric vector of length 1 that defines a percentage for which a integer solution of the cut and branch algorithm is accepted as optimal with respect to the upper bound given by the (relaxed) solution of the master problem. Its default value is set to '10'
+#' \item \code{useC}: boolean vector of length 1 defining if c++ implementation of the secondary cell suppression problem should be used, defaults to FALSE}
 #' \item parameters used for HYPERCUBE procedure:
 #' \itemize{
 #' \item \code{protectionLevel}: numeric vector of length 1 specifying the required protection level for the HYPERCUBE-procedure. Its default value is 80

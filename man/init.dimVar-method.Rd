@@ -3,6 +3,11 @@
 \alias{init.dimVar}
 \alias{init.dimVar,list-method}
 \title{initialize \code{dimVar}-object}
+\usage{
+init.dimVar(input)
+
+\S4method{init.dimVar}{list}(input)
+}
 \arguments{
   \item{input}{a list with 2 elements} \itemize{ \item
   first element: either an object of class 'matrix' or a
@@ -13,12 +18,12 @@
   character vector of length 1 specifying a variable name}
 }
 \description{
-  initialize \code{dimVar}-object
+initialize \code{dimVar}-object
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

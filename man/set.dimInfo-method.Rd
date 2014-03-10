@@ -3,6 +3,11 @@
 \alias{set.dimInfo}
 \alias{set.dimInfo,dimInfo,character,character-method}
 \title{modify \code{dimInfo}-objects depending on argument \code{type}}
+\usage{
+set.dimInfo(object, type, input)
+
+\S4method{set.dimInfo}{dimInfo,character,character}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{dimInfo}}
 
@@ -15,16 +20,16 @@
   containing ID's}
 }
 \value{
-  an object of class \code{dimInfo}
+an object of class \code{dimInfo}
 }
 \description{
-  modify \code{dimInfo}-objects depending on argument
-  \code{type}
+modify \code{dimInfo}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

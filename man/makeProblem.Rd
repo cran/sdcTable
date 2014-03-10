@@ -2,9 +2,8 @@
 \alias{makeProblem}
 \title{create \code{\link{sdcProblem-class}}-objects}
 \usage{
-  makeProblem(data, dimList, dimVarInd, freqVarInd = NULL,
-    numVarInd = NULL, weightInd = NULL,
-    sampWeightInd = NULL)
+makeProblem(data, dimList, dimVarInd, freqVarInd = NULL, numVarInd = NULL,
+  weightInd = NULL, sampWeightInd = NULL)
 }
 \arguments{
   \item{data}{a data frame featuring at least one column
@@ -57,11 +56,11 @@
   weights within argument \code{data}}
 }
 \value{
-  a \code{\link{sdcProblem-class}}-object
+a \code{\link{sdcProblem-class}}-object
 }
 \description{
-  Function \code{\link{makeProblem}} is used to create
-  \code{\link{sdcProblem-class}}-objects.
+Function \code{\link{makeProblem}} is used to create
+\code{\link{sdcProblem-class}}-objects.
 }
 \examples{
 \dontrun{
@@ -124,6 +123,6 @@ print(class(problem))
 }
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

@@ -3,6 +3,11 @@
 \alias{calc.dimVar}
 \alias{calc.dimVar,dimVar,character,character-method}
 \title{modify \code{dimVar}-objects depending on argument \code{type}}
+\usage{
+calc.dimVar(object, type, input)
+
+\S4method{calc.dimVar}{dimVar,character,character}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{dimVar}}
 
@@ -24,21 +29,21 @@
   \item{input}{a character vector}
 }
 \value{
-  information from \code{object} depending on \code{type}
-  \itemize{ \item a character vector if type matches
-  'matchCodeOrig', 'matchCodeDefault', 'standardize' or
-  'requiredMinimalCodes' \item a logical vector of length 1
-  if type matches 'hasDefaultCodes' being TRUE if argument
-  \code{input} are default codes and FALSE otherwise }
+information from \code{object} depending on \code{type}
+\itemize{ \item a character vector if type matches
+'matchCodeOrig', 'matchCodeDefault', 'standardize' or
+'requiredMinimalCodes' \item a logical vector of length 1
+if type matches 'hasDefaultCodes' being TRUE if argument
+\code{input} are default codes and FALSE otherwise }
 }
 \description{
-  modify \code{dimVar}-objects depending on argument
-  \code{type}
+modify \code{dimVar}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

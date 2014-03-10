@@ -2,8 +2,7 @@
 \alias{protectLinkedTables}
 \title{protect two \code{\link{sdcProblem-class}} objects that have common cells}
 \usage{
-  protectLinkedTables(objectA, objectB, commonCells,
-    method, ...)
+protectLinkedTables(objectA, objectB, commonCells, method, ...)
 }
 \arguments{
   \item{objectA}{a \code{\link{sdcProblem-class}} object}
@@ -46,15 +45,15 @@
   \code{\link{protectTable}}.}
 }
 \value{
-  a list of length 2 with each list-element being an
-  \code{\link{safeObj-class}} object
+a list of length 2 with each list-element being an
+\code{\link{safeObj-class}} object
 }
 \description{
-  \code{\link{protectLinkedTables}} can be used to protect
-  tables, that have common cells. It is of course required
-  that after the anonymization process has finished, all
-  common cells have the same anonymization state in both
-  tables.
+\code{\link{protectLinkedTables}} can be used to protect
+tables, that have common cells. It is of course required
+that after the anonymization process has finished, all
+common cells have the same anonymization state in both
+tables.
 }
 \examples{
 \dontrun{
@@ -138,9 +137,9 @@ summary(result.tab2)
 }
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 \seealso{
-  \code{\link{protectTable}}
+\code{\link{protectTable}}
 }
 

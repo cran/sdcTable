@@ -3,6 +3,11 @@
 \alias{set.sdcProblem}
 \alias{set.sdcProblem,sdcProblem,character,list-method}
 \title{modify \code{sdcProblem}-objects depending on argument \code{type}}
+\usage{
+set.sdcProblem(object, type, input)
+
+\S4method{set.sdcProblem}{sdcProblem,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{sdcProblem}}
 
@@ -31,16 +36,16 @@
   'indicesDealtWith'}
 }
 \value{
-  an object of class \code{sdcProblem}
+an object of class \code{sdcProblem}
 }
 \description{
-  modify \code{sdcProblem}-objects depending on argument
-  \code{type}
+modify \code{sdcProblem}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

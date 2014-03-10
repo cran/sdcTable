@@ -2,7 +2,7 @@
 \alias{primarySuppression}
 \title{perform primary suppression in \code{\link{sdcProblem-class}}-objects}
 \usage{
-  primarySuppression(object, type, ...)
+primarySuppression(object, type, ...)
 }
 \arguments{
   \item{object}{a \code{\link{sdcProblem-class}} object}
@@ -42,22 +42,22 @@
   'nk' or 'p' it is mandatory to specify p. }}
 }
 \value{
-  a \code{\link{sdcProblem-class}} object
+a \code{\link{sdcProblem-class}} object
 }
 \description{
-  Function \code{\link{primarySuppression}} is used to
-  identify and suppress primary sensitive table cells in
-  \code{\link{sdcProblem-class}} objects. Argument
-  \code{type} allows to select a rule that should be used
-  to identify primary sensitive cells. At the moment it is
-  possible to identify and suppress sensitive table cells
-  using the frequency-rule, the nk-dominance rule and the
-  p-percent rule.
+Function \code{\link{primarySuppression}} is used to
+identify and suppress primary sensitive table cells in
+\code{\link{sdcProblem-class}} objects. Argument
+\code{type} allows to select a rule that should be used to
+identify primary sensitive cells. At the moment it is
+possible to identify and suppress sensitive table cells
+using the frequency-rule, the nk-dominance rule and the
+p-percent rule.
 }
 \note{
-  the nk-dominance rule and the p-percent rule can only be
-  applied if micro data have been used as input data to
-  function \code{\link{makeProblem}}.
+the nk-dominance rule and the p-percent rule can only be
+applied if micro data have been used as input data to
+function \code{\link{makeProblem}}.
 }
 \examples{
 \dontrun{
@@ -85,6 +85,6 @@ print(table(getInfo(problem, type='sdcStatus')))
 }
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

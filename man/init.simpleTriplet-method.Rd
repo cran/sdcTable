@@ -3,6 +3,11 @@
 \alias{init.simpleTriplet}
 \alias{init.simpleTriplet,character,list-method}
 \title{initialize \code{simpleTriplet}-objects depending on argument \code{type}}
+\usage{
+init.simpleTriplet(type, input)
+
+\S4method{init.simpleTriplet}{character,list}(type, input)
+}
 \arguments{
   \item{type}{a character vector of length 1 defining
   what|how to initialize. Allowed types are:} \itemize{
@@ -20,21 +25,21 @@
   a negative identity matrix should be returned }}
 }
 \value{
-  an object of class \code{simpleTriplet}
+an object of class \code{simpleTriplet}
 }
 \description{
-  init.simpleTriplet should be used to create objects of
-  class \code{simpleTriplet}. It is possible to create an
-  object from class \code{simpleTriplet} from an existing
-  matrix (using type=='simpleTriplet'). A positive (or
-  negative) identity matrix stored as an object of class
-  \code{simpleTriplet} can be created by specifying
-  type=='simpleTripletDiag'.
+init.simpleTriplet should be used to create objects of
+class \code{simpleTriplet}. It is possible to create an
+object from class \code{simpleTriplet} from an existing
+matrix (using type=='simpleTriplet'). A positive (or
+negative) identity matrix stored as an object of class
+\code{simpleTriplet} can be created by specifying
+type=='simpleTripletDiag'.
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

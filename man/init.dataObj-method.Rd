@@ -3,6 +3,11 @@
 \alias{init.dataObj}
 \alias{init.dataObj,list-method}
 \title{initialize \code{dataObj}-objects}
+\usage{
+init.dataObj(input)
+
+\S4method{init.dataObj}{list}(input)
+}
 \arguments{
   \item{input}{a list with element described below:}
 
@@ -20,15 +25,15 @@
   vector of length 1}
 }
 \value{
-  an object of class \code{dataObj}
+an object of class \code{dataObj}
 }
 \description{
-  initialize \code{dataObj}-objects
+initialize \code{dataObj}-objects
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

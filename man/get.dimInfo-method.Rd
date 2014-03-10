@@ -3,6 +3,11 @@
 \alias{get.dimInfo}
 \alias{get.dimInfo,dimInfo,character-method}
 \title{query \code{dimInfo}-objects depending on argument \code{type}}
+\usage{
+get.dimInfo(object, type)
+
+\S4method{get.dimInfo}{dimInfo,character}(object, type)
+}
 \arguments{
   \item{object}{an object of class \code{dataObj}}
 
@@ -17,22 +22,21 @@
   \code{dimInfo} in the underlying data}
 }
 \value{
-  information from objects of class \code{dimInfo}
-  depending on argument \code{type} \itemize{ \item a list
-  (or NULL) if argument \code{type} matches 'strInfo',
-  'dimInfo' \item numeric vector (or NULL) if argument
-  \code{type} matches 'posIndex' \item character vector (or
-  NULL) if argument \code{type} matches 'varName' or
-  'strID'}
+information from objects of class \code{dimInfo} depending
+on argument \code{type} \itemize{ \item a list (or NULL) if
+argument \code{type} matches 'strInfo', 'dimInfo' \item
+numeric vector (or NULL) if argument \code{type} matches
+'posIndex' \item character vector (or NULL) if argument
+\code{type} matches 'varName' or 'strID'}
 }
 \description{
-  query \code{dimInfo}-objects depending on argument
-  \code{type}
+query \code{dimInfo}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

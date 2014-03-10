@@ -2,8 +2,7 @@
 \alias{cellInfo}
 \title{query information for a specific cell in \code{\link{safeObj-class}} objects}
 \usage{
-  cellInfo(object, characteristics, varNames,
-    verbose = FALSE)
+cellInfo(object, characteristics, varNames, verbose = FALSE)
 }
 \arguments{
   \item{object}{an object of class
@@ -21,27 +20,27 @@
   verbosity, defaults to 'FALSE'}
 }
 \value{
-  a list containing the following calculated information
-  \itemize{ \item \code{cellID}: numeric vector of length 1
-  specifying the index of the cell within the final result
-  dataset \item \code{data}: a data.frame containing a
-  single row with the index of the table cell of interest
-  \item \code{primSupp}: logical vector of length 1 that is
-  'TRUE' if the cell is a primary sensitive cell and
-  'FALSE' otherwise \item \code{secondSupp}: logical vector
-  of length 1 that is 'TRUE' if the cell is a secondary
-  suppressed cell and 'FALSE' otherwise }
+a list containing the following calculated information
+\itemize{ \item \code{cellID}: numeric vector of length 1
+specifying the index of the cell within the final result
+dataset \item \code{data}: a data.frame containing a single
+row with the index of the table cell of interest \item
+\code{primSupp}: logical vector of length 1 that is 'TRUE'
+if the cell is a primary sensitive cell and 'FALSE'
+otherwise \item \code{secondSupp}: logical vector of length
+1 that is 'TRUE' if the cell is a secondary suppressed cell
+and 'FALSE' otherwise }
 }
 \description{
-  Function \code{\link{cellInfo}} is used to query
-  information for a single table cell for objects of class
-  \code{\link{safeObj-class}}.
+Function \code{\link{cellInfo}} is used to query
+information for a single table cell for objects of class
+\code{\link{safeObj-class}}.
 }
 \note{
-  Important: the \code{i}-th element of argument
-  \code{characteristics} is uses as the desired
-  characteristic for the dimensional variable specified at
-  the \code{i}-th position of argument \code{varNames}!
+Important: the \code{i}-th element of argument
+\code{characteristics} is uses as the desired
+characteristic for the dimensional variable specified at
+the \code{i}-th position of argument \code{varNames}!
 }
 \examples{
 \dontrun{
@@ -60,6 +59,6 @@ str(info)
 }
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

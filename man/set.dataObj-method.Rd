@@ -3,6 +3,11 @@
 \alias{set.dataObj}
 \alias{set.dataObj,dataObj,character,listOrNULL-method}
 \title{modify \code{dataObj}-objects depending on argument \code{type}}
+\usage{
+set.dataObj(object, type, input)
+
+\S4method{set.dataObj}{dataObj,character,listOrNULL}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{dataObj}}
 
@@ -16,16 +21,16 @@
   data}
 }
 \value{
-  an object of class \code{dataObj}
+an object of class \code{dataObj}
 }
 \description{
-  modify \code{dataObj}-objects depending on argument
-  \code{type}
+modify \code{dataObj}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 
