@@ -105,7 +105,6 @@ are used to control the protection algorithm are set using
 parameter \code{...}.
 }
 \examples{
-\dontrun{
 # load problem (as it was created after performing primary suppression
 # in the example of \\code{\\link{primarySuppression}})
 sp <- searchpaths()
@@ -113,14 +112,13 @@ fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
 problem <- get(load(fn))
 
 # protect the table using the 'HITAS' algorithm with verbose output
-protectedData <- protectTable(problem, method='HITAS', verbose=TRUE)
+protectedData <- protectTable(problem, method='HITAS', verbose=TRUE, useC=TRUE)
 
 # showing a summary
 summary(protectedData)
 
 # looking at the final table with result suppression pattern
 print(getInfo(protectedData, type='finalData'))
-}
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

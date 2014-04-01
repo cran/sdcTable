@@ -63,28 +63,30 @@ Function \code{\link{makeProblem}} is used to create
 \code{\link{sdcProblem-class}}-objects.
 }
 \examples{
-\dontrun{
 # loading micro data
 sp <- searchpaths()
 fn <- paste(sp[grep("sdcTable", sp)], "/data/microData1.RData", sep="")
 microData <- get(load(fn))
 
-having a look at the data structure
+# having a look at the data structure
 str(microData)
+
+# we can observe that we have a micro data set consisting of two spanning
+# variables ('region' and 'gender') and one numeric variable ('val')
 
 # specify structure of hierarchical variable 'region'
 # levels 'A' to 'D' sum up to a Total
 dim.region <- data.frame(
-	levels=c('@','@@','@@','@@','@@'),
-	codes=c('Total', 'A','B','C','D'),
-	stringsAsFactors=FALSE)
+ levels=c('@','@@','@@','@@','@@'),
+ codes=c('Total', 'A','B','C','D'),
+ stringsAsFactors=FALSE)
 
 # specify structure of hierarchical variable 'gender'
 # levels 'male' and 'female' sum up to a Total
 dim.gender <- data.frame(
-	levels=c('@','@@','@@'),
-	codes=c('Total', 'male','female'),
-	stringsAsFactors=FALSE)
+ levels=c('@','@@','@@'),
+ codes=c('Total', 'male','female'),
+ stringsAsFactors=FALSE)
 
 # create a list with each element being a data-frame containing information
 # on a dimensional variables
@@ -102,25 +104,25 @@ names(dimList) <- c('region', 'gender')
 # - variable 'gender': second column
 dimVarInd <- c(1,2)
 
+# third column containts a numeric variable
+numVarInd <- 3
+
 # no variables holding counts, numeric values, weights or sampling
 # weights are available in the input data
-freqVarInd <- numVarInd <- weightInd <- sampWeightInd <- NULL
-
-# we are dealing with micro data!
+freqVarInd <- weightInd <- sampWeightInd <- NULL
 
 # creating an object of class \\code{\\link{sdcProblem-class}}
 problem <- makeProblem(
-	data=microData,
-	dimList=dimList,
-	dimVarInd=dimVarInd,
-	freqVarInd=freqVarInd,
-	numVarInd=numVarInd,
-	weightInd=weightInd,
-	sampWeightInd=sampWeightInd)
+ data=microData,
+ dimList=dimList,
+ dimVarInd=dimVarInd,
+ freqVarInd=freqVarInd,
+ numVarInd=numVarInd,
+ weightInd=weightInd,
+ sampWeightInd=sampWeightInd)
 
-what do we have?
+# what do we have?
 print(class(problem))
-}
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

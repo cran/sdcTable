@@ -18,23 +18,24 @@ calc.sdcProblem(object, type, input)
   \item rule.nk: modify sdcStatus of \code{object}
   according to nk-dominance rule \item rule.p: modify
   sdcStatus of \code{object} according to p-percent rule
-  \item heuristicSolution: obtain a heuristic (greedy)
-  solution to the problem defined by \code{object} \item
-  cutAndBranch: solve a secondary cell suppression problem
-  defined by \code{object} using cut and branch \item
-  anonWorker: is used to solve the suppression problem
-  depending on information provided with argument
-  \code{input} \item ghmiter: solve a secondary cell
-  suppression problem defined by \code{object} using
-  hypercube algorithm \item preprocess: perform a
-  preprocess procedure by trying to identify primary
-  suppressed cells that are already protected due to other
-  primary suppressed cells \item cellID: find index of cell
-  defined by information provided with argument
-  \code{input} \item finalize: create an object of class
-  \code{safeObj} \item ghmiter.diagObj: calculate codes
-  required to identify diagonal cells given a valid cell
-  code - used for ghmiter-algorithm only \item
+  \item rule.pq: modify sdcStatus of \code{object}
+  according to pq-rule \item heuristicSolution: obtain a
+  heuristic (greedy) solution to the problem defined by
+  \code{object} \item cutAndBranch: solve a secondary cell
+  suppression problem defined by \code{object} using cut
+  and branch \item anonWorker: is used to solve the
+  suppression problem depending on information provided
+  with argument \code{input} \item ghmiter: solve a
+  secondary cell suppression problem defined by
+  \code{object} using hypercube algorithm \item preprocess:
+  perform a preprocess procedure by trying to identify
+  primary suppressed cells that are already protected due
+  to other primary suppressed cells \item cellID: find
+  index of cell defined by information provided with
+  argument \code{input} \item finalize: create an object of
+  class \code{safeObj} \item ghmiter.diagObj: calculate
+  codes required to identify diagonal cells given a valid
+  cell code - used for ghmiter-algorithm only \item
   ghmiter.calcInformation: calculate information for
   quaders identified by diagonal indices - used for
   ghmiter-algorithm only \item ghmiter.suppressQuader:

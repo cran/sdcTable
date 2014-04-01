@@ -1,18 +1,19 @@
 Package: sdcTable
-Version: 0.13.0
-Date: 2014-03-14
+Version: 0.14.0
+Date: 2014-04-01
 Title: Methods for statistical disclosure control in tabular data
-Description: Implementation of methods for statistical disclosure control in  
-    tabular data  
-Author: Bernhard Meindl  
+Description: Implementation of methods for statistical disclosure control in       
+    tabular data       
+Author: Bernhard Meindl       
 Maintainer: Bernhard Meindl <bernhard.meindl@statistik.gv.at>
 Depends: stringr, methods, Rcpp (>= 0.11.0), Rglpk, lpSolveAPI,
         data.table
+Suggests: testthat (>= 0.3)
 LazyLoad: yes
 LinkingTo: Rcpp
 License: GPL-2
 URL: http://www.statistik.at
-Packaged: 2014-03-14 12:18:02 UTC; bernhard
+Packaged: 2014-04-01 07:29:45 UTC; root
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-03-14 13:28:07
+Date/Publication: 2014-04-01 11:52:55
