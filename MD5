@@ -1,8 +1,8 @@
-928cd7bd77396c955e58267eca3a2654 *DESCRIPTION
+8e4d87902ff1195c7ec91273b1691f0e *DESCRIPTION
 0f7b4cac790147f6340b645e7aad4415 *NAMESPACE
 909f364ce2d2b0e97315f945ba2fe7aa *R/classes.r
 502763cb12146061ad3277573305d324 *R/data.r
-48294dd5a6c825fca77efb14cb9237e1 *R/export_functions.r
+648bce50c18906f0aafe8c302af0b827 *R/export_functions.r
 2e5f3be4e606767850795b2d090d572a *R/generics_cutList.r
 2a26ef7f2e5b86dff3b42e5b04114364 *R/generics_dataObj.r
 fe025162a8954ff8566e0891deee8ed5 *R/generics_dimInfo.r
@@ -15,7 +15,7 @@ b514c0001a995a261bd7a3f10517a4aa *R/generics_dimVar.r
 0769c5d2ccf61d769416e23ec043d4ea *R/generics_simpleTriplet.r
 ee394aed543348b816733a2986366879 *R/helper_functions.r
 e6cc84a9f8a184924415d58005a7aa20 *R/methods_class_cutList.r
-1d759c37dd50af1591103a8b9c83d166 *R/methods_class_dataObj.r
+6598adc138254931d88809ade5df14ce *R/methods_class_dataObj.r
 28eccfc3ab268ee7e6898fbaa6960796 *R/methods_class_dimInfo.r
 ed70f3e83f088fe4f66748c50f445696 *R/methods_class_dimVar.r
 ef63c16c2e2551d03d47f216489555b0 *R/methods_class_linProb.r

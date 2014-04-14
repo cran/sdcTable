@@ -1,6 +1,6 @@
 Package: sdcTable
-Version: 0.14.0
-Date: 2014-04-01
+Version: 0.15.0
+Date: 2014-04-14
 Title: Methods for statistical disclosure control in tabular data
 Description: Implementation of methods for statistical disclosure control in       
     tabular data       
@@ -13,7 +13,7 @@ LazyLoad: yes
 LinkingTo: Rcpp
 License: GPL-2
 URL: http://www.statistik.at
-Packaged: 2014-04-01 07:29:45 UTC; root
+Packaged: 2014-04-14 05:01:44 UTC; bernhard
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-04-01 11:52:55
+Date/Publication: 2014-04-14 19:29:07
