@@ -1,8 +1,8 @@
-8e4d87902ff1195c7ec91273b1691f0e *DESCRIPTION
+b2dfdb83688a8ff9b76d3ecce8f4cce5 *DESCRIPTION
 0f7b4cac790147f6340b645e7aad4415 *NAMESPACE
 909f364ce2d2b0e97315f945ba2fe7aa *R/classes.r
 502763cb12146061ad3277573305d324 *R/data.r
-648bce50c18906f0aafe8c302af0b827 *R/export_functions.r
+3abfebf45ddad41b6a28f7ae1a5425f6 *R/export_functions.r
 2e5f3be4e606767850795b2d090d572a *R/generics_cutList.r
 2a26ef7f2e5b86dff3b42e5b04114364 *R/generics_dataObj.r
 fe025162a8954ff8566e0891deee8ed5 *R/generics_dimInfo.r
@@ -13,7 +13,7 @@ b514c0001a995a261bd7a3f10517a4aa *R/generics_dimVar.r
 7c9d34a4679d14ffdc13306ed63a7206 *R/generics_safeObj.r
 28c395f086e73ef654cd2dbeffd33f84 *R/generics_sdcProblem.r
 0769c5d2ccf61d769416e23ec043d4ea *R/generics_simpleTriplet.r
-ee394aed543348b816733a2986366879 *R/helper_functions.r
+2da4107afadf1fc1cbd8bdbc33dad88d *R/helper_functions.r
 e6cc84a9f8a184924415d58005a7aa20 *R/methods_class_cutList.r
 6598adc138254931d88809ade5df14ce *R/methods_class_dataObj.r
 28eccfc3ab268ee7e6898fbaa6960796 *R/methods_class_dimInfo.r
@@ -26,7 +26,7 @@ d4d09dce93a033cd77b42e27645e09f1 *R/methods_class_sdcProblem.r
 6d6c6de8295308fcdd45fc03a02cd320 *R/methods_multiple_classes.r
 a3f7789752f5b8978bdaa7e88dc13653 *R/zzz.r
 039ed75f44b23745748db60fc8cba313 *README.md
-3d47cbd97cd88afb3bfe653254d96f27 *build/vignette.rds
+e8fec1928b04cfad987909220cc7b63c *build/vignette.rds
 5299c161b149974ccae263af06494afc *cleanup
 1262f7a12fddb89ebbe29f58c04a1c00 *configure
 68b329da9893e34099c7d8ad5cb9c940 *configure.win
@@ -37,7 +37,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-bc7acc42d6115f027b8c99627f967578 *inst/doc/sdcTable.pdf
+0bf1030cde3673307b61dcbf464f49f9 *inst/doc/sdcTable.pdf
 a781c7b16066f067d6e1a1dece8022b7 *inst/tests/test-makeProblem.r
 155f53dcf5e86b69fb45cf3a2085720b *inst/tests/test-primarySuppression.r
 940555760caae995e0e8f0d010f1597c *inst/tests/test-protectTable.r
@@ -314,7 +314,7 @@ c56799f2cd064bff61029232dce83e92 *src/GLPK/zlib/zlib.h
 317b99937db5e2e3dfe8ffae9fc5dcf1 *src/GLPK/zlib/zutil.h
 16928375c376f342565f9f81b85aff65 *src/Makevars.in
 3339336dae3f3d9994d5125808ee3771 *src/Makevars.win
-1cc50a8de95ed1237745b4584413243a *src/csp.cpp
+9230a87bbd533483e328d2c51f2aabb1 *src/csp.cpp
 bfe1d2c766c7f7b2a5429f960950f727 *src/myPaste.cpp
 f019b0f0e3312dd9634728bbce514000 *src/myPasteWithSep.cpp
 2ebf89a36f127e209b643c75d514dcad *src/mySplitFn.cpp
