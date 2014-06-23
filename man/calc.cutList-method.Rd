@@ -3,6 +3,11 @@
 \alias{calc.cutList}
 \alias{calc.cutList,cutList,character,list-method}
 \title{perform calculations on \code{cutList}-objects depending on argument \code{type}}
+\usage{
+calc.cutList(object, type, input)
+
+\S4method{calc.cutList}{cutList,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{cutList}}
 
@@ -24,21 +29,21 @@
   \item first element: object of class \code{cutList} }}
 }
 \value{
-  manipulated data based on argument \code{type} \itemize{
-  \item an object of class \code{cutList} if argument
-  \code{type} matches 'strengthen' or 'bindTogether' \item
-  a logical vector of length 1 if argument \code{type}
-  matches 'checkViolation' with TRUE if at least one
-  constraint is violated by the given solution }
+manipulated data based on argument \code{type} \itemize{
+\item an object of class \code{cutList} if argument
+\code{type} matches 'strengthen' or 'bindTogether' \item a
+logical vector of length 1 if argument \code{type} matches
+'checkViolation' with TRUE if at least one constraint is
+violated by the given solution }
 }
 \description{
-  perform calculations on \code{cutList}-objects depending
-  on argument \code{type}
+perform calculations on \code{cutList}-objects depending on
+argument \code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

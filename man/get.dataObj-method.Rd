@@ -3,6 +3,11 @@
 \alias{get.dataObj}
 \alias{get.dataObj,dataObj,character-method}
 \title{query \code{dataObj}-objects depending on argument \code{type}}
+\usage{
+get.dataObj(object, type)
+
+\S4method{get.dataObj}{dataObj,character}(object, type)
+}
 \arguments{
   \item{object}{an object of class \code{dataObj}}
 
@@ -20,24 +25,24 @@
   variables}
 }
 \value{
-  information from objects of class \code{dataObj}
-  depending on argument \code{type} \itemize{ \item a list
-  if argument \code{type} matches 'rawData' \item numeric
-  vector if argument \code{type} matches 'dimVarInd',
-  'freqVarInd', 'numVarInd', 'weightVarInd' or
-  'sampWeightInd' \item character vector if argument
-  \code{type} matches 'numVarNames', 'freqVarName' or
-  'varName' \item logical vector of length 1 if argument
-  \code{type} matches 'isMicroData'}
+information from objects of class \code{dataObj} depending
+on argument \code{type} \itemize{ \item a list if argument
+\code{type} matches 'rawData' \item numeric vector if
+argument \code{type} matches 'dimVarInd', 'freqVarInd',
+'numVarInd', 'weightVarInd' or 'sampWeightInd' \item
+character vector if argument \code{type} matches
+'numVarNames', 'freqVarName' or 'varName' \item logical
+vector of length 1 if argument \code{type} matches
+'isMicroData'}
 }
 \description{
-  query \code{dataObj}-objects depending on argument
-  \code{type}
+query \code{dataObj}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

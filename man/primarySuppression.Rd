@@ -2,7 +2,7 @@
 \alias{primarySuppression}
 \title{perform primary suppression in \code{\link{sdcProblem-class}}-objects}
 \usage{
-  primarySuppression(object, type, ...)
+primarySuppression(object, type, ...)
 }
 \arguments{
   \item{object}{a \code{\link{sdcProblem-class}} object}
@@ -13,7 +13,9 @@
   \code{maxN} and \code{allowZeros} \item \code{nk}: apply
   nk-dominance rule with parameters \code{n}, \code{k} and
   \code{numVarInd} \item \code{p}: apply p-percent rule
-  with parameters \code{p} and \code{numVarInd} }}
+  with parameters \code{p} and \code{numVarInd} \item
+  \code{pq}: apply pq-rule with parameters \code{p} and
+  \code{q} }}
 
   \item{...}{parameters used in the identification of
   primary sensitive cells. Parameters that can be
@@ -29,38 +31,41 @@
   default. \item \code{p}: numeric vector of length 1
   specifying parameter \code{p} that is used when applying
   the p-percent rule with default value of 80. \item
-  \code{n}: numeric vector of length 1 specifying parameter
-  \code{n} that is used when applying the nk-dominance
-  rule. Parameter \code{n} is set to 2 by default. \item
-  \code{k}: numeric vector of length 1 specifying parameter
-  \code{k} that is used when applying the nk-dominance
-  rule. Parameter \code{n} is set to 85 by default. \item
-  \code{numVarInd}: numeric vector of length 1 specifying
-  the index of the numerical variable that should be used
-  to identify cells that are dominated by 2 (p-percent
-  rule) or n (nk-dominance)-rule. If \code{type} is either
-  'nk' or 'p' it is mandatory to specify p. }}
+  \code{pq}: numeric vector of length 2 specifying
+  parameters \code{p} and \code{q} that are used when
+  applying the pq-rule with the default being c(25, 50).
+  \item \code{n}: numeric vector of length 1 specifying
+  parameter \code{n} that is used when applying the
+  nk-dominance rule. Parameter \code{n} is set to 2 by
+  default. \item \code{k}: numeric vector of length 1
+  specifying parameter \code{k} that is used when applying
+  the nk-dominance rule. Parameter \code{n} is set to 85 by
+  default. \item \code{numVarInd}: numeric vector of length
+  1 specifying the index of the numerical variable that
+  should be used to identify cells that are dominated by 2
+  (p-percent rule) or n (nk-dominance)-rule. If \code{type}
+  is either 'nk', 'p' or 'pq', it is mandatory to specify
+  \code{numVarInd}. }}
 }
 \value{
-  a \code{\link{sdcProblem-class}} object
+a \code{\link{sdcProblem-class}} object
 }
 \description{
-  Function \code{\link{primarySuppression}} is used to
-  identify and suppress primary sensitive table cells in
-  \code{\link{sdcProblem-class}} objects. Argument
-  \code{type} allows to select a rule that should be used
-  to identify primary sensitive cells. At the moment it is
-  possible to identify and suppress sensitive table cells
-  using the frequency-rule, the nk-dominance rule and the
-  p-percent rule.
+Function \code{\link{primarySuppression}} is used to
+identify and suppress primary sensitive table cells in
+\code{\link{sdcProblem-class}} objects. Argument
+\code{type} allows to select a rule that should be used to
+identify primary sensitive cells. At the moment it is
+possible to identify and suppress sensitive table cells
+using the frequency-rule, the nk-dominance rule and the
+p-percent rule.
 }
 \note{
-  the nk-dominance rule and the p-percent rule can only be
-  applied if micro data have been used as input data to
-  function \code{\link{makeProblem}}.
+the nk-dominance rule, the p-percent rule and the pq-rule
+can only be applied if micro data have been used as input
+data to function \code{\link{makeProblem}}.
 }
 \examples{
-\dontrun{
 # load micro data
 sp <- searchpaths()
 fn <- paste(sp[grep("sdcTable", sp)], "/data/microData1.RData", sep="")
@@ -70,21 +75,25 @@ microData <- get(load(fn))
 fn <- paste(sp[grep("sdcTable", sp)], "/data/problem.RData", sep="")
 problem <- get(load(fn))
 
-# we have a look at the table
-print(table(microData))
+# we have a look at the frequency table by gender and region
+xtabs(rep(1, nrow(microData)) ~ gender + region, data=microData)
 
 # cell with region=='A' and gender=='female' has 2 units contributing to it
-# this cell should be considered senstive!
-problem <- primarySuppression(problem, type='freq', maxN=3)
+# this cell should be considered sensitive according the the freq-rule with 'maxN' equal to 2!
+p1 <- primarySuppression(problem, type='freq', maxN=2)
 
-# looking at anonymization states
-print(table(getInfo(problem, type='sdcStatus')))
+# we can also apply a p-percent rule with parameter 'p' being 30 as below.
+# This is only possible if we are dealing with micro data and we also have to specify the index of
+# a numeric variable.
+p2 <- primarySuppression(problem, type='p', p=30, numVarInd=1)
 
-# we see that exactly one cell is primary suppressed (sdcStatus=='u') and
-# the remaining cells are possible candidates for secondary suppression ('s')
-}
+# looking at anonymization states we see, that one cell is primary suppressed (sdcStatus=='u')
+# and the remaining cells are possible candidates for secondary suppression (sdcStatus=='s') given
+# the frequency rule with parameter 'maxN=2'.
+# Applying the p-percent rule with parameter 'p=30' resulted in two primary suppressions.
+data.frame(p1.sdc=getInfo(p1, type='sdcStatus'), p2.sdc=getInfo(p2, type="sdcStatus"))
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

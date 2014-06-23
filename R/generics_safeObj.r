@@ -18,10 +18,10 @@
 #' \item type matches 'dimInfo', 'elapsedTime', 'finalData', 'nrNonDuplicatedCells', 'nrPrimSupps', 'nrSecondSupps', 'nrPublishableCells' or 'suppMethod': input is not used (empty list)
 #' \item type matches 'cellInfo' or 'cellID': input is a list of length 3
 #' \itemize{
-#' \item first element: character vector specifying variable names that need to exist in slot 'dimInfo' of \code{object} 
-#' \item second element: character vector specifying codes for each variable that define a specific table cell 
+#' \item first element: character vector specifying variable names that need to exist in slot 'dimInfo' of \code{object}
+#' \item second element: character vector specifying codes for each variable that define a specific table cell
 #' \item third element: logical vector of length 1 with TRUE setting verbosity and FALSE to turn verbose output off}
-#' 
+#'
 #' @return information from \code{object} depending on \code{type}
 #' \itemize{
 #' \item an object of class \code{dimInfo} (or NULL) if type matches 'dimInfo'
@@ -31,15 +31,27 @@
 #' \item a list if type matches 'cellInfo' containing the following elements:
 #' \itemize{
 #' \item element 'cellID': numeric vector of length 1 specifying the index of the cell of interest
-#' \item element 'data': row of slot 'finalData' with the row being defined by the calculated \code{cellID} 
-#' \item element 'primSupp': logical vector of length 1 being TRUE if cell is a primary suppressed cell 
+#' \item element 'data': row of slot 'finalData' with the row being defined by the calculated \code{cellID}
+#' \item element 'primSupp': logical vector of length 1 being TRUE if cell is a primary suppressed cell
 #' \item element 'secondSupps': logical vector of length 1 being TRUE if cell is a secondary suppressed cell }
 #' }
 #'
 #' @export
 #' @docType methods
 #' @rdname get.safeObj-method
+#' @aliases get.safeObj,safeObj,character,list-method
 #'
 #' @note internal function
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
-setGeneric('get.safeObj', function(object, type, input) {standardGeneric('get.safeObj')})
+setGeneric("get.safeObj", function(object, type, input) { standardGeneric("get.safeObj")})
+
+setGeneric("g_dimInfo", function(object) { standardGeneric("g_dimInfo") })
+setGeneric("g_elapsedTime", function(object) { standardGeneric("g_elapsedTime") })
+setGeneric("g_finalData", function(object) { standardGeneric("g_finalData") })
+setGeneric("g_nrNonDuplicatedCells", function(object) { standardGeneric("g_nrNonDuplicatedCells") })
+setGeneric("g_nrPrimSupps", function(object) { standardGeneric("g_nrPrimSupps") })
+setGeneric("g_nrSecondSupps", function(object) { standardGeneric("g_nrSecondSupps") })
+setGeneric("g_nrPublishableCells", function(object) { standardGeneric("g_nrPublishableCells") })
+setGeneric("g_suppMethod", function(object) { standardGeneric("g_suppMethod") })
+setGeneric("g_getCellInfo", function(object, input) { standardGeneric("g_getCellInfo") })
+setGeneric("g_getCellID", function(object, input) { standardGeneric("g_getCellID") })

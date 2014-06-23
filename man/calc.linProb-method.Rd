@@ -3,6 +3,11 @@
 \alias{calc.linProb}
 \alias{calc.linProb,linProb,character,list-method}
 \title{perform calculations on \code{linProb}-objects depending on argument \code{type}}
+\usage{
+calc.linProb(object, type, input)
+
+\S4method{calc.linProb}{linProb,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{linProb}}
 
@@ -25,20 +30,20 @@
   indices of primary suppressed cells }}
 }
 \value{
-  manipulated data based on argument \code{type} \itemize{
-  \item list containing the solution and additional
-  information if argument \code{type} matches 'solveProblem
-  \item a numeric vector of indices if argument \code{type}
-  matches 'fixVariables' }
+manipulated data based on argument \code{type} \itemize{
+\item list containing the solution and additional
+information if argument \code{type} matches 'solveProblem
+\item a numeric vector of indices if argument \code{type}
+matches 'fixVariables' }
 }
 \description{
-  perform calculations on \code{linProb}-objects depending
-  on argument \code{type}
+perform calculations on \code{linProb}-objects depending on
+argument \code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

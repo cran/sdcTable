@@ -3,6 +3,12 @@
 \alias{set.problemInstance}
 \alias{set.problemInstance,problemInstance,character,list-method}
 \title{modify \code{problemInstance}-objects depending on argument \code{type}}
+\usage{
+set.problemInstance(object, type, input)
+
+\S4method{set.problemInstance}{problemInstance,character,list}(object, type,
+  input)
+}
 \arguments{
   \item{object}{an object of class \code{problemInstance}}
 
@@ -24,16 +30,16 @@
   'indices' depending on argument \code{type}}
 }
 \value{
-  an object of class \code{problemInstance}
+an object of class \code{problemInstance}
 }
 \description{
-  modify \code{problemInstance}-objects depending on
-  argument \code{type}
+modify \code{problemInstance}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

@@ -3,6 +3,11 @@
 \alias{set.cutList}
 \alias{set.cutList,cutList,character,list-method}
 \title{modify \code{cutList}-objects depending on argument \code{type}}
+\usage{
+set.cutList(object, type, input)
+
+\S4method{set.cutList}{cutList,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{cutList}}
 
@@ -22,16 +27,16 @@
   removed }}
 }
 \value{
-  an object of class \code{cutList}
+an object of class \code{cutList}
 }
 \description{
-  modify \code{cutList}-objects depending on argument
-  \code{type}
+modify \code{cutList}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

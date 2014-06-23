@@ -2,7 +2,7 @@
 \alias{setInfo}
 \title{set information of \code{\link{sdcProblem-class}}- or \code{\link{problemInstance-class}} objects}
 \usage{
-  setInfo(object, type, index, input)
+setInfo(object, type, index, input)
 }
 \arguments{
   \item{object}{an object of class
@@ -48,36 +48,35 @@
   type matches 'lb', 'ub', 'LPL', 'SPL' or 'UPL' }}
 }
 \value{
-  a \code{\link{sdcProblem-class}}- or
-  \code{\link{problemInstance-class}} object
+a \code{\link{sdcProblem-class}}- or
+\code{\link{problemInstance-class}} object
 }
 \description{
-  Function \code{\link{getInfo}} is used to query
-  information from \code{\link{sdcProblem-class}}- or
-  \code{\link{problemInstance-class}} objects
+Function \code{\link{getInfo}} is used to query information
+from \code{\link{sdcProblem-class}}- or
+\code{\link{problemInstance-class}} objects
 }
 \examples{
-\dontrun{
-# load primary suppressed data (as created in the example
-of \\code{\\link{primarySuppression}})
+# load primary suppressed data (created in the example of \\code{\\link{primarySuppression}})
 sp <- searchpaths()
 fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
 problem <- get(load(fn))
 
 # which is the overall total?
-index.tot <- which.max(getInfo(problem, 'freq')
+index.tot <- which.max(getInfo(problem, 'freq'))
 index.tot
 
-# the anonymization state of the total is
+# we see that the cell with index.tot==1 is the overall total and its
+# anonymization state of the total can be extracted as follows:
 print(getInfo(problem, type='sdcStatus')[index.tot])
 
 # we want this cell to never be suppressed
 problem <- setInfo(problem, type='sdcStatus', index=index.tot, input='z')
 
+# we can verify this:
 print(getInfo(problem, type='sdcStatus')[index.tot])
 }
-}
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

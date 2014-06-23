@@ -12,7 +12,7 @@
 #' \item startI: current level at which subtables need to be protected (useful when restarting HITAS|HYPERCUBE)
 #' \item startJ: current number of the subtable within a given level that needs to be protected (useful when restarting HITAS|HYPERCUBE)
 #' \item innerAndMarginalCellInfo: for a given problem, get indices of inner- and marginal table cells
-#' 
+#'
 #' @return information from objects of class \code{sdcProblem} depending on argument \code{type}
 #' \itemize{
 #' \item an object of class \code{dataObj} (or NULL) if \code{type} matches 'dataObj'
@@ -55,13 +55,13 @@ setGeneric('get.sdcProblem', function(object, type) {standardGeneric('get.sdcPro
 #' \item indicesDealtWith: set|modify slot 'indicesDealtWith' of argument \code{object}
 #' \item elapsedTime: set|modify slot 'elapsedTime' of argument \code{object}
 #' @param input a list with elements depending on argument \code{type}.}
-#' 
+#'
 #' \itemize{
 #' \item an object of class \code{problemInstance} if argument \code{type} matches 'problemInstance'
 #' \item a list (derived from calc.multiple(type='makePartition', ...) if argument \code{type} matches 'partition'
 #' \item a numeric vector of length 1 if argument \code{type} matches 'startI', 'startJ' or 'elapsedTime'
 #' \item a numeric vector if argument \code{type} matches 'indicesDealtWith'
-#' 
+#'
 #' @return an object of class \code{sdcProblem}
 #'
 #' @export
@@ -80,6 +80,7 @@ setGeneric('set.sdcProblem', function(object, type, input) {standardGeneric('set
 #' \item rule.freq: modify suppression status within \code{object} according to frequency suppression rule
 #' \item rule.nk: modify sdcStatus of \code{object} according to nk-dominance rule
 #' \item rule.p: modify sdcStatus of \code{object} according to p-percent rule
+#' \item rule.pq: modify sdcStatus of \code{object} according to pq-rule
 #' \item heuristicSolution: obtain a heuristic (greedy) solution to the problem defined by \code{object}
 #' \item cutAndBranch: solve a secondary cell suppression problem defined by \code{object} using cut and branch
 #' \item anonWorker: is used to solve the suppression problem depending on information provided with argument \code{input}
@@ -101,14 +102,14 @@ setGeneric('set.sdcProblem', function(object, type, input) {standardGeneric('set
 #' \item a list if argument \code{type} matches 'heuristicSolution' having the following elements:
 #' \itemize{
 #' \item element 'aProb': an object of class \code{linProb} defining the attacker's problem
-#' \item element 'validCuts': an object of class \code{cutList} representing a list of constraints 
+#' \item element 'validCuts': an object of class \code{cutList} representing a list of constraints
 #' \item element 'solver': a character vector of length 1 specifying a solver to use
 #' \item element 'verbose': a logical vector of length 1 setting if verbose output is desired }
 #' \item a list (typically generated using genParaObj()) specifying parameters for the secondary cell suppression problem if argument \code{type} matches 'cutAndBranch', 'anonWorker', 'ghmiter', 'preprocess'
 #' \item a list of length 3 if argument \code{type} matches 'cellID' having following elements
 #' \itemize{
-#' \item first element: character vector specifying variable names that need to exist in slot 'dimInfo' of \code{object} 
-#' \item second element: character vector specifying codes for each variable that define a specific table cell 
+#' \item first element: character vector specifying variable names that need to exist in slot 'dimInfo' of \code{object}
+#' \item second element: character vector specifying codes for each variable that define a specific table cell
 #' \item third element: logical vector of length 1 with TRUE setting verbosity and FALSE to turn verbose output off}
 #' \item a list of length 3 if argument \code{type} matches 'ghmiter.diagObj' having following elements
 #' \itemize{
@@ -126,14 +127,14 @@ setGeneric('set.sdcProblem', function(object, type, input) {standardGeneric('set
 #' \item first element: numeric vector of indices that should be suppressed }
 #' \item a list of length 2 if argument \code{type} matches 'ghmiter.selectQuader' having following elements
 #' \itemize{
-#' \item first element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.calcInformation'  
+#' \item first element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.calcInformation'
 #' \item second element: a list (typically generated using genParaObj())}
 #' \item a list of length 4 if argument \code{type} matches 'ghmiter.suppressAdditionalQuader' having following elements
 #' \itemize{
-#' \item first element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.diagObj'  
-#' \item second element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.calcInformation'  
-#' \item third element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.selectQuader'  
-#' \item fourth element: a list (typically generated using genParaObj()) } 
+#' \item first element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.diagObj'
+#' \item second element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.calcInformation'
+#' \item third element: a list object typically generated with method \code{calc.sdcProblem} and type=='ghmiter.selectQuader'
+#' \item fourth element: a list (typically generated using genParaObj()) }
 #' \item a list of length 1 if argument \code{type} matches 'contributingIndices' having following element
 #' \itemize{
 #' \item first element: character vector of length 1 being an ID for which contributing indices should be calculated }
@@ -160,7 +161,7 @@ setGeneric('set.sdcProblem', function(object, type, input) {standardGeneric('set
 #' \item a list containing information about each quader that could possibly be suppressed if argument \code{type} matches 'ghmiter.calcInformation'
 #' \item a list containing information about a single quader that should be suppressed if argument \code{type} matches 'ghmiter.selectQuader'
 #' \item a numeric vector with indices that contribute to the desired table cell if argument \code{type} matches 'contributingIndices'
-#' \item an object of class \code{cutList} if argument \code{type} matches 'genStructuralCuts' 
+#' \item an object of class \code{cutList} if argument \code{type} matches 'genStructuralCuts'
 #' }
 #' @export
 #' @docType methods
@@ -169,3 +170,50 @@ setGeneric('set.sdcProblem', function(object, type, input) {standardGeneric('set
 #' @note internal function
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
 setGeneric('calc.sdcProblem', function(object, type, input) {standardGeneric('calc.sdcProblem')})
+
+# get-methods
+setGeneric("g_problemInstance", function(object) { standardGeneric("g_problemInstance") })
+setGeneric("g_dimInfo", function(object) { standardGeneric("g_dimInfo") })
+setGeneric("g_partition", function(object) { standardGeneric("g_partition") })
+setGeneric("g_elapsedTime", function(object) { standardGeneric("g_elapsedTime") })
+setGeneric("g_dataObj", function(object) { standardGeneric("g_dataObj") })
+setGeneric("g_startI", function(object) { standardGeneric("g_startI") })
+setGeneric("g_startJ", function(object) { standardGeneric("g_startJ") })
+setGeneric("g_indicesDealtWith", function(object) { standardGeneric("g_indicesDealtWith") })
+setGeneric("g_innerAndMarginalCellInfo", function(object) { standardGeneric("g_innerAndMarginalCellInfo") })
+setGeneric("g_df", function(object) { standardGeneric("g_df") })
+
+# set-methods
+setGeneric("s_problemInstance<-", function(object, value) standardGeneric("s_problemInstance<-"))
+setGeneric("s_partition<-", function(object, value) standardGeneric("s_partition<-"))
+setGeneric("s_startI<-", function(object, value) standardGeneric("s_startI<-"))
+setGeneric("s_startJ<-", function(object, value) standardGeneric("s_startJ<-"))
+setGeneric("s_indicesDealtWith<-", function(object, value) standardGeneric("s_indicesDealtWith<-"))
+setGeneric("s_elapsedTime<-", function(object, value) standardGeneric("s_elapsedTime<-"))
+
+# calc-methods
+setGeneric("c_rule_freq", function(object, input) { standardGeneric("c_rule_freq") })
+setGeneric("c_rule_nk", function(object, input) { standardGeneric("c_rule_nk") })
+setGeneric("c_rule_nk", function(object, input) { standardGeneric("c_rule_nk") })
+setGeneric("c_rule_p", function(object, input) { standardGeneric("c_rule_p") })
+setGeneric("c_rule_pq", function(object, input) { standardGeneric("c_rule_pq") })
+setGeneric("c_heuristic_solution", function(object, input) { standardGeneric("c_heuristic_solution") })
+setGeneric("c_anon_worker", function(object, input) { standardGeneric("c_anon_worker") })
+setGeneric("c_opt_cpp", function(object, input) { standardGeneric("c_opt_cpp") })
+setGeneric("c_hitas_cpp", function(object, input) { standardGeneric("c_hitas_cpp") })
+setGeneric("c_quick_suppression", function(object, input) { standardGeneric("c_quick_suppression") })
+setGeneric("c_cut_and_branch", function(object, input) { standardGeneric("c_cut_and_branch") })
+setGeneric("c_ghmiter", function(object, input) { standardGeneric("c_ghmiter") })
+setGeneric("c_preprocess", function(object, input) { standardGeneric("c_preprocess") })
+setGeneric("c_cellID", function(object, input) { standardGeneric("c_cellID") })
+setGeneric("c_finalize", function(object, input) { standardGeneric("c_finalize") })
+setGeneric("c_ghmiter_diag_obj", function(object, input) { standardGeneric("c_ghmiter_diag_obj") })
+setGeneric("c_ghmiter_calc_info", function(object, input) { standardGeneric("c_ghmiter_calc_info") })
+setGeneric("c_ghmiter_suppress_quader", function(object, input) { standardGeneric("c_ghmiter_suppress_quader") })
+setGeneric("c_ghmiter_select_quader", function(object, input) { standardGeneric("c_ghmiter_select_quader") })
+setGeneric("c_ghmiter_supp_additional", function(object, input) { standardGeneric("c_ghmiter_supp_additional") })
+setGeneric("c_contributing_indices", function(object, input) { standardGeneric("c_contributing_indices") })
+setGeneric("c_reduce_problem", function(object, input) { standardGeneric("c_reduce_problem") })
+setGeneric("c_gen_structcuts", function(object, input) { standardGeneric("c_gen_structcuts") })
+
+

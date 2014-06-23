@@ -3,6 +3,11 @@
 \alias{set.linProb}
 \alias{set.linProb,linProb,character,list-method}
 \title{change \code{linProb}-objects depending on argument \code{type}}
+\usage{
+set.linProb(object, type, input)
+
+\S4method{set.linProb}{linProb,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{linProb}}
 
@@ -46,16 +51,16 @@
   be added}}
 }
 \value{
-  an object of class \code{linProb}
+an object of class \code{linProb}
 }
 \description{
-  change \code{linProb}-objects depending on argument
-  \code{type}
+change \code{linProb}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

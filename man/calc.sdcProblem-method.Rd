@@ -3,6 +3,11 @@
 \alias{calc.sdcProblem}
 \alias{calc.sdcProblem,sdcProblem,character,list-method}
 \title{perform calculations on \code{sdcProblem}-objects depending on argument \code{type}}
+\usage{
+calc.sdcProblem(object, type, input)
+
+\S4method{calc.sdcProblem}{sdcProblem,character,list}(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{sdcProblem}}
 
@@ -13,23 +18,24 @@
   \item rule.nk: modify sdcStatus of \code{object}
   according to nk-dominance rule \item rule.p: modify
   sdcStatus of \code{object} according to p-percent rule
-  \item heuristicSolution: obtain a heuristic (greedy)
-  solution to the problem defined by \code{object} \item
-  cutAndBranch: solve a secondary cell suppression problem
-  defined by \code{object} using cut and branch \item
-  anonWorker: is used to solve the suppression problem
-  depending on information provided with argument
-  \code{input} \item ghmiter: solve a secondary cell
-  suppression problem defined by \code{object} using
-  hypercube algorithm \item preprocess: perform a
-  preprocess procedure by trying to identify primary
-  suppressed cells that are already protected due to other
-  primary suppressed cells \item cellID: find index of cell
-  defined by information provided with argument
-  \code{input} \item finalize: create an object of class
-  \code{safeObj} \item ghmiter.diagObj: calculate codes
-  required to identify diagonal cells given a valid cell
-  code - used for ghmiter-algorithm only \item
+  \item rule.pq: modify sdcStatus of \code{object}
+  according to pq-rule \item heuristicSolution: obtain a
+  heuristic (greedy) solution to the problem defined by
+  \code{object} \item cutAndBranch: solve a secondary cell
+  suppression problem defined by \code{object} using cut
+  and branch \item anonWorker: is used to solve the
+  suppression problem depending on information provided
+  with argument \code{input} \item ghmiter: solve a
+  secondary cell suppression problem defined by
+  \code{object} using hypercube algorithm \item preprocess:
+  perform a preprocess procedure by trying to identify
+  primary suppressed cells that are already protected due
+  to other primary suppressed cells \item cellID: find
+  index of cell defined by information provided with
+  argument \code{input} \item finalize: create an object of
+  class \code{safeObj} \item ghmiter.diagObj: calculate
+  codes required to identify diagonal cells given a valid
+  cell code - used for ghmiter-algorithm only \item
   ghmiter.calcInformation: calculate information for
   quaders identified by diagonal indices - used for
   ghmiter-algorithm only \item ghmiter.suppressQuader:
@@ -127,49 +133,48 @@
   'genStructuralCuts'}
 }
 \value{
-  information from objects of class \code{sdcProblem}
-  depending on argument \code{type} \itemize{ \item an
-  object of class \code{sdcProblem} if argument \code{type}
-  matches 'rule.freq', 'rule.nk', 'rule.p', 'cutAndBranch',
-  'anonWorker', 'ghmiter', 'ghmiter.supressQuader',
-  'ghmiter.suppressAdditionalQuader' or 'reduceProblem'
-  \item a numeric vector with elements being 0 or 1 if
-  argument \code{type} matches 'heuristicSolution' \item a
-  list if argument \code{type} matches 'preprocess' having
-  following elements: \itemize{ \item element 'sdcProblem':
-  an object of class \code{sdcProblem} \item element
-  'aProb': an object of class \code{linProb} \item element
-  'validCuts': an object of class \code{cutList} } \item a
-  numeric vector of length 1 specifying the index of the
-  cell of interest if argument \code{type} matches 'cellID'
-  \item an object of class \code{safeObj} if argument
-  \code{type} matches 'finalize' \item a list if argument
-  \code{type} matches 'ghmiter.diagObj' having following
-  elements: \itemize{ \item element 'cellToProtect':
-  character vector of length 1 defining the ID of the cell
-  to protect \item element 'indToProtect': numeric vector
-  of length 1 defining the index of the cell to protect
-  \item element 'diagIndices': numeric vector defining
-  indices of possible cells defining cubes } \item a list
-  containing information about each quader that could
-  possibly be suppressed if argument \code{type} matches
-  'ghmiter.calcInformation' \item a list containing
-  information about a single quader that should be
-  suppressed if argument \code{type} matches
-  'ghmiter.selectQuader' \item a numeric vector with
-  indices that contribute to the desired table cell if
-  argument \code{type} matches 'contributingIndices' \item
-  an object of class \code{cutList} if argument \code{type}
-  matches 'genStructuralCuts' }
+information from objects of class \code{sdcProblem}
+depending on argument \code{type} \itemize{ \item an object
+of class \code{sdcProblem} if argument \code{type} matches
+'rule.freq', 'rule.nk', 'rule.p', 'cutAndBranch',
+'anonWorker', 'ghmiter', 'ghmiter.supressQuader',
+'ghmiter.suppressAdditionalQuader' or 'reduceProblem' \item
+a numeric vector with elements being 0 or 1 if argument
+\code{type} matches 'heuristicSolution' \item a list if
+argument \code{type} matches 'preprocess' having following
+elements: \itemize{ \item element 'sdcProblem': an object
+of class \code{sdcProblem} \item element 'aProb': an object
+of class \code{linProb} \item element 'validCuts': an
+object of class \code{cutList} } \item a numeric vector of
+length 1 specifying the index of the cell of interest if
+argument \code{type} matches 'cellID' \item an object of
+class \code{safeObj} if argument \code{type} matches
+'finalize' \item a list if argument \code{type} matches
+'ghmiter.diagObj' having following elements: \itemize{
+\item element 'cellToProtect': character vector of length 1
+defining the ID of the cell to protect \item element
+'indToProtect': numeric vector of length 1 defining the
+index of the cell to protect \item element 'diagIndices':
+numeric vector defining indices of possible cells defining
+cubes } \item a list containing information about each
+quader that could possibly be suppressed if argument
+\code{type} matches 'ghmiter.calcInformation' \item a list
+containing information about a single quader that should be
+suppressed if argument \code{type} matches
+'ghmiter.selectQuader' \item a numeric vector with indices
+that contribute to the desired table cell if argument
+\code{type} matches 'contributingIndices' \item an object
+of class \code{cutList} if argument \code{type} matches
+'genStructuralCuts' }
 }
 \description{
-  perform calculations on \code{sdcProblem}-objects
-  depending on argument \code{type}
+perform calculations on \code{sdcProblem}-objects depending
+on argument \code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

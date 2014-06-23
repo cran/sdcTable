@@ -2,7 +2,7 @@
 \alias{protectTable}
 \title{protecting \code{\link{sdcProblem-class}} objects}
 \usage{
-  protectTable(object, method, ...)
+protectTable(object, method, ...)
 }
 \arguments{
   \item{object}{a \code{\link{sdcProblem-class}} object
@@ -33,7 +33,7 @@
   Parameter \code{verbose} defaults to 'FALSE' \item
   \code{save}: logical vector of length 1 defining if
   temporary results should be saved in the current working
-  directory (TRUE) or not (FALSE). Parameter \code{safe}
+  directory (TRUE) or not (FALSE). Parameter \code{save}
   defaults to 'FALSE' } \item parameters used for HITAS|OPT
   procedures: \itemize{ \item \code{solver}: character
   vector of length 1 defining the solver to be used.
@@ -64,22 +64,25 @@
   solution of the cut and branch algorithm is accepted as
   optimal with respect to the upper bound given by the
   (relaxed) solution of the master problem. Its default
-  value is set to '10'} \item parameters used for HYPERCUBE
-  procedure: \itemize{ \item \code{protectionLevel}:
-  numeric vector of length 1 specifying the required
-  protection level for the HYPERCUBE-procedure. Its default
-  value is 80 \item \code{suppMethod}: character vector of
-  length 1 defining the rule on how to select the 'optimal'
-  cube to protect a single sensitive cells. Possible
-  choices are: \itemize{ \item \code{minSupps}: minimize
-  the number of additional secondary suppressions (this is
-  also the default setting). \item \code{minSum}: minimize
-  the sum of counts of additional suppressed cells \item
-  \code{minSumLogs}: minimize the log of the sum of
-  additional suppressed cells} \item suppAdditionalQuader:
-  logical vector of length 1 specfifying if additional
-  cubes should be suppressed if any secondary suppressions
-  in the 'optimal' cube are 'singletons'. Parameter
+  value is set to '10' \item \code{useC}: boolean vector of
+  length 1 defining if c++ implementation of the secondary
+  cell suppression problem should be used, defaults to
+  FALSE} \item parameters used for HYPERCUBE procedure:
+  \itemize{ \item \code{protectionLevel}: numeric vector of
+  length 1 specifying the required protection level for the
+  HYPERCUBE-procedure. Its default value is 80 \item
+  \code{suppMethod}: character vector of length 1 defining
+  the rule on how to select the 'optimal' cube to protect a
+  single sensitive cells. Possible choices are: \itemize{
+  \item \code{minSupps}: minimize the number of additional
+  secondary suppressions (this is also the default
+  setting). \item \code{minSum}: minimize the sum of counts
+  of additional suppressed cells \item \code{minSumLogs}:
+  minimize the log of the sum of additional suppressed
+  cells} \item suppAdditionalQuader: logical vector of
+  length 1 specfifying if additional cubes should be
+  suppressed if any secondary suppressions in the 'optimal'
+  cube are 'singletons'. Parameter
   \code{suppAdditionalQuader} has a default value of
   'FALSE'} \item parameter used for protectLinkedTables():
   \itemize{ \item \code{maxIter}: numeric vector of length
@@ -89,20 +92,19 @@
   \code{maxIter} is 10} }}
 }
 \value{
-  an \code{\link{safeObj-class}} object
+an \code{\link{safeObj-class}} object
 }
 \description{
-  Function \code{\link{protectTable}} is used to protect
-  primary sensitive table cells (that usually have been
-  identified and set using
-  \code{\link{primarySuppression}}). The function protects
-  primary sensitive table cells according to the method
-  that has been chosen and the parameters that have been
-  set. Additional parameters that are used to control the
-  protection algorithm are set using parameter \code{...}.
+Function \code{\link{protectTable}} is used to protect
+primary sensitive table cells (that usually have been
+identified and set using \code{\link{primarySuppression}}).
+The function protects primary sensitive table cells
+according to the method that has been chosen and the
+parameters that have been set. Additional parameters that
+are used to control the protection algorithm are set using
+parameter \code{...}.
 }
 \examples{
-\dontrun{
 # load problem (as it was created after performing primary suppression
 # in the example of \\code{\\link{primarySuppression}})
 sp <- searchpaths()
@@ -110,7 +112,7 @@ fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
 problem <- get(load(fn))
 
 # protect the table using the 'HITAS' algorithm with verbose output
-protectedData <- protectTable(problem, method='HITAS', verbose=TRUE)
+protectedData <- protectTable(problem, method='HITAS', verbose=TRUE, useC=TRUE)
 
 # showing a summary
 summary(protectedData)
@@ -118,8 +120,7 @@ summary(protectedData)
 # looking at the final table with result suppression pattern
 print(getInfo(protectedData, type='finalData'))
 }
-}
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

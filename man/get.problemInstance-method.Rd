@@ -3,6 +3,11 @@
 \alias{get.problemInstance}
 \alias{get.problemInstance,problemInstance,character-method}
 \title{query \code{problemInstance}-objects depending on argument \code{type}}
+\usage{
+get.problemInstance(object, type)
+
+\S4method{get.problemInstance}{problemInstance,character}(object, type)
+}
 \arguments{
   \item{object}{an object of class \code{problemInstance}}
 
@@ -37,27 +42,27 @@
   suppression pattern}
 }
 \value{
-  information from objects of class \code{dataObj}
-  depending on argument \code{type} \itemize{ \item a list
-  (or NULL) if argument \code{type} matches 'numVars' \item
-  numeric vector if argument \code{type} matches 'freq',
-  'lb', 'ub', 'LPL', 'UPL', 'SPL', 'weight', 'suppPattern'
-  \item numeric vector (or NULL) if argument \code{type}
-  matches 'w', 'primSupps', 'secondSupps', 'forcedCells'
-  \item character vector if argument \code{type} matches
-  'strID', 'sdcStatus', '' \item logical vector of length 1
-  if argument \code{type} matches 'hasPrimSupps',
-  'hasSecondSupps', 'hasForcedCells' \item numerical vector
-  of length 1 if argument \code{type} matches 'nrVars' }
+information from objects of class \code{dataObj} depending
+on argument \code{type} \itemize{ \item a list (or NULL) if
+argument \code{type} matches 'numVars' \item numeric vector
+if argument \code{type} matches 'freq', 'lb', 'ub', 'LPL',
+'UPL', 'SPL', 'weight', 'suppPattern' \item numeric vector
+(or NULL) if argument \code{type} matches 'w', 'primSupps',
+'secondSupps', 'forcedCells' \item character vector if
+argument \code{type} matches 'strID', 'sdcStatus', '' \item
+logical vector of length 1 if argument \code{type} matches
+'hasPrimSupps', 'hasSecondSupps', 'hasForcedCells' \item
+numerical vector of length 1 if argument \code{type}
+matches 'nrVars' }
 }
 \description{
-  query \code{problemInstance}-objects depending on
-  argument \code{type}
+query \code{problemInstance}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

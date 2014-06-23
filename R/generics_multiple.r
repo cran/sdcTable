@@ -10,13 +10,13 @@
 #' \itemize{
 #' \item if type matches 'makePartitions', 'genMatMFull' or 'makeAttackerProblem': a list of length 2 with elements 'objectA' and 'objectB'
 #' \itemize{
-#' \item element 'object A': an object of class \code{problemInstance}  
+#' \item element 'object A': an object of class \code{problemInstance}
 #' \item element 'object B': an object of class \code{dimInfo} }
 #' \item type matches 'calcFullProblem': a list of length 1
 #' \itemize{
-#' \item element 'object A': an object of class \code{dataObj}  
+#' \item element 'object A': an object of class \code{dataObj}
 #' \item element 'object B': an object of class \code{dimInfo} }
-#' 
+#'
 #' @return manipulated data based on argument \code{type}
 #' \itemize{
 #' \item list with elements 'groups', 'indices', 'strIDs', 'nrGroups' and 'nrTables' if argument \code{type} matches 'makePartitions'
@@ -32,3 +32,8 @@
 #' @note internal function
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
 setGeneric('calc.multiple', function(type, input) {standardGeneric('calc.multiple')})
+
+setGeneric("c_make_partitions", function(input) { standardGeneric("c_make_partitions") })
+setGeneric("c_gen_mat_m", function(input) { standardGeneric("c_gen_mat_m") })
+setGeneric("c_make_att_prob", function(input) { standardGeneric("c_make_att_prob") })
+setGeneric("c_calc_full_prob", function(input) { standardGeneric("c_calc_full_prob") })

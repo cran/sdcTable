@@ -2,8 +2,7 @@
 \alias{changeCellStatus}
 \title{change anonymization status of a specific cell}
 \usage{
-  changeCellStatus(object, characteristics, varNames, rule,
-    verbose = FALSE)
+changeCellStatus(object, characteristics, varNames, rule, verbose = FALSE)
 }
 \arguments{
   \item{object}{an object of class
@@ -25,24 +24,22 @@
   verbosity, defaults to 'FALSE'}
 }
 \value{
-  a \code{\link{sdcProblem-class}} object
+a \code{\link{sdcProblem-class}} object
 }
 \description{
-  Function \code{\link{changeCellStatus}} allows to
-  change|modify the anonymization state of single table
-  cells for objects ofs class
-  \code{\link{sdcProblem-class}}.
+Function \code{\link{changeCellStatus}} allows to
+change|modify the anonymization state of single table cells
+for objects ofs class \code{\link{sdcProblem-class}}.
 }
 \note{
-  Important: the \code{i}-th element of argument
-  \code{characteristics} is uses as the desired
-  characteristic for the dimensional variable specified at
-  the \code{i}-th position of argument \code{varNames}!
+Important: the \code{i}-th element of argument
+\code{characteristics} is uses as the desired
+characteristic for the dimensional variable specified at
+the \code{i}-th position of argument \code{varNames}!
 }
 \examples{
-\dontrun{
 # load primary suppressed data (as created in the example
-of \\code{\\link{primarySuppression}})
+# of \\code{\\link{primarySuppression}})
 sp <- searchpaths()
 fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
 problem <- get(load(fn))
@@ -62,8 +59,7 @@ problem <- changeCellStatus(problem, characteristics, varNames, rule, verbose)
 # having a second look at the anonymization states
 print(table(getInfo(problem, 'sdcStatus')))
 }
-}
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

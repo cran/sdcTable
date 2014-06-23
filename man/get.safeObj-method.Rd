@@ -3,6 +3,9 @@
 \alias{get.safeObj}
 \alias{get.safeObj,safeObj,character,list-method}
 \title{query \code{safeObj}-objects depending on argument \code{type}}
+\usage{
+get.safeObj(object, type, input)
+}
 \arguments{
   \item{object}{an object of class \code{safeObj}}
 
@@ -37,32 +40,31 @@
   to turn verbose output off}}
 }
 \value{
-  information from \code{object} depending on \code{type}
-  \itemize{ \item an object of class \code{dimInfo} (or
-  NULL) if type matches 'dimInfo' \item a numeric vector if
-  type matches 'elapsedTime', 'nrNonDuplicatedCells',
-  'nrPrimSupps', 'nrSecondSupps', 'nrPublishableCells' or
-  'cellID' \item a character vector if type matches
-  'suppMethod' \item a data.frame if type matches
-  'finalData' \item a list if type matches 'cellInfo'
-  containing the following elements: \itemize{ \item
-  element 'cellID': numeric vector of length 1 specifying
-  the index of the cell of interest \item element 'data':
-  row of slot 'finalData' with the row being defined by the
-  calculated \code{cellID} \item element 'primSupp':
-  logical vector of length 1 being TRUE if cell is a
-  primary suppressed cell \item element 'secondSupps':
-  logical vector of length 1 being TRUE if cell is a
-  secondary suppressed cell } }
+information from \code{object} depending on \code{type}
+\itemize{ \item an object of class \code{dimInfo} (or NULL)
+if type matches 'dimInfo' \item a numeric vector if type
+matches 'elapsedTime', 'nrNonDuplicatedCells',
+'nrPrimSupps', 'nrSecondSupps', 'nrPublishableCells' or
+'cellID' \item a character vector if type matches
+'suppMethod' \item a data.frame if type matches 'finalData'
+\item a list if type matches 'cellInfo' containing the
+following elements: \itemize{ \item element 'cellID':
+numeric vector of length 1 specifying the index of the cell
+of interest \item element 'data': row of slot 'finalData'
+with the row being defined by the calculated \code{cellID}
+\item element 'primSupp': logical vector of length 1 being
+TRUE if cell is a primary suppressed cell \item element
+'secondSupps': logical vector of length 1 being TRUE if
+cell is a secondary suppressed cell } }
 }
 \description{
-  query \code{safeObj}-objects depending on argument
-  \code{type}
+query \code{safeObj}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

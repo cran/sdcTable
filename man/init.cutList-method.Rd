@@ -3,6 +3,11 @@
 \alias{init.cutList}
 \alias{init.cutList,character,list-method}
 \title{initialize \code{cutList}-objects depending on argument \code{type}}
+\usage{
+init.cutList(type, input)
+
+\S4method{init.cutList}{character,list}(type, input)
+}
 \arguments{
   \item{type}{a character vector of length 1 defining
   what|how to initialize. Allowed types are:} \itemize{
@@ -28,16 +33,16 @@
   side of the constraints}}
 }
 \value{
-  an object of class \code{cutList}
+an object of class \code{cutList}
 }
 \description{
-  initialize \code{cutList}-objects depending on argument
-  \code{type}
+initialize \code{cutList}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 

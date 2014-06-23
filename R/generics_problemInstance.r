@@ -22,7 +22,7 @@
 #' \item hasForcedCells: shows if \code{object} has cells that must not be suppressed
 #' \item weight: gives weight that is used the suppression procedures
 #' \item suppPattern: gives the current suppression pattern
-#' 
+#'
 #' @return information from objects of class \code{dataObj} depending on argument \code{type}
 #' \itemize{
 #' \item a list (or NULL) if argument \code{type} matches 'numVars'
@@ -53,10 +53,10 @@ setGeneric('get.problemInstance', function(object, type) {standardGeneric('get.p
 #' \item SPL: set sliding protection levels
 #' \item sdcStatus: change anonymization status
 #' @param input a list with elements 'indices' and 'values'.}
-#' 
+#'
 #' \itemize{
 #' \item element 'indices': numeric vector defining the indices of the cells that should be modified
-#' \item element 'values': numeric vector whose values are going to replace current values for cells defined by 'indices' depending on argument \code{type}  
+#' \item element 'values': numeric vector whose values are going to replace current values for cells defined by 'indices' depending on argument \code{type}
 #'
 #' @return an object of class \code{problemInstance}
 #'
@@ -76,12 +76,12 @@ setGeneric('set.problemInstance', function(object, type, input) {standardGeneric
 #' \item makeMasterProblem: create the master problem that is the core of the secondary cell suppression problem
 #' \item isProtectedSolution: check if a solution violates any required (upper|lower|sliding) protection levels
 #' @param input a list depending on argument \code{type}.}
-#' 
+#'
 #' \itemize{
 #' \item type==makeMasterProblem: input is not used (empty list)
 #' \item type==isProtectedSolution: input is a list of length 2 with elements 'input1' and 'input2'
 #' \itemize{
-#' \item element 'input1': numeric vector of calculated known lower cell bounds (from attacker's problem) 
+#' \item element 'input1': numeric vector of calculated known lower cell bounds (from attacker's problem)
 #' \item element 'input2': numeric vector of known upper cell bounds (from attacker's problem) }
 #'
 #' @return information from objects of class \code{problemInstance} depending on argument \code{type}
@@ -96,3 +96,37 @@ setGeneric('set.problemInstance', function(object, type, input) {standardGeneric
 #' @note internal function
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
 setGeneric('calc.problemInstance', function(object, type, input) {standardGeneric('calc.problemInstance')})
+
+# get-methods
+setGeneric("g_sdcStatus", function(object) { standardGeneric("g_sdcStatus") })
+setGeneric("g_primSupps", function(object) { standardGeneric("g_primSupps") })
+setGeneric("g_secondSupps", function(object) { standardGeneric("g_secondSupps") })
+setGeneric("g_forcedCells", function(object) { standardGeneric("g_forcedCells") })
+setGeneric("g_type", function(object) { standardGeneric("g_type") })
+setGeneric("g_freq", function(object) { standardGeneric("g_freq") })
+setGeneric("g_strID", function(object) { standardGeneric("g_strID") })
+setGeneric("g_UPL", function(object) { standardGeneric("g_UPL") })
+setGeneric("g_LPL", function(object) { standardGeneric("g_LPL") })
+setGeneric("g_SPL", function(object) { standardGeneric("g_SPL") })
+setGeneric("g_nrVars", function(object) { standardGeneric("g_nrVars") })
+setGeneric("g_lb", function(object) { standardGeneric("g_lb") })
+setGeneric("g_ub", function(object) { standardGeneric("g_ub") })
+setGeneric("g_w", function(object) { standardGeneric("g_w") })
+setGeneric("g_numVars", function(object) { standardGeneric("g_numVars") })
+setGeneric("g_hasPrimSupps", function(object) { standardGeneric("g_hasPrimSupps") })
+setGeneric("g_hasSecondSupps", function(object) { standardGeneric("g_hasSecondSupps") })
+setGeneric("g_hasForcedCells", function(object) { standardGeneric("g_hasForcedCells") })
+setGeneric("g_weight", function(object) { standardGeneric("g_weight") })
+setGeneric("g_suppPattern", function(object) { standardGeneric("g_suppPattern") })
+
+# set-methods
+setGeneric("s_sdcStatus<-", function(object, value) standardGeneric("s_sdcStatus<-"))
+setGeneric("s_lb<-", function(object, value) standardGeneric("s_lb<-"))
+setGeneric("s_ub<-", function(object, value) standardGeneric("s_ub<-"))
+setGeneric("s_LPL<-", function(object, value) standardGeneric("s_LPL<-"))
+setGeneric("s_UPL<-", function(object, value) standardGeneric("s_UPL<-"))
+setGeneric("s_SPL<-", function(object, value) standardGeneric("s_SPL<-"))
+
+# calc-methods
+setGeneric("c_make_masterproblem", function(object, input) { standardGeneric("c_make_masterproblem") })
+setGeneric("c_is_protected_solution", function(object, input) { standardGeneric("c_is_protected_solution") })

@@ -3,6 +3,11 @@
 \alias{get.cutList}
 \alias{get.cutList,cutList,character-method}
 \title{query \code{cutList}-objects depending on argument \code{type}}
+\usage{
+get.cutList(object, type)
+
+\S4method{get.cutList}{cutList,character}(object, type)
+}
 \arguments{
   \item{object}{an object of class \code{cutList}}
 
@@ -14,21 +19,21 @@
   number of constraints}
 }
 \value{
-  information from objects of class \code{cutList}
-  depending on argument \code{type} \itemize{ \item object
-  of class \code{simpleTriplet} if argument \code{type}
-  matches 'constraints' \item character vector if argument
-  \code{type} matches 'direction' \item numeric vector if
-  argument \code{type} matches 'objective' or 'rhs'}
+information from objects of class \code{cutList} depending
+on argument \code{type} \itemize{ \item object of class
+\code{simpleTriplet} if argument \code{type} matches
+'constraints' \item character vector if argument
+\code{type} matches 'direction' \item numeric vector if
+argument \code{type} matches 'objective' or 'rhs'}
 }
 \description{
-  query \code{cutList}-objects depending on argument
-  \code{type}
+query \code{cutList}-objects depending on argument
+\code{type}
 }
 \note{
-  internal function
+internal function
 }
 \author{
-  Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
 
