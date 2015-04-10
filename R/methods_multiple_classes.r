@@ -44,6 +44,19 @@ setMethod("c_make_partitions", signature=c("list"), definition=function(input) {
   final <- list()
   final$groups <- as.list(groups)
   final$indices <- list()
+
+  # default_codes and levels
+  default_codes <- lapply(1:length(dimInfo), function(x) {
+    g_default_codes(dimInfo[[x]])
+  })
+  dim_levels <- lapply(1:length(dimInfo), function(x) {
+    g_levels(dimInfo[[x]])
+  })
+
+  # data.table to merge on
+  df <- data.table(N=1:length(strIDs), strIDs=strIDs)
+  setkey(df, strIDs)
+
   for ( i in 1:length(groups) ) {
     final$indices[[i]] <- list()
     levs <- as.integer(unlist(sapply(groups[[i]], strsplit, "-")))
@@ -52,11 +65,11 @@ setMethod("c_make_partitions", signature=c("list"), definition=function(input) {
     for ( z in 1:length(dimInfo) ) {
       res[[z]] <- list()
       index <- which(g_levels(dimInfo[[z]]) %in% c(levs[z], levs[z]-1))
-      codesDefault <- g_default_codes(dimInfo[[z]])[index]
+      codesDefault <- default_codes[[z]][index]
       if ( levs[z] == 1 ) {
         res[[z]] <- codesDefault
       } else {
-        levOrig <- g_levels(dimInfo[[z]])[index]
+        levOrig <- dim_levels[[z]][index]
         diffs <- c(0,diff(levOrig))
         checkInd <- which(diffs == 1)-1
         out <- data.frame(index=index, levOrig=levOrig, codesDefault=codesDefault, ind=NA)
@@ -84,10 +97,17 @@ setMethod("c_make_partitions", signature=c("list"), definition=function(input) {
       }
     }
     final$indices[[i]] <- list()
-    combs <- expand.grid(lapply(1:length(res), function(x) { 1:length(res[[x]]) } ))
+    combs <- expand.grid(lapply(1:length(res), function(x) {
+      1:length(res[[x]])
+    }))
+
+    final$indices[[i]] <- list();
+    length(final$indices[[i]]) <- nrow(combs)
     for ( m in 1:nrow(combs) ) {
       final.strIDs <- pasteStrVec(expand(lapply(1:ncol(combs), function(x) { res[[x]][[combs[m,x]]] })), ncol(combs))
-      final$indices[[i]][[m]] <- which(strIDs %in% final.strIDs)
+      df2 <- data.table(strIDs=final.strIDs)
+      setkey(df2, strIDs)
+      final$indices[[i]][[m]] <- merge(df, df2)$N
     }
   }
   final$nrGroups <- length(groups)
@@ -261,41 +281,32 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
   ## revert rawData codes to default codes
   for ( j in seq_along(ind.dimvars) ) {
     v <- c_match_default_codes(object=dimObj[[j]], input=rawData[,get(names(dimObj)[j])])
-    rawData[,names(dimObj)[j]:=v]
+    set(rawData, NULL, names(dimObj)[j], v)
   }
   setkeyv(rawData, colnames(rawData)[ind.dimvars])
 
   ## replace NAs in rawData by 0 (required for aggregation)
   cols <- colnames(rawData)[(length(dimObj)+1):ncol(rawData)]
-  ind.na <- list(); length(ind.na) <- length(cols)
-  for ( i in 1:length(cols) ) {
-    ind.na[[i]] <- which(is.na(rawData[,cols[i],with=FALSE]))
-    if ( length(ind.na[[i]]) > 0 ) {
-      rawData[ind.na[[i]], cols[i]:=0]
-    }
-  }
+  ind.na <- list(); length(ind.na) <- length(cols); k <- 1
+  for ( j in cols ) {
+    ind.na[[k]] <- which(is.na(rawData[[j]]))
+    set(rawData, ind.na[[k]], j, 0)
+    k <- k+1
+  }; rm(k)
 
   ## merge minDat to fullDat
   fullTabObj <- merge(fullTabObj, rawData, all.x=TRUE)
-
-  ## missing dimensions in raw data are filled up with zeros
-  ind <- which(is.na(rawData$freq))
-  if ( length(ind) > 0 ) {
-    for ( k in 1:length(cols) ) {
-      rawData[ind, cols[k]:=0]
-    }
-  }
 
   ## set missing combinations of lowest levels to 0
   ## problematic are all levels that should exist, but do not exist
   ## they are filled with 0 so that we can aggregate
   dim.vars <- colnames(fullTabObj)[ind.dimvars]
-  strID <- apply(fullTabObj[,dim.vars,with=FALSE],1,str_c, collapse="")
+  strID <- apply(fullTabObj[,dim.vars,with=FALSE],1,paste0, collapse="")
 
   if ( length(missing.codes) > 0 ) {
     index <- which(strID%in%missing.codes)
     for ( i in 1:length(cols) ) {
-      fullTabObj[index, cols[i]:=0]
+      set(fullTabObj, index, cols[i], 0)
     }
   }
 
@@ -311,22 +322,18 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
         setkeyv(fullTabObj, dim.vars[1])
       }
 
-      dat <- copy(fullTabObj) # we need to copy!
-
       cur.dim <- dimObj[[i]]@dims
       for ( j in length(cur.dim):1 ) {
         cur.levs <-  cur.dim[[j]]
-        out <- dat[dat[[ind.dimvars[i]]] %in% cur.levs[-1],]
+        out <- fullTabObj[fullTabObj[[ind.dimvars[i]]] %in% cur.levs[-1],]
         if ( length(dim.vars)==1 ) {
           out <- out[,lapply(.SD,sum), .SDcols=col.names]
         } else {
           out <- out[,lapply(.SD,sum), .SDcols=col.names, by=key(out)]
         }
-
         row.ind <- which(fullTabObj[[ind.dimvars[i]]] == cur.levs[1])
-        for ( z in 1:length(col.names) ) {
-          v <- out[,col.names[z], with=FALSE]
-          fullTabObj[row.ind, col.names[z]:=v]
+        for ( j in col.names ) {
+          set(fullTabObj, row.ind, j, out[[j]])
         }
       }
     }
@@ -337,7 +344,7 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
 
   nrV <- nrow(fullTabObj)
   f <- fullTabObj[[ind.freq]]
-  strID <- apply(fullTabObj[,dim.vars,with=FALSE],1,str_c, collapse="")
+  strID <- apply(fullTabObj[,dim.vars,with=FALSE],1,paste0, collapse="")
   w <- numVarsList <- NULL
   w.ind <- g_weightvar_ind(x)
   if ( !is.null(w.ind) ) {
@@ -358,7 +365,7 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
   ## replace 0 in rawData by NA if they have been replaced earlier
   for ( i in 1:length(ind.na) ) {
     if ( length(ind.na[[i]]) > 0 ) {
-      rawData[ind.na[[i]], cols[i]:=NA]
+      set(rawData, ind.na[[i]], cols[i], NA)
     }
   }
   s_raw_data(x) <- list(datO)
@@ -368,7 +375,7 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
     w=w,
     numVars=numVarsList,
     lb=rep(0, nrV),
-    ub=sapply(f, function(x) { max(2*x, 5)}),
+    ub=pmax(2*f, 5),
     LPL=rep(1, nrV),
     UPL=rep(1, nrV),
     SPL=rep(0, nrV),

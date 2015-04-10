@@ -1318,9 +1318,13 @@ extern "C" {
       R_FlushConsole();
     }
 
-    bool testsol;
     if ( attackonly[0] == 1 ) {
-      testsol = is_valid_solution(aprob, mprob, constraint_pool, pinfo, xi);
+      bool testsol = is_valid_solution(aprob, mprob, constraint_pool, pinfo, xi);
+      if ( !testsol ) {
+        if ( info.verbose == true ) {
+          Rprintf("Info: not a valid solution!\n");
+        }
+      }
       for ( int i=0; i<info.len_prim; ++i ) {
         bounds_min[i] = info.att_min[i];
         bounds_max[i] = info.att_max[i];
