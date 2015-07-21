@@ -239,24 +239,24 @@ setMethod("g_innerAndMarginalCellInfo", signature="sdcProblem", definition=funct
 
 setMethod("g_df", signature="sdcProblem", definition=function(object) {
   pI <- g_problemInstance(object)
-  df <- data.frame(
+  dt <- data.table(
     strID=g_strID(pI),
     freq=g_freq(pI),
-    sdcStatus=g_sdcStatus(pI),
-    stringsAsFactors=FALSE
+    sdcStatus=g_sdcStatus(pI)
   )
   dI <- g_dimInfo(object)
   strInfo <- g_str_info(dI)
   dimObj <- g_dim_info(dI)
   vNames <- g_varname(dI)
+  res <- as.data.table(cpp_splitByIndices(g_strID(pI), strInfo))
+  setnames(res, vNames)
+  dt <- cbind(dt, res)
   for ( i in 1:length(strInfo) ) {
-    df[,vNames[i]] <- substr(df$strID, strInfo[[i]][1], strInfo[[i]][2])
-    v <- paste(vNames[i],"-o",sep="")
-    df[,v] <- c_match_orig_codes(object=dimObj[[i]], input=df[,vNames[i]])
+    v <- paste0(vNames[i],"_o",sep="")
+    dt[[v]] <- c_match_orig_codes(object=dimObj[[i]], input=dt[[vNames[i]]])
   }
-  df <- as.data.table(df)
-  setkeyv(df, "strID")
-  return(df)
+  setkeyv(dt, "strID")
+  return(dt)
 })
 
 setReplaceMethod("s_problemInstance", signature=c("sdcProblem", "problemInstance"), definition=function(object, value) {
@@ -1151,160 +1151,62 @@ setMethod("c_hitas_cpp", signature=c("sdcProblem", "list"), definition=function(
 })
 
 setMethod("c_quick_suppression", signature=c("sdcProblem", "list"), definition=function(object, input) {
-  suppMultDimTable <- function(dat, dimVars, freqInd) {
-    # protect n-dimensional table
-    simpleSupp <- function(splList, freqInd) {
-      runInd <- TRUE
-      counter <- 0
-      override <- FALSE
-      while(runInd) {
-        runInd <- FALSE
-        counter <- counter + 1
-        #cat("run:", counter,"\n")
-        for ( i in 1:length(splList)) {
-          allOk <- all(splList[[i]]$sdcStatus %in% c("z"))
-
-          if ( !allOk & nrow(spl[[i]]) > 1 & length(which(splList[[i]]$sdcStatus %in% c("u", "x")))==1 ) {
-            #cat("we need to doe something: i=",i,"\n")
-            runInd <- TRUE
-            ind.x <- which(splList[[i]]$sdcStatus=='s')
-            f <- splList[[i]][,freqInd]
-            toSupp <- ind.x[order(f[ind.x], decreasing=FALSE)[1]]
-            #cat("toSupp:", toSupp,"\n")
-            if ( is.na(toSupp) ) {
-              cat("Problem bei i=",i,"\n")
-              ind.x <- which(splList[[i]]$sdcStatus %in% c('s','z') & splList[[i]]$freq!=0)
-              f <- splList[[i]][,freqInd]
-              toSupp <- ind.x[order(f[ind.x], decreasing=FALSE)[1]]
-              override <- TRUE
-
-              if ( splList[[i]]$freq[toSupp]==0) {
-                stop("Fehler!\n")
-              }
-            }
-            splList[[i]]$sdcStatus[toSupp] <- 'x'
-          }
-        }
-      }
-
-      s <- do.call("rbind", splList)
-      rownames(s) <- NULL
-      suppsAdded <- TRUE
-      if ( counter == 1 ) {
-        suppsAdded <- FALSE
-      }
-      return(list(s=s, suppsAdded=suppsAdded, override=override))
-    }
-
-    nDims <- length(dimVars)
-    combs <- combn(nDims, nDims-1)
-
-    runInd <- TRUE
-    counter <- 0
-    override <- FALSE
-    patternOrig <- dat$sdcStatus
-    while ( runInd ) {
-      counter <- counter + 1
-      suppsAdded <- rep(NA, ncol(combs))
-      for ( i in 1:ncol(combs)) {
-        f <- apply(dat, 1, function(x) { paste(x[combs[,i]], collapse="-") } )
-        spl <- split(dat, f)
-        res <- simpleSupp(spl, freqInd)
-
-        dat <- res$s
-        if ( override == FALSE & res$override == TRUE) {
-          override <- TRUE
-        }
-        suppsAdded[i] <- res$suppsAdded
-      }
-      #cat("counter:", counter, "\n")
-      #cat("suppsAdded:\n"); print(suppsAdded)
-      if ( all(suppsAdded == FALSE) ) {
-        #cat("finished! (counter=",counter,")\n")
-        runInd <- FALSE
-      }
-    }
-    pattern <- dat$sdcStatus
-    pattern[which(dat$sdcStatus =="s")] <- "z"
-    return(list(pattern=pattern, ids=dat$id, override=override))
-  }
-
+  freq <- id <- sdcStatus <- NULL
   verbose <- input$verbose
   pI <- g_problemInstance(object)
-
-  strIDs <- g_strID(pI)
-
-  dat <- data.frame(
-    id=1:length(strIDs),
-    strID=strIDs,
-    freq=g_freq(pI),
-    sdcStatus=g_sdcStatus(pI), stringsAsFactors=F
-  )
-
   indices <- g_partition(object)$indices
   dimInfo <- g_dimInfo(object)
   strInfo <- g_str_info(dimInfo)
   vNames <- g_varname(dimInfo)
 
-  for ( i in seq_along(vNames) ) {
-    dat[,vNames[i]] <- str_sub(dat$strID, strInfo[[i]][1], strInfo[[i]][2])
+  if ( verbose ) {
+    cat("calculating subIndices (this may take a while) ...")
   }
 
-  dimVars <- 1:length(vNames)
-  dat <- cbind(dat[,5:ncol(dat)], dat[,1:4])
-  #freqInd <- length(vNames)+3
+  dat <- as.data.table(cpp_splitByIndices(g_strID(pI), strInfo))
+  setnames(dat, vNames)
+  dat[,id:=1:nrow(dat)]
+  dat[,freq:=g_freq(pI)]
+  dat[,sdcStatus:=g_sdcStatus(pI)]
+
+  dimVars <- match(vNames, names(dat))
+  nDims <- length(dimVars)
   freqInd <- match("freq", colnames(dat))
+  combs <- combn(vNames, length(vNames)-1)
+  tmpIndices <- rep(NA, length(vNames))
 
-  runInd <- TRUE
-  while( runInd ) {
-    override <- FALSE
-    for ( i in 1:length(indices) ) {
-      for ( j in 1:length(indices[[i]]) ) {
-        curIndices <- indices[[i]][[j]]
-        subDat <- dat[curIndices,]
+  nrGroups <- length(indices)
+  subIndices <- list(); length(subIndices) <- nrGroups
 
-        nrSupps <- length(which(subDat$sdcStatus%in%c("u","x")))
-
-        if ( nrSupps > 0 ) {
-          if ( verbose ) {
-            cat("group:",i,"| ")
-            cat("table",j,"/",length(indices[[i]]),"| ")
-            cat("nrCells:",length(curIndices),"| ")
-            cat("nrPrimSupps:",nrSupps,"| ")
-            cat("override:",override,"\n")
-          }
-
-          res <- suppMultDimTable(subDat, dimVars, freqInd)
-          matchInd <- match(curIndices, res$ids)
-          dat$sdcStatus[curIndices] <- res$pattern[matchInd]
-          if ( override == FALSE & res$override==TRUE ) {
-            override <- TRUE
-          }
-        } else {
-          ind <- which(subDat$sdcStatus=="s")
-          dat$sdcStatus[curIndices[ind]] <- "z"
-        }
+  for ( group in 1:nrGroups ) {
+    nrTabs <- length(indices[[group]])
+    subIndices[[group]] <- list()
+    length(subIndices[[group]]) <- nrTabs
+    for (tab in 1:nrTabs) {
+      subDat <- dat[indices[[group]][[tab]],]
+      for ( i in 1:ncol(combs)) {
+        setkeyv(subDat, combs[,i])
+        cn <- paste0("ind_",i,"_tmp")
+        expr <- parse(text = paste0(cn, ":=.GRP"))
+        subDat[,eval(expr), by=key(subDat)]
+        tmpIndices[i] <- ncol(subDat)
       }
-      if ( length(which(dat$freq==0 & dat$sdcStatus%in%c("u","x"))) > 0 ) {
-        stop("fehler2!\n")
-      }
-    }
-    if ( override == TRUE ) {
-      # alle zellen %in% c("s", "z") muessen auf "s" gesetzt werden
-      dat[dat$sdcStatus %in% c("s","z"),"sdcStatus"] <- "s"
-      # new
-      dat$sdcStatus[dat$freq==0] <- "z"
-    } else {
-      if ( verbose ) {
-        cat("finished!\n")
-      }
-      runInd <- FALSE
+      setkeyv(subDat, vNames)
+      subIndices[[group]][[tab]] <- as.list(subDat[,tmpIndices, with=F])
     }
   }
-
-  matchID <- match(dat$strID,strIDs )
-  s_sdcStatus(pI) <- list(index=matchID, vals=dat$sdcStatus)
+  if ( verbose ) {
+    cat("[done]\n");
+  }
+  res <- greedyMultDimSuppression(dat,indices,subIndices,dimVars,verbose=verbose)
+  if ( verbose ) {
+    cat("finishing output...")
+  }
+  s_sdcStatus(pI) <- list(index=res$id, vals=res$sdcStatus)
   s_problemInstance(object) <- pI
+  if ( verbose ) {
+    cat("[done]\n")
+  }
   invisible(object)
 })
 
@@ -2032,6 +1934,7 @@ setMethod("c_cellID", signature=c("sdcProblem", "list"), definition=function(obj
 })
 
 setMethod("c_finalize", signature=c("sdcProblem", "list"), definition=function(object, input) {
+  Freq <- NULL
   time.start <- proc.time()
 
   pI <- g_problemInstance(object)
@@ -2053,24 +1956,24 @@ setMethod("c_finalize", signature=c("sdcProblem", "list"), definition=function(o
     codesDefault <- mySplit(strIDs, strInfo[[i]][1]:strInfo[[i]][2])
     codesOriginal[[i]] <- c_match_orig_codes(object=levelObj[[i]], input=codesDefault)
   }
-  out <- data.frame(codesOriginal);
-  colnames(out) <- g_varname(dI)
-  out$Freq <- g_freq(pI)
+  out <- as.data.table(codesOriginal)
+  setnames(out, g_varname(dI))
+  out[,Freq:=g_freq(pI)]
 
   numVars <- g_numVars(pI)
   if ( !is.null(numVars) ) {
     data.obj <- g_dataObj(object)
-    nV <- as.data.frame(numVars)
-    colnames(nV) <- colnames(g_raw_data(data.obj))[g_numvar_ind(data.obj)]
+    nV <- as.data.table(numVars)
+    setnames(nV, colnames(g_raw_data(data.obj))[g_numvar_ind(data.obj)])
     out <- cbind(out, nV)
   }
-  out$sdcStatus <- g_sdcStatus(pI)
+  out[,sdcStatus:=g_sdcStatus(pI)]
 
   # add duplicates
   hasDups <- sapply(1:length(levelObj), function(x) {
     g_has_dups(levelObj[[x]])
   })
-  if ( any(hasDups == TRUE) ) {
+  if ( any(hasDups) ) {
     for ( i in which(hasDups==TRUE) ) {
       dups <- g_dups(levelObj[[i]])
       dupsUp <- g_dups_up(levelObj[[i]])
@@ -2078,9 +1981,9 @@ setMethod("c_finalize", signature=c("sdcProblem", "list"), definition=function(o
       runInd <- TRUE
       while ( runInd ) {
         for ( j in 1:length(dups) ) {
-          sub <- subset(out, out[,i]==dupsUp[j])
+          sub <- subset(out, out[[i]]==dupsUp[j])
           if ( nrow(sub) > 0 ) {
-            sub[,i] <- dups[j]
+            sub[[i]] <- dups[j]
             out <- rbind(out, sub)
             dups <- dups[-j]
             dupsUp <- dupsUp[-j]
@@ -2091,10 +1994,9 @@ setMethod("c_finalize", signature=c("sdcProblem", "list"), definition=function(o
       }
     }
   }
-  rownames(out) <- NULL
   safeObj <- new("safeObj",
     finalData=out,
-    dimInfo=g_dimInfo(object),
+    dimInfo=dI,
     nrNonDuplicatedCells=nrNonDuplicatedCells,
     nrPrimSupps=nrPrimSupps,
     nrSecondSupps=nrSecondSupps,
