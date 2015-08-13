@@ -1,7 +1,7 @@
-8001b4cd3394e2af81aef414b278b45d *DESCRIPTION
+76b40816305513d1418d2e378eb1e404 *DESCRIPTION
 e69058bc3527512e818afe2a2e6d59d9 *NAMESPACE
 f7b95423b20fbd3c3b4cd57f2976215e *R/RcppExports.R
-88359e72588effcbc7a299a6d429564d *R/classes.r
+e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
 69decde0c6499689d7f0e8531861f828 *R/data.r
 e019ea147e1ac814b659a9e2942b3c8a *R/export_functions.r
 8f699c1b1e9bbf5f87673dfa9760886e *R/generics_cutList.r
@@ -10,7 +10,7 @@ e019ea147e1ac814b659a9e2942b3c8a *R/export_functions.r
 3fc6ca217b6cf47e440fe2027d55bab6 *R/generics_dimVar.r
 9c15df9aa791b250172200ec93939aec *R/generics_linProb.r
 31d7bbb49ae1b5b96d5ab8f35508acc6 *R/generics_multiple.r
-a2e02de657e79b95c3f7c9375bf23597 *R/generics_problemInstance.r
+9036138564747c15401e29d86ec5cc6c *R/generics_problemInstance.r
 6b8c6a91ab8b64d30d17c583b93c1a9c *R/generics_safeObj.r
 5f2a411a71cf9a0bb23df64a7eff8019 *R/generics_sdcProblem.r
 a189236fa75be9f34041e405cb8aa078 *R/generics_simpleTriplet.r
@@ -22,7 +22,7 @@ a189236fa75be9f34041e405cb8aa078 *R/generics_simpleTriplet.r
 2e83a740d2a1d436aceba436f4a1d247 *R/methods_class_linProb.r
 ec62e92343c7b7ec352bbbb3d0647703 *R/methods_class_problemInstance.r
 ab4ab70d6a512309ca692314ed65b480 *R/methods_class_safeObj.r
-950f4cf8b84a76056b02ea0596eb910c *R/methods_class_sdcProblem.r
+74ed5618298b64b51aafaf8c36838802 *R/methods_class_sdcProblem.r
 432965ec84a9b2bbf493af787e5b3612 *R/methods_class_simpleTriplet.r
 61dc1025b765e7770dee4d3df8c7c0f7 *R/methods_multiple_classes.r
 a3f7789752f5b8978bdaa7e88dc13653 *R/zzz.r
@@ -37,7 +37,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-438890619b3363fe939309c28d5753ee *inst/doc/sdcTable.pdf
+293ed48757481eb79a17febf7eec639d *inst/doc/sdcTable.pdf
 45c1eceb4136a349f8c3f3d9ff0aa32a *man/attack.Rd
 8b2a4ffc689a60338db049ab1fa5551b *man/calc.cutList-method.Rd
 3a19943fee83c5217b97f695a7d7c290 *man/calc.dimVar-method.Rd
@@ -57,7 +57,7 @@ fd3bc850a9f70d74e2111ce787f33de8 *man/get.dataObj-method.Rd
 8b03e46f6b03f9f18c8af3b23d0abff2 *man/get.dimInfo-method.Rd
 d59d3bfbfafea7b9544d8cf790cce17c *man/get.dimVar-method.Rd
 2ab1beed97dc75189dec55f2b42b0a95 *man/get.linProb-method.Rd
-a5550c5b04648e2b968ab99e32d74dfb *man/get.problemInstance-method.Rd
+a355ed204c74815ff7e3d14d235b90a2 *man/get.problemInstance-method.Rd
 fd83c9f71748bed635931783ff0feb7a *man/get.safeObj-method.Rd
 8cc4988ed933b0c6f0be44905b675c4f *man/get.sdcProblem-method.Rd
 1cc49180059efec76cb6d3b3a8be5ed7 *man/get.simpleTriplet-method.Rd
@@ -96,7 +96,7 @@ c877b29aa741f39e1be3cf1b78962715 *src/RcppExports.cpp
 5c776bde9fb10f459fef8c6bd9bad88e *src/csp.cpp
 270df125d9f8d61c7900e2c1fc0de93c *src/normQuader2.cpp
 3c5a8a44e0fce9f0293dfc72237145f7 *src/sdcTable.c
-35a455c83b043cbffd827f14b442282f *src/suppMultDimTable.cpp
+a95b3e12d34fad6aac7e8f4ee69fe028 *src/suppMultDimTable.cpp
 719e64e2dae6547f6bd34cd0aaaced61 *tests/testthat.R
 e867e6a048b121c4cf71d27aae0fdf6c *tests/testthat/datO.rdata
 2c61bddd7ac272a1f3a4b2051a8fa07d *tests/testthat/test-makeProblem.r
