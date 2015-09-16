@@ -1,9 +1,9 @@
-2273027de238ecb206c6f6cdbe9a6bb4 *DESCRIPTION
+9c31e101d7e6abd16e93c9de7dbfd644 *DESCRIPTION
 e69058bc3527512e818afe2a2e6d59d9 *NAMESPACE
 f7b95423b20fbd3c3b4cd57f2976215e *R/RcppExports.R
 e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
 69decde0c6499689d7f0e8531861f828 *R/data.r
-de91b5ba5164bc10d141fa4b4d7980e5 *R/export_functions.r
+68b17eb5d999562497b017eb85e33ebd *R/export_functions.r
 8f699c1b1e9bbf5f87673dfa9760886e *R/generics_cutList.r
 594c666c6433eca6317d43e0d591287c *R/generics_dataObj.r
 9f47a4ae4af4b764f85fc3bf2c470e67 *R/generics_dimInfo.r
@@ -37,7 +37,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-38e0151df76bf5b8559f4c6efebed70a *inst/doc/sdcTable.pdf
+2e3d82a17e45887ac998139a6a0836bb *inst/doc/sdcTable.pdf
 45c1eceb4136a349f8c3f3d9ff0aa32a *man/attack.Rd
 8b2a4ffc689a60338db049ab1fa5551b *man/calc.cutList-method.Rd
 3a19943fee83c5217b97f695a7d7c290 *man/calc.dimVar-method.Rd

@@ -1,5 +1,5 @@
 Package: sdcTable
-Version: 0.19.4
+Version: 0.19.6
 Date: 2015-09-15
 Title: Methods for Statistical Disclosure Control in Tabular Data
 Description: Methods for statistical disclosure control in
@@ -17,6 +17,6 @@ LinkingTo: Rcpp
 License: GPL (>= 2)
 SystemRequirements: GLPK library, including -dev or -devel part
 NeedsCompilation: yes
-Packaged: 2015-09-15 06:38:04 UTC; meindl
+Packaged: 2015-09-16 04:47:09 UTC; meindl
 Repository: CRAN
-Date/Publication: 2015-09-15 09:33:42
+Date/Publication: 2015-09-16 10:05:35
