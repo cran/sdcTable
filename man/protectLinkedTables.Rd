@@ -11,7 +11,7 @@ protectLinkedTables(objectA, objectB, commonCells, method, ...)
 
 \item{objectB}{a \code{\link{sdcProblem-class}} object}
 
-\item{commonCells}{a list object defining common cells in code{objectA} and \code{objectB}. For each variable that has one or more common codes in both tables, a list element needs to be specified.
+\item{commonCells}{a list object defining common cells in \code{objectA} and \code{objectB}. For each variable that has one or more common codes in both tables, a list element needs to be specified.
 \itemize{
 \item List-elements of length 3: Variable has exact same levels and structure in both tables
 \itemize{

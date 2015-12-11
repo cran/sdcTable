@@ -1,9 +1,9 @@
-9c31e101d7e6abd16e93c9de7dbfd644 *DESCRIPTION
+d472a3e00a49c9c30c02d0a8f1124491 *DESCRIPTION
 e69058bc3527512e818afe2a2e6d59d9 *NAMESPACE
 f7b95423b20fbd3c3b4cd57f2976215e *R/RcppExports.R
 e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
 69decde0c6499689d7f0e8531861f828 *R/data.r
-68b17eb5d999562497b017eb85e33ebd *R/export_functions.r
+f75f6df76df724e73741db94efdfa467 *R/export_functions.r
 8f699c1b1e9bbf5f87673dfa9760886e *R/generics_cutList.r
 594c666c6433eca6317d43e0d591287c *R/generics_dataObj.r
 9f47a4ae4af4b764f85fc3bf2c470e67 *R/generics_dimInfo.r
@@ -16,13 +16,13 @@ e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
 a189236fa75be9f34041e405cb8aa078 *R/generics_simpleTriplet.r
 59e767d595b0a8bca4e916e6405e4912 *R/helper_functions.r
 02d7ea69840c24ae6cb8fa933bf637bb *R/methods_class_cutList.r
-17ff75fbb80b75b35aaf112170ecff7c *R/methods_class_dataObj.r
+1da37d8c64e4aa0572c9a252bcb3c54b *R/methods_class_dataObj.r
 74b3ddf4333a835f4269bd37e0727d8f *R/methods_class_dimInfo.r
-2e81583c63689aade63e77045f2209ad *R/methods_class_dimVar.r
+89315468033327d55a10d317f26c8a0e *R/methods_class_dimVar.r
 2e83a740d2a1d436aceba436f4a1d247 *R/methods_class_linProb.r
 ec62e92343c7b7ec352bbbb3d0647703 *R/methods_class_problemInstance.r
 ab4ab70d6a512309ca692314ed65b480 *R/methods_class_safeObj.r
-fa3d59d7a2862564721ee4a88bee5aac *R/methods_class_sdcProblem.r
+5ff4959b637b24b5fb8f3faa12a9e6e6 *R/methods_class_sdcProblem.r
 432965ec84a9b2bbf493af787e5b3612 *R/methods_class_simpleTriplet.r
 61dc1025b765e7770dee4d3df8c7c0f7 *R/methods_multiple_classes.r
 a3f7789752f5b8978bdaa7e88dc13653 *R/zzz.r
@@ -37,7 +37,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-2e3d82a17e45887ac998139a6a0836bb *inst/doc/sdcTable.pdf
+552e9aebe085a0e77642690522a0471a *inst/doc/sdcTable.pdf
 45c1eceb4136a349f8c3f3d9ff0aa32a *man/attack.Rd
 8b2a4ffc689a60338db049ab1fa5551b *man/calc.cutList-method.Rd
 3a19943fee83c5217b97f695a7d7c290 *man/calc.dimVar-method.Rd
@@ -75,7 +75,7 @@ de82e868a66bc3fd3cefbb7ccb6f9249 *man/primarySuppression.Rd
 d422dccc202a28c79a2661c7bfcc310b *man/problem.Rd
 cffdaf1d7f89f4d046e9ef74c866e236 *man/problemInstance-class.Rd
 b9b7468de357636f1746cfbed1b54ff9 *man/problemWithSupps.Rd
-b64b3951978ff0ad4c7f3dd834c8d147 *man/protectLinkedTables.Rd
+63d0cea5efd2281b70542f1b75ab2f76 *man/protectLinkedTables.Rd
 77210e7e418a4d91d1679098af8708f0 *man/protectTable.Rd
 c4e26a54f0d982c9d336011ca2c7e5ae *man/protectedData.Rd
 1ec88e0ea377814133c00eb64e220f68 *man/safeObj-class.Rd
@@ -96,7 +96,7 @@ c877b29aa741f39e1be3cf1b78962715 *src/RcppExports.cpp
 5c776bde9fb10f459fef8c6bd9bad88e *src/csp.cpp
 270df125d9f8d61c7900e2c1fc0de93c *src/normQuader2.cpp
 3c5a8a44e0fce9f0293dfc72237145f7 *src/sdcTable.c
-833f9eea96e9a6f46865742701deb180 *src/suppMultDimTable.cpp
+cfd3c0530819f910de6bf1355269d7a5 *src/suppMultDimTable.cpp
 719e64e2dae6547f6bd34cd0aaaced61 *tests/testthat.R
 e867e6a048b121c4cf71d27aae0fdf6c *tests/testthat/datO.rdata
 2c61bddd7ac272a1f3a4b2051a8fa07d *tests/testthat/test-makeProblem.r
