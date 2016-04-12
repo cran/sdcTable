@@ -30,7 +30,7 @@ protectLinkedTables(objectA, objectB, commonCells, method, ...)
 \item{method}{a character vector of length 1 specifying the algorithm that should be used to protect the primary sensitive table cells. Allowed values are:
 \itemize{
 \item \code{HITAS}:
-\item \code{HYPERCUBE}:
+\item \code{SIMPLEHEURISTIC}:
 \item \code{OPT}: }}
 
 \item{...}{additional arguments to control the secondary cell suppression algorithm. For details, see \code{\link{protectTable}}.}
