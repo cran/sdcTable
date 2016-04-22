@@ -1,9 +1,9 @@
-1d31431f536cf757da826850f6648cfe *DESCRIPTION
+c11e8fbec35e2b244c077c8eb78d698f *DESCRIPTION
 92e6ead949ce5a3e1e85030f9ded9768 *NAMESPACE
 f7b95423b20fbd3c3b4cd57f2976215e *R/RcppExports.R
 e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
 69decde0c6499689d7f0e8531861f828 *R/data.r
-54bd192310ad735a21a9a5597bf1f2aa *R/export_functions.r
+4f5f56f68457d6297a6562a510268719 *R/export_functions.r
 8f699c1b1e9bbf5f87673dfa9760886e *R/generics_cutList.r
 594c666c6433eca6317d43e0d591287c *R/generics_dataObj.r
 9f47a4ae4af4b764f85fc3bf2c470e67 *R/generics_dimInfo.r
@@ -18,13 +18,13 @@ a189236fa75be9f34041e405cb8aa078 *R/generics_simpleTriplet.r
 02d7ea69840c24ae6cb8fa933bf637bb *R/methods_class_cutList.r
 1da37d8c64e4aa0572c9a252bcb3c54b *R/methods_class_dataObj.r
 74b3ddf4333a835f4269bd37e0727d8f *R/methods_class_dimInfo.r
-c6a6e3bd71022c653cea8f452eea9a41 *R/methods_class_dimVar.r
+1b7fc995d98320ef0ec52a31ca09fa87 *R/methods_class_dimVar.r
 2e83a740d2a1d436aceba436f4a1d247 *R/methods_class_linProb.r
 ec62e92343c7b7ec352bbbb3d0647703 *R/methods_class_problemInstance.r
 e2d1c74fcf1df140b11f5b5ff2a60a5e *R/methods_class_safeObj.r
-e85cc7e2d5f704488a5568c6a2893818 *R/methods_class_sdcProblem.r
+98f5740d741345c471c35d2ed848d9bc *R/methods_class_sdcProblem.r
 432965ec84a9b2bbf493af787e5b3612 *R/methods_class_simpleTriplet.r
-b8928c327ccd0509ca902a42c47f64d0 *R/methods_multiple_classes.r
+f5b91938c9e655e20849e72ae0e3dbcf *R/methods_multiple_classes.r
 a3f7789752f5b8978bdaa7e88dc13653 *R/zzz.r
 039ed75f44b23745748db60fc8cba313 *README.md
 b6f9873098203979fa8ba141fd48241f *build/vignette.rds
@@ -37,7 +37,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-576b27d0c9c8fcb957040c27ed89331f *inst/doc/sdcTable.pdf
+4fde6290e1162c9d3f994721330f8a59 *inst/doc/sdcTable.pdf
 236495b48eeafc57a0ba54aa37aecd80 *man/attack.Rd
 87f42434528d47574e39476eafd6e4dc *man/calc.cutList-method.Rd
 743aef4100e2fe343231909c68aa7ba8 *man/calc.dimVar-method.Rd
