@@ -1,4 +1,4 @@
-52db7f36357221e11a14f5d4344f040c *DESCRIPTION
+60bd32dd380ddcd4c71805e0d9f72ecc *DESCRIPTION
 92e6ead949ce5a3e1e85030f9ded9768 *NAMESPACE
 f7b95423b20fbd3c3b4cd57f2976215e *R/RcppExports.R
 e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
@@ -22,9 +22,9 @@ a189236fa75be9f34041e405cb8aa078 *R/generics_simpleTriplet.r
 2e83a740d2a1d436aceba436f4a1d247 *R/methods_class_linProb.r
 ec62e92343c7b7ec352bbbb3d0647703 *R/methods_class_problemInstance.r
 e2d1c74fcf1df140b11f5b5ff2a60a5e *R/methods_class_safeObj.r
-98f5740d741345c471c35d2ed848d9bc *R/methods_class_sdcProblem.r
+183092e8854084d47a533f645517f4c9 *R/methods_class_sdcProblem.r
 432965ec84a9b2bbf493af787e5b3612 *R/methods_class_simpleTriplet.r
-4e9621c6fb716e10ed9b4c9e8d119e6c *R/methods_multiple_classes.r
+db8b1a8a5562dba1653db835c1e46e7c *R/methods_multiple_classes.r
 a3f7789752f5b8978bdaa7e88dc13653 *R/zzz.r
 039ed75f44b23745748db60fc8cba313 *README.md
 b6f9873098203979fa8ba141fd48241f *build/vignette.rds
@@ -37,7 +37,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-2b961d669245494eb6df25c670b436d6 *inst/doc/sdcTable.pdf
+a43a93f472fa2cc9d90f222c3533fc6c *inst/doc/sdcTable.pdf
 236495b48eeafc57a0ba54aa37aecd80 *man/attack.Rd
 87f42434528d47574e39476eafd6e4dc *man/calc.cutList-method.Rd
 743aef4100e2fe343231909c68aa7ba8 *man/calc.dimVar-method.Rd
