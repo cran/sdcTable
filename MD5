@@ -1,7 +1,7 @@
-60bd32dd380ddcd4c71805e0d9f72ecc *DESCRIPTION
-92e6ead949ce5a3e1e85030f9ded9768 *NAMESPACE
+a07cfb35cb5c714e1fb6cc594d9be31c *DESCRIPTION
+33d5b860b1b98b23e2eb4e522517a9e5 *NAMESPACE
 f7b95423b20fbd3c3b4cd57f2976215e *R/RcppExports.R
-e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
+d0c536f201d790414ce64b4fa50ef15e *R/classes.r
 69decde0c6499689d7f0e8531861f828 *R/data.r
 91d4479d766cd41e0cde66d4b38df83f *R/export_functions.r
 8f699c1b1e9bbf5f87673dfa9760886e *R/generics_cutList.r
@@ -14,7 +14,7 @@ e07271eae8b8c90c58177b3a9d7350dd *R/classes.r
 6b8c6a91ab8b64d30d17c583b93c1a9c *R/generics_safeObj.r
 5ec13ae599599258795a4610bcae8473 *R/generics_sdcProblem.r
 a189236fa75be9f34041e405cb8aa078 *R/generics_simpleTriplet.r
-59e767d595b0a8bca4e916e6405e4912 *R/helper_functions.r
+023efb0c556f5eb44427e8349449a7fd *R/helper_functions.r
 02d7ea69840c24ae6cb8fa933bf637bb *R/methods_class_cutList.r
 1da37d8c64e4aa0572c9a252bcb3c54b *R/methods_class_dataObj.r
 74b3ddf4333a835f4269bd37e0727d8f *R/methods_class_dimInfo.r
@@ -37,7 +37,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-a43a93f472fa2cc9d90f222c3533fc6c *inst/doc/sdcTable.pdf
+464ccd928d7838cdf18f4af5a6ebfa07 *inst/doc/sdcTable.pdf
 236495b48eeafc57a0ba54aa37aecd80 *man/attack.Rd
 87f42434528d47574e39476eafd6e4dc *man/calc.cutList-method.Rd
 743aef4100e2fe343231909c68aa7ba8 *man/calc.dimVar-method.Rd
