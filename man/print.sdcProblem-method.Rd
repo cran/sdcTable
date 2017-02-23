@@ -15,4 +15,3 @@
 \description{
 print some useful information instead of just displaying the entire object (which may be large)
 }
-

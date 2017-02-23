@@ -74,4 +74,3 @@ data.frame(p1.sdc=getInfo(p1, type='sdcStatus'), p2.sdc=getInfo(p2, type="sdcSta
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

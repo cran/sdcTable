@@ -9,4 +9,3 @@
 example data of class \code{\link{safeObj-class}} as created in the example of \code{\link{protectTable}}
 }
 \keyword{datasets}
-

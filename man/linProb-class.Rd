@@ -41,4 +41,3 @@ when solving the problems in the procedure, minimization of the objective is per
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

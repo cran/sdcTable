@@ -15,4 +15,3 @@
 \description{
 extract and show relevant information stored in object ofs class \code{\link{sdcProblem-class}} or \code{\link{safeObj-class}}.
 }
-

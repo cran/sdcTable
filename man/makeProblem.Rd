@@ -43,10 +43,8 @@ Function \code{\link{makeProblem}} is used to create
 }
 \examples{
 # loading micro data
-sp <- searchpaths()
-fn <- paste(sp[grep("sdcTable", sp)], "/data/microData1.RData", sep="")
-microData <- get(load(fn))
-
+data("microData1", package="sdcTable")
+microData <- microData1; rm(microData1)
 # having a look at the data structure
 str(microData)
 
@@ -106,4 +104,3 @@ print(class(problem))
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

@@ -44,6 +44,9 @@ protectTable(object, method, ...)
 \item parameter used for protectLinkedTables():
 \itemize{
 \item \code{maxIter}: numeric vector of length 1 specifying the maximal number of interations that should be make while trying to protect common cells of two different tables. The default value of parameter \code{maxIter} is 10}
+\item parameters used for SIMPLEHEURISTIC procedure:
+\itemize{
+\item \code{detectSingletons}: logical, should a singleton-detection procedure be run before protecting the data, defaults to \code{FALSE}.}
 }}
 }
 \value{
@@ -56,6 +59,12 @@ Function \code{\link{protectTable}} is used to protect primary sensitive table c
 sensitive table cells according to the method that has been chosen and the
 parameters that have been set. Additional parameters that are used to control
 the protection algorithm are set using parameter \code{...}.
+}
+\details{
+The implemented methods may have bugs that yield in not-fully protected tables. Especially
+the usage of \code{OPT}, \code{HITAS} and \code{HYPERCUBE} in production is not
+suggested as these methods may eventually be removed completely. In case you encounter any problems,
+please report it or use Tau-Argus (\url{http://neon.vb.cbs.nl/casc/tau.htm}).
 }
 \examples{
 # load problem (as it was created after performing primary suppression
@@ -76,4 +85,3 @@ print(getInfo(protectedData, type='finalData'))
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

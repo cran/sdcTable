@@ -23,4 +23,3 @@ objects of class \code{dimInfo} are input for slots in classes \code{sdcProblem}
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

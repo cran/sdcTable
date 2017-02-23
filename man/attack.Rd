@@ -36,4 +36,3 @@ attack(problem, verbose=FALSE)
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

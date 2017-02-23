@@ -9,4 +9,3 @@
 example microdata used for example in \code{\link{protectLinkedTables}}.
 }
 \keyword{datasets}
-

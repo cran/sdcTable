@@ -53,4 +53,3 @@ print(table(getInfo(problem, 'sdcStatus')))
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

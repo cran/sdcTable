@@ -68,4 +68,3 @@ for ( slot in c('finalData', 'nrNonDuplicatedCells', 'nrPrimSupps',
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

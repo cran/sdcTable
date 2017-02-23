@@ -39,4 +39,3 @@ internal function
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

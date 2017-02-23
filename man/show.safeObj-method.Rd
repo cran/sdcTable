@@ -13,4 +13,3 @@
 \description{
 extract and show information stored in \code{\link{safeObj-class}} objects
 }
-

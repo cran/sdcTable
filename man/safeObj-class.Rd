@@ -43,4 +43,3 @@ objects of class \code{safeObj} are returned after the function \code{\link{prot
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

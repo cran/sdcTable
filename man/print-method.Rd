@@ -15,4 +15,3 @@
 \description{
 print \code{\link{dimVar-class}} objects in a resonable way
 }
-

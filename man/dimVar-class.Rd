@@ -30,4 +30,3 @@ objects of class \code{dimVar} form the base for elements in slot \code{dimInfo}
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

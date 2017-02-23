@@ -25,4 +25,3 @@ objects of class \code{simpleTriplet} are input of slot \code{constraints} in cl
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

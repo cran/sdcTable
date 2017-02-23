@@ -62,4 +62,3 @@ problem <- setInfo(problem, type='UPL', index=1:nrow(inp), input=inp$UPL_new)
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

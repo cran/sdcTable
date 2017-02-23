@@ -33,4 +33,3 @@ objects of class \code{problemInstance} are used as input for slot \code{problem
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

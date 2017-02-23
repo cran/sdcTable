@@ -126,10 +126,9 @@ summary(result.tab2)
 }
 
 }
-\author{
-Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
-}
 \seealso{
 \code{\link{protectTable}}
 }
-
+\author{
+Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
+}

@@ -9,4 +9,3 @@
 example data of class \code{\link{sdcProblem-class}} as created in the example of \code{\link{primarySuppression}}
 }
 \keyword{datasets}
-

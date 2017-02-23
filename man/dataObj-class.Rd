@@ -29,4 +29,3 @@ objects of class \code{dataObj} are input for slot \code{dataObj} in class \code
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-

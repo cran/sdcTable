@@ -31,4 +31,3 @@ objects of class \code{cutList} are dynamically generated (and removed) during t
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}
 }
-
