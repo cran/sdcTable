@@ -1,10 +1,10 @@
-072d7317ac3f7bb0816081ebd0dc630b *DESCRIPTION
-9d10f90f27e235789afda6133e92a7b2 *NAMESPACE
+c43ce68be433cd07a75d8adf17f26158 *DESCRIPTION
+63c3ebf8a31444ee72bb65224fa1de5e *NAMESPACE
 21ea24fa0b87e079d28ee1668bbaa435 *R/RcppExports.R
 f3a49d15ef47f751ef6b2d8b87e0a821 *R/classes.r
 d2d66b9a4217d764d5ba2894873d5be4 *R/classes_tauBatch.r
 69decde0c6499689d7f0e8531861f828 *R/data.r
-4e87f895bcb48bea9b4e2d55c27904b9 *R/export_functions.r
+6b331886355759988ff521e04f3d0a4c *R/export_functions.r
 8f699c1b1e9bbf5f87673dfa9760886e *R/generics_cutList.r
 594c666c6433eca6317d43e0d591287c *R/generics_dataObj.r
 9f47a4ae4af4b764f85fc3bf2c470e67 *R/generics_dimInfo.r
@@ -15,7 +15,7 @@ d2d66b9a4217d764d5ba2894873d5be4 *R/classes_tauBatch.r
 6b8c6a91ab8b64d30d17c583b93c1a9c *R/generics_safeObj.r
 5ec13ae599599258795a4610bcae8473 *R/generics_sdcProblem.r
 a189236fa75be9f34041e405cb8aa078 *R/generics_simpleTriplet.r
-c7077305ddf127626b8b7ca6a78a7f58 *R/helper_functions.r
+f79099f60715ac31f5a836bdca5296ff *R/helper_functions.r
 02d7ea69840c24ae6cb8fa933bf637bb *R/methods_class_cutList.r
 1da37d8c64e4aa0572c9a252bcb3c54b *R/methods_class_dataObj.r
 74b3ddf4333a835f4269bd37e0727d8f *R/methods_class_dimInfo.r
@@ -23,13 +23,13 @@ c7077305ddf127626b8b7ca6a78a7f58 *R/helper_functions.r
 2e83a740d2a1d436aceba436f4a1d247 *R/methods_class_linProb.r
 ec62e92343c7b7ec352bbbb3d0647703 *R/methods_class_problemInstance.r
 e2d1c74fcf1df140b11f5b5ff2a60a5e *R/methods_class_safeObj.r
-efec8c3dfbfaeb800aa52ffe3427dcd2 *R/methods_class_sdcProblem.r
+b1587b9cfaef26fdfa37adf77db55e68 *R/methods_class_sdcProblem.r
 432965ec84a9b2bbf493af787e5b3612 *R/methods_class_simpleTriplet.r
 db8b1a8a5562dba1653db835c1e46e7c *R/methods_multiple_classes.r
-5f1193752e5bd5c4fff1d05dd6e9f0c1 *R/tauBatch_helpers.R
+c9b3d7457f0fd9064ec01b8d7b4b38d7 *R/tauBatch_helpers.R
 5d4b4e1ecd498301f86a0f5716204e83 *R/zzz.r
 039ed75f44b23745748db60fc8cba313 *README.md
-7281bc366447a9c97f4c89311b78e051 *build/vignette.rds
+41cf9ccb26b7483326477085d599d907 *build/vignette.rds
 f89d7d7122c888a949d61a6e0a7df727 *configure
 68b329da9893e34099c7d8ad5cb9c940 *configure.win
 ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
@@ -39,7 +39,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-f66f0cb545de1173c4ccc394e21bd898 *inst/doc/sdcTable.pdf
+051af51912269fa2a1841ae2ee18f314 *inst/doc/sdcTable.pdf
 7efaf45c9b52c27f1d5c32ff18cb11fd *man/attack.Rd
 ace7f54095aeafbea7a56649cf432868 *man/calc.cutList-method.Rd
 42aa0370d6c37046b4ce6ce9503ee1fe *man/calc.dimVar-method.Rd
@@ -70,7 +70,7 @@ b65379c0e0469d9dfbbdf011e590f577 *man/init.cutList-method.Rd
 9c25d10a945d8efb2f2787d5d5a2a43b *man/init.dimVar-method.Rd
 2765a9032e1fb88456cc54531cd14acd *man/init.simpleTriplet-method.Rd
 92fb96736bc7d384d3ed7ab9251d3d2d *man/linProb-class.Rd
-248e5b01ff76bf13379a6ebb21d3bb1d *man/makeProblem.Rd
+1e4754c4999c062bb69eb508313f1b8a *man/makeProblem.Rd
 293d32d0a3aab206711c269bebe1e000 *man/microData1.Rd
 fde56f7bc05ec28f1d2068af73af60d8 *man/microData2.Rd
 5f93c2d0b42a1b8c2c8b67db14ec8c5f *man/primarySuppression.Rd
@@ -84,6 +84,7 @@ cd76f32dd1e8cd453daf104b094465b6 *man/protectLinkedTables.Rd
 7ea2581927b64f5d9ff5999f44b688ff *man/protectedData.Rd
 2ed4276ccab6ed8b6333055dfb99b9be *man/runArgusBatchFile.Rd
 61a5c20de4dff0b54a13dde3c7c7aa01 *man/safeObj-class.Rd
+5a9a9dca507d592dce72bf209b79a30b *man/sdcProb2df.Rd
 96d45a980f2e544c65a3b7c98700c74c *man/sdcProblem-class.Rd
 ad9fa7e1569ef52951eb2314c0c9ba38 *man/set.cutList-method.Rd
 ef0289738c9c8f4df6d23f309f263406 *man/set.dataObj-method.Rd
@@ -105,7 +106,7 @@ e64100566dc7bc7acac2de053fcdabd6 *src/Makevars.win
 62d9ebe129f6376b70e645e495e2bfb2 *src/init.c
 270df125d9f8d61c7900e2c1fc0de93c *src/normQuader2.cpp
 3c5a8a44e0fce9f0293dfc72237145f7 *src/sdcTable.c
-6b94ba865c2a940c90ce768013dd712c *src/suppMultDimTable.cpp
+470617c781135ae15576f761f71ddfb1 *src/suppMultDimTable.cpp
 719e64e2dae6547f6bd34cd0aaaced61 *tests/testthat.R
 e867e6a048b121c4cf71d27aae0fdf6c *tests/testthat/datO.rdata
 2c61bddd7ac272a1f3a4b2051a8fa07d *tests/testthat/test-makeProblem.r

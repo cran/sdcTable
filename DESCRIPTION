@@ -1,6 +1,6 @@
 Package: sdcTable
-Version: 0.22.1
-Date: 2017-02-23
+Version: 0.22.4
+Date: 2017-04-06
 Title: Methods for Statistical Disclosure Control in Tabular Data
 Description: Methods for statistical disclosure control in
     tabular data such as primary and secondary cell suppression are covered in
@@ -18,6 +18,6 @@ License: GPL (>= 2)
 SystemRequirements: GLPK library, including -dev or -devel part
 RoxygenNote: 6.0.1
 NeedsCompilation: yes
-Packaged: 2017-02-23 09:17:39 UTC; meindl
+Packaged: 2017-04-07 06:20:20 UTC; meindl
 Repository: CRAN
-Date/Publication: 2017-02-23 11:14:37
+Date/Publication: 2017-04-07 11:04:15 UTC

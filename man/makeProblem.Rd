@@ -4,8 +4,8 @@
 \alias{makeProblem}
 \title{create \code{\link{sdcProblem-class}}-objects}
 \usage{
-makeProblem(data, dimList, dimVarInd, freqVarInd = NULL, numVarInd = NULL,
-  weightInd = NULL, sampWeightInd = NULL)
+makeProblem(data, dimList, dimVarInd = NULL, freqVarInd = NULL,
+  numVarInd = NULL, weightInd = NULL, sampWeightInd = NULL)
 }
 \arguments{
 \item{data}{a data frame featuring at least one column for each desired
@@ -24,7 +24,8 @@ hold information on sampling weights.}
 \item list-element is full path to a .csv-file with two columns seperated by semicolons (;) having the same structure as the data.frame described above
 }}
 
-\item{dimVarInd}{numeric vector (or NULL) defining the column-indices of dimensional variables (defining the table) within argument \code{data}}
+\item{dimVarInd}{numeric vector (or NULL) defining the column-indices of dimensional variables (defining the table) within argument \code{data}. If \code{NULL},
+the names of argument \code{dimList} are used to calculate the indices of the dimensional variables within \code{data} internally.}
 
 \item{freqVarInd}{numeric vector (or NULL) defining the column-indices of a variable holding counts within argument \code{data}}
 
@@ -100,6 +101,10 @@ problem <- makeProblem(
 
 # what do we have?
 print(class(problem))
+
+# have a look at the data
+sdcProb2df(problem, addDups=TRUE, addNumVars=TRUE, dimCodes="original")
+
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

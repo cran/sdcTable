@@ -17,7 +17,8 @@
 #' }
 #' \item list-element is full path to a .csv-file with two columns seperated by semicolons (;) having the same structure as the data.frame described above
 #' }
-#' @param dimVarInd numeric vector (or NULL) defining the column-indices of dimensional variables (defining the table) within argument \code{data}
+#' @param dimVarInd numeric vector (or NULL) defining the column-indices of dimensional variables (defining the table) within argument \code{data}. If \code{NULL},
+#' the names of argument \code{dimList} are used to calculate the indices of the dimensional variables within \code{data} internally.
 #' @param freqVarInd numeric vector (or NULL) defining the column-indices of a variable holding counts within argument \code{data}
 #' @param numVarInd numeric vector (or NULL) defining the column-indices of additional numeric variables available in argument \code{data}
 #' @param weightInd numeric vector of length 1 (or NULL) defining the column-index of a variable holding weights that should be used during as objective coefficients during the cut and branch algorithm to protect primary sensitive cells within argument \code{data}
@@ -84,10 +85,14 @@
 #'
 #' # what do we have?
 #' print(class(problem))
+#'
+#' # have a look at the data
+#' sdcProb2df(problem, addDups=TRUE, addNumVars=TRUE, dimCodes="original")
+#'
 #' @rdname makeProblem
 #' @export makeProblem
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
-makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NULL, weightInd=NULL,sampWeightInd=NULL) {
+makeProblem <- function(data, dimList, dimVarInd=NULL, freqVarInd=NULL, numVarInd=NULL, weightInd=NULL,sampWeightInd=NULL) {
   # returns an object of class 'sdcProblem'
   # 'doPrep()' is the old function 'newDimInfo()'
   # since it also recodes inputData eventually, it was renamed
@@ -214,7 +219,22 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
     stop("please do not use either 'id','freq','Freq' or 'sdcStatus' as names for dimensional variables!\n")
   }
 
-  for ( i in seq_along(dimList) ) {
+  # check/calculate dimVarInd
+  if (!all(names(dimList) %in% names(data))) {
+    stop("For at least one dimensional variable specified in 'dimList', we do not have a corresponding variable in 'data'!\n")
+  }
+
+  if (is.null(dimVarInd)) {
+    # we need to calculate dimVarInd from names in dimList
+    dimVarInd <- match(names(dimList), names(data))
+  } else {
+    # we just need to check the names match
+    if (!all(names(dimList) == names(data)[dimVarInd])) {
+      stop("Names of dimensional variables specified in 'dimList' do not match with variables names in 'data' specified in 'dimVarInd'!\n")
+    }
+  }
+
+  for (i in seq_along(dimList)) {
     dimList[[i]] <- init.dimVar(input=list(input=dimList[[i]], vName=names(dimList)[i]))
   }
 
@@ -228,7 +248,7 @@ makeProblem <- function(data, dimList, dimVarInd, freqVarInd=NULL, numVarInd=NUL
     g_varname(dimList[[x]])
   })
 
-  if ( !all(varNamesInDims %in% varNames) ) {
+  if (!all(varNamesInDims %in% varNames)) {
     stop("makeProblem:: mismatch in variable names in 'inputData' and 'inputDims'!\n")
   }
 
@@ -1227,3 +1247,48 @@ createArgusInput <- function(obj,
   return(invisible(batchF))
 }
 
+
+#' sdcProb2df
+#'
+#' returns a \code{data.frame} or \code{data.table} from an \code{\link{sdcProblem-class}}-object which contains the
+#' current state of the problem instance.
+#'
+#' @param obj an object of class \code{\link{sdcProblem-class}} from \code{sdcTable}
+#' @param addDups (logical), if \code{TRUE}, duplicated cells are included in the output
+#' @param addNumVars (logical), if \code{TRUE}, numerical variables (if defined in \code{\link{makeProblem}}) will
+#' be included in the output.
+#' @param dimCodes (character) allows to specify in which coding the dimensional variables should be returned. Possible choices are:
+#' \itemize{
+#' \item "both": both original and internally used, standardized codes are included in the output
+#' \item "original": only original codes of dimensional variables are included in the output
+#' \item "default": only internally used, standardized codes are included in the output
+#' }
+#'
+#' @return a \code{data.table} containing information about all cells of the given sdc problem
+#' instance is returned.
+#' @export
+#' @examples
+#' ## have a look at ?makeProblem
+sdcProb2df <- function(obj, addDups=TRUE, addNumVars=FALSE, dimCodes="both") {
+  if (length(dimCodes)!=1) {
+    stop("Length of argument 'codes' must equal 1!\n")
+  }
+  if (!dimCodes %in% c("both","original","default")) {
+    stop("Argument 'dimCodes'  must be either 'both', 'original' or 'default'!\n")
+  }
+  dt <- g_df(obj, addDups=addDups, addNumVars=addNumVars)
+
+  dimV_d <- obj@dimInfo@vNames
+  dimV_o <- paste0(obj@dimInfo@vNames,"_o")
+
+  if (dimCodes=="original") {
+    dt <- dt[,-c(match(dimV_d, names(dt))), with=F]
+    cn <- names(dt)
+    cn[match(dimV_o, cn)] <- dimV_d
+    setnames(dt, cn)
+  }
+  if (dimCodes=="default") {
+    dt <- dt[,-c(match(dimV_o, names(dt))), with=F]
+  }
+  dt
+}
