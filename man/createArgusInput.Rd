@@ -4,14 +4,17 @@
 \alias{createArgusInput}
 \title{createArgusInput}
 \usage{
-createArgusInput(obj, typ = "microdata", path = getwd(), solver = "FREE",
-  method, primSuppRules = NULL, responsevar = NULL, shadowvar = NULL,
-  costvar = NULL, ...)
+createArgusInput(obj, typ = "microdata", verbose = FALSE, path = getwd(),
+  solver = "FREE", method, primSuppRules = NULL, responsevar = NULL,
+  shadowvar = NULL, costvar = NULL, requestvar = NULL,
+  holdingvar = NULL, ...)
 }
 \arguments{
 \item{obj}{an object of class \code{\link{sdcProblem-class}} from \code{sdcTable}}
 
 \item{typ}{(character) either \code{microdata} or \code{tabular}}
+
+\item{verbose}{(logical) if TRUE, the contents of the batch-file are written to the prompt}
 
 \item{path}{path, into which (temporary) files will be written to (amongst them being the batch-files).
 Each file written to this folder belonging to the same problem contains a random id in its filename.}
@@ -21,7 +24,9 @@ Each file written to this folder belonging to the same problem contains a random
 \item "FREE"
 \item "CPLEX"
 \item "XPRESS"
-}}
+}
+In case "CPLEX" is used, it is also mandatory to specify argument 'licensefile' which needs to be
+the absolute path the the cplex license file}
 
 \item{method}{secondary cell suppression algorithm, possible choices include:
 \itemize{
@@ -44,7 +49,8 @@ Each file written to this folder belonging to the same problem contains a random
 }
 }}
 
-\item{primSuppRules}{rules for primary suppression, provided as a \code{list}.}
+\item{primSuppRules}{rules for primary suppression, provided as a
+\code{list}. For details, please have a look at the examples below.}
 
 \item{responsevar}{which variable should be tabulated (defaults to frequencies). For details see tau-argus manual section 4.4.4.}
 
@@ -52,7 +58,12 @@ Each file written to this folder belonging to the same problem contains a random
 
 \item{costvar}{if specified, this variable describes the costs of suppressing each individual cell. For details see tau-argus manual section 4.4.4.}
 
-\item{...}{allows to specify additional parameters for selected suppression-method as described above.}
+\item{requestvar}{if specified, this variable (0/1-coded) contains information about records that request protection. Records with 1 will be protected in case a corresponding request rule matches. It is ignored, if tabular input is used.}
+
+\item{holdingvar}{if specified, this variable contains information about records that should be grouped together. It is ignored, if tabular input is used.}
+
+\item{...}{allows to specify additional parameters for selected suppression-method as described above
+as well as \code{licensefile} in clase "CPLEX" was specified in argument \code{solver}.}
 }
 \value{
 the filepath to the batch-file
@@ -114,10 +125,21 @@ obj_dupl <- makeProblem(
 primSuppRules <- list()
 primSuppRules[[1]] <- list(type="freq", n=5, rg=20)
 primSuppRules[[2]] <- list(type="p", n=5, p=20)
+# other supported formats are:
+# list(type="nk", n=5, k=20)
+# list(type="zero", rg=5)
+# list(type="mis", val=1)
+# list(type="wgt", val=1)
+# list(type="man", val=20)
 
 ## create batchInput object
 bO_md1 <- createArgusInput(obj, typ="microdata", path=getwd(), solver="FREE", method="OPT",
   primSuppRules=primSuppRules, responsevar="num1")
 bO_td1 <- createArgusInput(obj, typ="tabular", path=getwd(), solver="FREE", method="OPT")
 bO_td2 <- createArgusInput(obj_dupl, typ="tabular", path=getwd(), solver="FREE", method="OPT")
+\dontrun{
+## in case CPLEX should be used, it is required to specify argument licensefile
+bO_md2 <- createArgusInput(obj, typ="microdata", path=getwd(), solver="CPLEX", method="OPT",
+  primSuppRules=primSuppRules, responsevar="num1", licensefile="/path/to/my/cplexlicense")
+}
 }
