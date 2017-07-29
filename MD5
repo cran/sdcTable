@@ -1,4 +1,4 @@
-b947f4f437a61f7e4ad1b0c118174e92 *DESCRIPTION
+37f0a2b9cf71ea478696982699f420b2 *DESCRIPTION
 e30d39318ab3147a8a897a6be684376e *NAMESPACE
 127294b40f5559ce59a4a0364dfb56c8 *R/RcppExports.R
 f3a49d15ef47f751ef6b2d8b87e0a821 *R/classes.r
@@ -27,7 +27,7 @@ e2d1c74fcf1df140b11f5b5ff2a60a5e *R/methods_class_safeObj.r
 b1587b9cfaef26fdfa37adf77db55e68 *R/methods_class_sdcProblem.r
 432965ec84a9b2bbf493af787e5b3612 *R/methods_class_simpleTriplet.r
 db8b1a8a5562dba1653db835c1e46e7c *R/methods_multiple_classes.r
-9055949c27eb834db9cd447861f818c6 *R/runArgusBatchFile.R
+aa9bceb4973e1b4265c6ec6397f83549 *R/runArgusBatchFile.R
 4845b1345088c0d3d9da3edd1bd16a5b *R/tauBatch_helpers.R
 5d4b4e1ecd498301f86a0f5716204e83 *R/zzz.r
 039ed75f44b23745748db60fc8cba313 *README.md
@@ -41,7 +41,7 @@ ce93ee6a0af10e26b5d324892c6bad83 *data/microData1.RData
 741357987eb3d385d347fec8b3e61223 *data/protectedData.RData
 46bef6241357afd4b5bb50dac43c1222 *inst/doc/sdcTable.R
 7b582f7c2bf11d594919c39bfc8c78da *inst/doc/sdcTable.Rnw
-2a17a078cc443c8c4b3c54ae01ce870b *inst/doc/sdcTable.pdf
+c4cec3b73156aeeed3b19e09f483df3b *inst/doc/sdcTable.pdf
 246f50420493661a04c97f590e1e7ee9 *man/argusVersion.Rd
 7efaf45c9b52c27f1d5c32ff18cb11fd *man/attack.Rd
 ace7f54095aeafbea7a56649cf432868 *man/calc.cutList-method.Rd
