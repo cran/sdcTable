@@ -49,8 +49,9 @@ microData <- microData1; rm(microData1)
 # having a look at the data structure
 str(microData)
 
-# we can observe that we have a micro data set consisting of two spanning
-# variables ('region' and 'gender') and one numeric variable ('val')
+# we can observe that we have a micro data set consisting
+# of two spanning variables ('region' and 'gender') and one
+# numeric variable ('val')
 
 # specify structure of hierarchical variable 'region'
 # levels 'A' to 'D' sum up to a Total
@@ -60,27 +61,16 @@ dim.region <- data.frame(
  stringsAsFactors=FALSE)
 
 # specify structure of hierarchical variable 'gender'
-# levels 'male' and 'female' sum up to a Total
-dim.gender <- data.frame(
- levels=c('@','@@','@@'),
- codes=c('Total', 'male','female'),
- stringsAsFactors=FALSE)
+# using create_node() and add_nodes() (see ?manage_hierarchies)
+dim.gender <- create_node(total_lab="Total")
+dim.gender <- add_nodes(dim.gender,
+  node_labs=c("male","female"), reference_node="Total")
+print(dim.gender)
 
-# create a list with each element being a data-frame containing information
-# on a dimensional variables
-dimList <- list(dim.region, dim.gender)
-
-# name the list:
-# - first list-element: corresponds to variable 'region'
-# - second list-element: corresponds to variable 'gender'
-names(dimList) <- c('region', 'gender')
-
-# specify the indices where dimensional variables are located
-# within the input data
-
-# - variable 'region': first column
-# - variable 'gender': second column
-dimVarInd <- c(1,2)
+# create a named list with each element being a data-frame
+# containing information on one dimensional variable and
+# the names referring to variables in the input data
+dimList <- list(region=dim.region, gender=dim.gender)
 
 # third column containts a numeric variable
 numVarInd <- 3
@@ -93,7 +83,6 @@ freqVarInd <- weightInd <- sampWeightInd <- NULL
 problem <- makeProblem(
  data=microData,
  dimList=dimList,
- dimVarInd=dimVarInd,
  freqVarInd=freqVarInd,
  numVarInd=numVarInd,
  weightInd=weightInd,
@@ -103,8 +92,8 @@ problem <- makeProblem(
 print(class(problem))
 
 # have a look at the data
-sdcProb2df(problem, addDups=TRUE, addNumVars=TRUE, dimCodes="original")
-
+sdcProb2df(problem, addDups=TRUE,
+  addNumVars=TRUE, dimCodes="original")
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

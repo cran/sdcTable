@@ -50,8 +50,8 @@ problem <- get(load(fn))
 # problem is an object of class \\code{\\link{sdcProblem-class}}
 print(class(problem))
 
-for ( slot in c('lb','ub','LPL','SPL','UPL','sdcStatus',
-  'freq', 'strID', 'numVars', 'w') ) {
+for (slot in c('lb','ub','LPL','SPL','UPL','sdcStatus',
+  'freq', 'strID', 'numVars', 'w')) {
   cat('slot', slot,':\\n')
   print(getInfo(problem, type=slot))
 }
@@ -59,8 +59,8 @@ for ( slot in c('lb','ub','LPL','SPL','UPL','sdcStatus',
 # extracting information for objects of class \\code{\\link{safeObj-class}}
 fn <- paste(sp[grep("sdcTable", sp)], "/data/protectedData.RData", sep="")
 protectedData <- get(load(fn))
-for ( slot in c('finalData', 'nrNonDuplicatedCells', 'nrPrimSupps',
-  'nrSecondSupps', 'nrPublishableCells', 'suppMethod') ) {
+for (slot in c('finalData', 'nrNonDuplicatedCells', 'nrPrimSupps',
+  'nrSecondSupps', 'nrPublishableCells', 'suppMethod')) {
   cat('slot', slot,':\\n')
   print(getInfo(protectedData, type=slot))
 }
