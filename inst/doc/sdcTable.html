@@ -12,7 +12,7 @@
 
 <meta name="author" content="Bernhard Meindl" />
 
-<meta name="date" content="2018-06-22" />
+<meta name="date" content="2018-07-24" />
 
 <title>sdcTable</title>
 
@@ -2277,7 +2277,7 @@ color: #333333;
 <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
+a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
@@ -2290,13 +2290,11 @@ code.sourceCode { white-space: pre-wrap; }
 a.sourceLine { text-indent: -1em; padding-left: 1em; }
 }
 pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
+  { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
   { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -2535,7 +2533,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">sdcTable</h1>
 <h4 class="author"><em>Bernhard Meindl</em></h4>
-<h4 class="date"><em>2018-06-22</em></h4>
+<h4 class="date"><em>2018-07-24</em></h4>
 
 
 <div id="TOC">
@@ -2582,7 +2580,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>More detailed information on all the possibilities is available in the help-files, additional information is given in the corresponding sections of this vignette that deal with specific functions. The first step however to get started is to load the package, which can easily be done as shown below:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(sdcTable)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">packageVersion</span>(<span class="st">&quot;sdcTable&quot;</span>)</a></code></pre></div>
-<pre><code>## [1] '0.23'</code></pre>
+<pre><code>## [1] '0.24'</code></pre>
 </div>
 </div>
 <div id="a-simple-example" class="section level1">
@@ -2739,8 +2737,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 8  °--D</code></pre>
 <p><strong>sdcTable</strong> will internally convert the tree-based structure generated using <code>create_node()</code>, <code>add_nodes()</code> and <code>delete_nodes()</code> automatically into the <code>data.frame</code> based structure discussed at the begin of this section. What is nice using this dynamic approach to generate hierarchies is that there is a nice <code>plot</code> method for vizualization available:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">plot</span>(dimV1)</a></code></pre></div>
-<div id="htmlwidget-022e5244f116a703cc77" style="width:288px;height:288px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-022e5244f116a703cc77">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"Tot\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"A\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"B\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"Ba\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"Bb\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"Bc\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"C\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"D\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"3\" \n  \"1\"->\"7\" \n  \"1\"->\"8\" \n  \"3\"->\"4\" \n  \"3\"->\"5\" \n  \"3\"->\"6\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-14ad072f3f44efa393db" style="width:288px;height:288px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-14ad072f3f44efa393db">{"x":{"diagram":"digraph {\n\n\n\n\n  \"1\" [label = \"Tot\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"A\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"B\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"Ba\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"Bb\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"Bc\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"C\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"D\", fillcolor = \"#FFFFFF\", fontcolor = \"#000000\"] \n  \"1\"->\"2\" \n  \"1\"->\"3\" \n  \"1\"->\"7\" \n  \"1\"->\"8\" \n  \"3\"->\"4\" \n  \"3\"->\"5\" \n  \"3\"->\"6\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="defining-level-structure-for-variable-v2" class="section level4">
 <h4>defining level-structure for variable <code>V2</code></h4>
@@ -2800,7 +2798,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li><code>sampWeightInd</code>: if not <code>NULL</code>, an index specifying the column holding sampling weights for each person/group</li>
 </ul>
 <p>Building an object of class <code>sdcProblem</code> using the complete, pre-aggregated data <code>completeData</code> as discussed <a href="#ex1:aggDat">above</a> is very similar as it is shown below:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">### problem from complete data <span class="al">###</span></a>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co">### problem from complete data </span><span class="al">###</span></a>
 <a class="sourceLine" id="cb31-2" data-line-number="2">dimInfo &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">V1=</span>dimV1, <span class="dt">V2=</span>dimV2, <span class="dt">V3=</span>dimV3)</a>
 <a class="sourceLine" id="cb31-3" data-line-number="3">prob.completeDat &lt;-<span class="st"> </span><span class="kw">makeProblem</span>(</a>
 <a class="sourceLine" id="cb31-4" data-line-number="4">    <span class="dt">data=</span>completeData,</a>
