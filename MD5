@@ -1,4 +1,4 @@
-594205648b2aa1167aec8466c14cd7ba *DESCRIPTION
+33fe4de3f41605a16e15f9097fc3ebeb *DESCRIPTION
 6acd509316655ff0019c221b7fcc9e0b *NAMESPACE
 127294b40f5559ce59a4a0364dfb56c8 *R/RcppExports.R
 1d672a730ccb90fed070e6c57f8efc1d *R/classes.r
@@ -21,7 +21,7 @@ f79099f60715ac31f5a836bdca5296ff *R/helper_functions.r
 02d7ea69840c24ae6cb8fa933bf637bb *R/methods_class_cutList.r
 1da37d8c64e4aa0572c9a252bcb3c54b *R/methods_class_dataObj.r
 74b3ddf4333a835f4269bd37e0727d8f *R/methods_class_dimInfo.r
-1b7fc995d98320ef0ec52a31ca09fa87 *R/methods_class_dimVar.r
+aea03f28f9449d8bd189bc1b4b5c5fe7 *R/methods_class_dimVar.r
 2e83a740d2a1d436aceba436f4a1d247 *R/methods_class_linProb.r
 ec62e92343c7b7ec352bbbb3d0647703 *R/methods_class_problemInstance.r
 e2d1c74fcf1df140b11f5b5ff2a60a5e *R/methods_class_safeObj.r
@@ -31,7 +31,6 @@ e565a5762a132b660a7972bcdf3eda91 *R/methods_multiple_classes.r
 aa9bceb4973e1b4265c6ec6397f83549 *R/runArgusBatchFile.R
 4845b1345088c0d3d9da3edd1bd16a5b *R/tauBatch_helpers.R
 5d4b4e1ecd498301f86a0f5716204e83 *R/zzz.r
-039ed75f44b23745748db60fc8cba313 *README.md
 be99d1c2dcf114a034d777b97a9cc6c3 *build/vignette.rds
 f89d7d7122c888a949d61a6e0a7df727 *configure
 68b329da9893e34099c7d8ad5cb9c940 *configure.win
@@ -41,7 +40,7 @@ f89d7d7122c888a949d61a6e0a7df727 *configure
 15273fb2638cf6bad83e018a8d6d4aeb *data/problemWithSupps.RData
 b97b4177f23c6479dceca36b517f821f *data/protectedData.RData
 4c653ef67a2177899ad5ca22600c4ae1 *inst/doc/sdcTable.R
-deffa735bef9e3f13ad4f05c138bd007 *inst/doc/sdcTable.html
+ceba1643a4290717e8fe180e73e16955 *inst/doc/sdcTable.html
 cd7ec8fb6596b271df8e0541fed80e31 *inst/doc/sdcTable.rmd
 246f50420493661a04c97f590e1e7ee9 *man/argusVersion.Rd
 7efaf45c9b52c27f1d5c32ff18cb11fd *man/attack.Rd
@@ -49,12 +48,12 @@ ace7f54095aeafbea7a56649cf432868 *man/calc.cutList-method.Rd
 42aa0370d6c37046b4ce6ce9503ee1fe *man/calc.dimVar-method.Rd
 01b072dfae74c2d63876628ece9f44c7 *man/calc.linProb-method.Rd
 8e740a7d60987f61ef8ead11e6c13220 *man/calc.multiple-method.Rd
-fef6e82ae52dc5545f4d4894172fa156 *man/calc.problemInstance-method.Rd
+ef53a5355d044b90dcfa9a5555f0ed06 *man/calc.problemInstance-method.Rd
 a7effbd417721236b410772a9ad210ce *man/calc.sdcProblem-method.Rd
-8e4db021d677cb482d74908e5e1fb62a *man/calc.simpleTriplet-method.Rd
+904342741de6878d532de56738651d94 *man/calc.simpleTriplet-method.Rd
 f7af41659eabd35bbc3067533ad2aecd *man/cellInfo.Rd
-0547ef5cab74715a440d3787d9ca1b4a *man/changeCellStatus.Rd
-7abb42ed315e20fdc2dec092b72c28b3 *man/createArgusInput.Rd
+bba173757535dae38915e3a03204399e *man/changeCellStatus.Rd
+6a4f8ab39d86b88f469e8bbd712abde2 *man/createArgusInput.Rd
 205858e9f164545c7527d0277eb4d91c *man/cutList-class.Rd
 9d47e691fe7df86c90808b7fc1c97d18 *man/dataObj-class.Rd
 904011c29ffedca77edfc65d9c4d3e86 *man/dimInfo-class.Rd
@@ -67,7 +66,7 @@ a117c00983a56a3444d0dde77e636870 *man/get.linProb-method.Rd
 f5f347d545b0963c870b6b54210b6adb *man/get.problemInstance-method.Rd
 138fce60e963c2edfc9c93bc5ac90dc2 *man/get.safeObj-method.Rd
 d0721e2cb98f35bc718e8bbc6fb477c5 *man/get.sdcProblem-method.Rd
-b56b7a51dc9562a1e161650d74729194 *man/get.simpleTriplet-method.Rd
+3e6e37737d85ff6869928e2c831cc84d *man/get.simpleTriplet-method.Rd
 776bad8360305fc1927b530f3d6ba290 *man/getInfo.Rd
 b65379c0e0469d9dfbbdf011e590f577 *man/init.cutList-method.Rd
 33ad0d9ca68fb45cff8ae7524cfba884 *man/init.dataObj-method.Rd
@@ -87,15 +86,15 @@ cb65050c42da818ab7742d05aede8756 *man/problem.Rd
 cd76f32dd1e8cd453daf104b094465b6 *man/protectLinkedTables.Rd
 37074a2ad8c639dc580355779696907f *man/protectTable.Rd
 7ea2581927b64f5d9ff5999f44b688ff *man/protectedData.Rd
-418a1925d54264d4dab6294200dca537 *man/runArgusBatchFile.Rd
+63fce9ca43ddfa4ff8ab354c9a18f1c4 *man/runArgusBatchFile.Rd
 61a5c20de4dff0b54a13dde3c7c7aa01 *man/safeObj-class.Rd
-5a9a9dca507d592dce72bf209b79a30b *man/sdcProb2df.Rd
+a6e02899bc9419c50e09c97aca20b2d3 *man/sdcProb2df.Rd
 96d45a980f2e544c65a3b7c98700c74c *man/sdcProblem-class.Rd
 ad9fa7e1569ef52951eb2314c0c9ba38 *man/set.cutList-method.Rd
 ef0289738c9c8f4df6d23f309f263406 *man/set.dataObj-method.Rd
 72e1d95394d3d32f7ffbb4be2a9d251d *man/set.dimInfo-method.Rd
 430768779b96450ab9294570787f7e6e *man/set.linProb-method.Rd
-f56888e96566f043c5012fc04fd96cf2 *man/set.problemInstance-method.Rd
+67cbf21ee33e032cbf561bdd02f53d82 *man/set.problemInstance-method.Rd
 c29b7dc801e41a75fbc569b0236f0fd8 *man/set.sdcProblem-method.Rd
 0b807b20b5c086689b91dc5efc7fc9c8 *man/setInfo.Rd
 15e571b2e750437e5e64d9bc8e71e918 *man/show.safeObj-method.Rd
@@ -117,7 +116,6 @@ e867e6a048b121c4cf71d27aae0fdf6c *tests/testthat/datO.rdata
 2c61bddd7ac272a1f3a4b2051a8fa07d *tests/testthat/test-makeProblem.r
 155f53dcf5e86b69fb45cf3a2085720b *tests/testthat/test-primarySuppression.r
 940555760caae995e0e8f0d010f1597c *tests/testthat/test-protectTable.r
-183993c59b009898ca98a309e414d2c2 *vignettes/overview.pdf
 2cf194fb331944b3efef6fab719047a5 *vignettes/overview.png
 26b1126b667e23848d94e43bb4488d51 *vignettes/sdcTable.bib
 cd7ec8fb6596b271df8e0541fed80e31 *vignettes/sdcTable.rmd

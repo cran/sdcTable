@@ -4,10 +4,10 @@
 \alias{createArgusInput}
 \title{createArgusInput}
 \usage{
-createArgusInput(obj, typ = "microdata", verbose = FALSE, path = getwd(),
-  solver = "FREE", method, primSuppRules = NULL, responsevar = NULL,
-  shadowvar = NULL, costvar = NULL, requestvar = NULL,
-  holdingvar = NULL, ...)
+createArgusInput(obj, typ = "microdata", verbose = FALSE,
+  path = getwd(), solver = "FREE", method, primSuppRules = NULL,
+  responsevar = NULL, shadowvar = NULL, costvar = NULL,
+  requestvar = NULL, holdingvar = NULL, ...)
 }
 \arguments{
 \item{obj}{an object of class \code{\link{sdcProblem-class}} from \code{sdcTable}}

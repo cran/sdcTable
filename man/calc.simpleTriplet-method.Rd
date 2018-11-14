@@ -9,7 +9,8 @@
 \usage{
 calc.simpleTriplet(object, type, input)
 
-\S4method{calc.simpleTriplet}{simpleTriplet,character,list}(object, type, input)
+\S4method{calc.simpleTriplet}{simpleTriplet,character,list}(object, type,
+  input)
 }
 \arguments{
 \item{object}{an object of class \code{simpleTriplet}}

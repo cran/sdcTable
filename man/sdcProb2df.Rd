@@ -4,7 +4,8 @@
 \alias{sdcProb2df}
 \title{sdcProb2df}
 \usage{
-sdcProb2df(obj, addDups = TRUE, addNumVars = FALSE, dimCodes = "both")
+sdcProb2df(obj, addDups = TRUE, addNumVars = FALSE,
+  dimCodes = "both")
 }
 \arguments{
 \item{obj}{an object of class \code{\link{sdcProblem-class}} from \code{sdcTable}}
