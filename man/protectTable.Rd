@@ -64,7 +64,7 @@ the protection algorithm are set using parameter \code{...}.
 The implemented methods may have bugs that yield in not-fully protected tables. Especially
 the usage of \code{OPT}, \code{HITAS} and \code{HYPERCUBE} in production is not
 suggested as these methods may eventually be removed completely. In case you encounter any problems,
-please report it or use Tau-Argus (\url{http://neon.vb.cbs.nl/casc/tau.htm}).
+please report it or use Tau-Argus (\url{http://research.cbs.nl/casc/tau.htm}).
 }
 \examples{
 # load problem (as it was created after performing primary suppression
