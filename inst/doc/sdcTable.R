@@ -92,23 +92,17 @@ dimV1 <- dimV1[c(1:3,6:8, 4:5),]
 print(dimV1, row.names=FALSE)
 
 ## ------------------------------------------------------------------------
-dimV1 <- create_node(total_lab="Tot")
-dimV1 <- add_nodes(dimV1, reference_node="Tot", node_labs=c("A","B","C","D"))
-dimV1 <- add_nodes(dimV1, reference_node="B", node_labs=c("Ba","Bb","Bc"))
-print(dimV1)
+dimV1 <- hier_create(root = "Tot", nodes = LETTERS[1:4])
+dimV1 <- hier_add(dimV1, root = "B", nodes = c("Ba","Bb","Bc"))
+hier_display(dimV1)
 
 ## ------------------------------------------------------------------------
-plot(dimV1)
+dimV2 <- hier_create(root = "Tot", nodes = c("m", "w"))
+hier_display(dimV2)
 
 ## ------------------------------------------------------------------------
-dimV2 <- create_node(total_lab="Tot")
-dimV2 <- add_nodes(dimV2, reference_node="Tot", node_labs=c("m","w"))
-print(dimV2)
-
-## ------------------------------------------------------------------------
-dimV3 <- create_node(total_lab="Tot")
-dimV3 <- add_nodes(dimV3, reference_node="Tot", node_labs=letters[1:6])
-print(dimV3)
+dimV3 <- hier_create(root = "Tot", nodes = letters[1:6])
+hier_display(dimV3)
 
 ## ------------------------------------------------------------------------
 dimInfo <- list(V1=dimV1, V2=dimV2, V3=dimV3)
