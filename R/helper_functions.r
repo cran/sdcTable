@@ -84,36 +84,54 @@ getBranchingVariable <- function(sol, alreadyBranched, primSupps) {
 my.Rglpk_solve_LP <- function(obj, mat, dir, rhs, types=NULL, max=FALSE,
   bounds=NULL, verbose=FALSE, presolve=TRUE) {
   if (!identical(max, TRUE) && !identical(max, FALSE)) {
-    stop("'Argument 'max' must be either TRUE or FALSE!\n")
+    stop("'Argument 'max' must be either TRUE or FALSE!", call. = FALSE)
   }
   if (!identical(verbose, TRUE) && !identical(verbose, FALSE)) {
-    stop("'Argument 'verbose' must be either TRUE or FALSE.\n")
+    stop("'Argument 'verbose' must be either TRUE or FALSE.", call. = FALSE)
   }
-  if (!class(mat)=="simpleTriplet") {
-    stop("argument 'mat' must be of class 'simpleTriplet'\n")
+  if (!class(mat) == "simpleTriplet") {
+    stop("argument 'mat' must be of class 'simpleTriplet'", call. = FALSE)
   }
 
   if (!all(dir %in% c("<", "<=", ">", ">=", "=="))) {
-    stop('directions must be one of "<", "<=", ">", ">= or "==".\n')
+    stop('directions must be one of "<", "<=", ">", ">= or "==".', call. = FALSE)
   }
 
   if (is.null(types)) {
     types <- rep("C", length(obj))
   }
   if (any(is.na(match(types, c("I", "B", "C"), nomatch = NA)))) {
-    stop("'types' must be either 'B', 'C' or 'I'.\n")
+    stop("'types' must be either 'B', 'C' or 'I'.", call. = FALSE)
   }
-  integers <- types == "I"
-  binaries <- types == "B"
-  is_integer <- any(binaries | integers)
 
   slammat <- simple_triplet_matrix(
-    i=mat@i, j=mat@j, v=mat@v, nrow=mat@nrRows, ncol=mat@nrCols)
-  x <- Rglpk_solve_LP(obj=obj, mat=slammat, dir=dir, rhs=rhs,
-    bounds=bounds, types=types, max=max,
-    control=list(verbose=verbose, presolve=presolve, tm_limit=0))
-  status <- x$status
-  list(optimum=sum(x$solution * obj), solution=x$solution, status=status)
+    i = mat@i,
+    j = mat@j,
+    v = mat@v,
+    nrow = mat@nrRows,
+    ncol = mat@nrCols
+  )
+
+  x <- Rglpk_solve_LP(
+    obj = obj,
+    mat = slammat,
+    dir = dir,
+    rhs = rhs,
+    bounds = bounds,
+    types = types,
+    max = max,
+    control = list(
+      verbose = verbose,
+      presolve = presolve,
+      tm_limit = 0
+    )
+  )
+  list(
+    optimum = sum(x$solution * obj),
+    solution = x$solution,
+    status = x$status,
+    dual = x$solution_dual
+  )
 }
 
 
@@ -221,7 +239,7 @@ genParaObj <- function(selection, ...) {
 
     indexNumVarIndices <- which(names(newPara) == "numVarIndices")
     if (length(indexNumVarIndices) == 0) {
-      stop("genPara (type=='control.primary'): parameter 'numVarIndices' must be specified\n")
+      stop("genPara (type=='control.primary'): parameter 'numVarIndices' must be specified", call. = FALSE)
     } else {
       numVarIndices <- newPara[[indexNumVarIndices]]
     }
@@ -300,6 +318,7 @@ genParaObj <- function(selection, ...) {
 
     # SIMPLEHEURISTIC - parameter
     paraObj$detectSingletons <- FALSE
+    paraObj$threshold <- NA
 
     # protectLinkedTables
     paraObj$maxIter <- 5
@@ -330,18 +349,20 @@ genParaObj <- function(selection, ...) {
       is.logical(paraObj$save),
       is.logical(paraObj$fastSolution),
       is.logical(paraObj$fixVariables),
-      is.logical(paraObj$suppAdditionalQuader)
+      is.logical(paraObj$suppAdditionalQuader),
+      is.logical(paraObj$detectSingletons)
     ))) {
       e <- c(
-        "arguments `verbose`, `save`, `fastSolution` `fixVariables` and",
-        "`suppAdditionalQuader` must be numeric!"
+        "arguments `verbose`, `save`, `fastSolution` `fixVariables`",
+        "`suppAdditionalQuader` and `detectSingletons` must be logical!"
       )
       stop(paste(e, collapse = " "), call. = FALSE)
     }
-    if ( !is.null(paraObj$timeLimit) && !paraObj$timeLimit %in% 1:3000 ) {
+    if (!is.null(paraObj$timeLimit) && !paraObj$timeLimit %in% 1:3000) {
       stop("argument `timeLimit` must be >= 1 and <= 3000 minutes!", call. = FALSE)
     }
-    if ( !length(paraObj$approxPerc) & !paraObj$approxPerc %in% 1:100 ) {
+    if (!length(paraObj$approxPerc) &
+        !paraObj$approxPerc %in% 1:100) {
       stop("argument `approxPerc` must be >= 1 and <= 100!\n", call. = FALSE)
     }
     if (!paraObj$method %in% c("SIMPLEHEURISTIC", "HITAS", "HYPERCUBE", "OPT")) {
@@ -349,6 +370,15 @@ genParaObj <- function(selection, ...) {
     }
     if (!paraObj$suppMethod %in% c('minSupps', 'minSum', 'minSumLogs')) {
       stop("`suppMethod` must be either `minSupps`, `minSum` or `minSumLogs`", call. = FALSE)
+    }
+
+    if (!is.na(paraObj$threshold)) {
+      if (!rlang::is_scalar_integerish(paraObj$threshold)) {
+        stop("argument `threshold` is not an integerish number.", call. = FALSE)
+      }
+      if (paraObj$threshold < 1) {
+        stop("argument `threshold` must be >= 1.", call. = FALSE)
+      }
     }
     return(paraObj)
   }
@@ -484,74 +514,109 @@ csp_cpp <- function(sdcProblem, attackonly=FALSE, verbose) {
   }
 }
 
-singletonDetectionProcedure <- function(dat, indices, subIndices) {
+# do_singletons: logical --> ordinary singleton detection procedure
+# threshold: make sure that in all rows the total amount of contributors is >= threshold_th
+detect_singletons <- function(dat, indices, sub_indices, do_singletons, threshold = NA) {
+  .supp_val <- function(dt, dat) {
+    tmp <- dt[sdcStatus == "s"]
+    if (nrow(tmp) == 0) {
+      stop("error finding an additional primary suppression (1)", call. = FALSE)
+    }
+
+    setorder(tmp, freq, -id)
+    supp_id <- tmp$id[1]
+    if (dat$freq[supp_id] == 1) {
+      dat$sdcStatus[supp_id] <- "u"
+    } else {
+      dat$sdcStatus[supp_id] <- "x"
+    }
+    list(dat = dat, supp_id = supp_id)
+  }
+
+  if (do_singletons == FALSE & is.na(threshold)) {
+    # nothing to do
+    return(invisible(list(
+      dat = dat,
+      nr_added_supps = 0,
+      suppIds = c()
+    )))
+  }
+
   id <- freq <- sdcStatus <- NULL
-  nrAddSupps <- 0
-  suppIds <- c()
+  nr_added_supps <- 0
+  supp_ids <- c()
 
   # temporarily recode primary suppressions and check, if they are really singletons
-  id_changed <- dat[sdcStatus=="u" & freq>1, id]
-  if (length(id_changed)>0) {
-    dat[id_changed, sdcStatus:="x"]
+  id_changed <- dat[sdcStatus == "u" & freq > 1, id]
+  if (length(id_changed) > 0) {
+    dat[id_changed, sdcStatus := "x"]
   }
+
   for (i in 1:length(indices)) {
-    sI <- subIndices[[i]]
+    sI <- sub_indices[[i]]
     for (j in 1:length(sI)) {
       sJ <- sI[[j]]
       for (z in 1:length(sJ)) {
         poss <- sJ[[z]]
         mm <- max(poss)
         for (k in 1:mm) {
-          ii <- indices[[i]][[j]][which(poss==k)]
+          ii <- indices[[i]][[j]][which(poss == k)]
           # only if we have a real subtable
           if (length(ii) > 1) {
             # tau-argus strategy
-            ind_u <- which(dat$sdcStatus[ii]=="u")
+            ind_u <- which(dat[ii]$sdcStatus == "u")
+            ind_x <- which(dat[ii]$sdcStatus == "x")
 
-            if (length(ind_u)==2) {
-              ff <- dat$freq[ii[ind_u]]
-              # at least one cell of two supps is a singleton
-              # 1. If on a row or column of a subtable there are only two singletons and no other
-              # primary suppressions.
-              # 2. If there is only one singleton and one multiple primary unsafe cell.
-              # one or two singletons
-              if (any(ff==1) & sum(dat$sdcStatus[ii]=="x")==0 & sum(dat$freq[ii]>0)>2) {
-                # we have two singletons, we need to add one additional suppression
+            if (do_singletons) {
+              if (length(ind_u) == 2) {
                 ss <- dat[ii]
-                ss <- ss[sdcStatus=="s"]
-                suppId <- ss$id[which.min(ss$freq)]
-                if (length(suppId)==0) {
-                  stop("error finding an additional primary suppression (1)\n")
+                ff <- ss$freq[ind_u]
+                # at least one cell of two supps is a singleton
+                # 1. If on a row or column of a subtable there are only two singletons and no other
+                # primary suppressions.
+                # 2. If there is only one singleton and one multiple primary unsafe cell.
+                # one or two singletons
+                if (any(ff == 1) & length(ind_x) == 0 & sum(ss$freq > 0) > 2) {
+                  # we have two singletons, we need to add one additional suppression
+                  res <- .supp_val(dt = ss, dat = dat)
+                  nr_added_supps <- nr_added_supps + 1
+                  supp_ids <- c(supp_ids, res$supp_id)
+                  dat <- res$dat
                 }
-                if (dat[suppId, freq]==1) {
-                  dat[suppId, sdcStatus:="u"]
-                } else {
-                  dat[suppId, sdcStatus:="x"]
+              }
+              # 3. If a frequency rule is used, it could happen that two cells on a row/column are
+              # primary unsafe, but the sum of the two cells could still be unsafe. In that case
+              # it should be prevented that these two cells protect each other.
+              if (length(ind_u) == 3) {
+                ss <- dat[ii]
+                # the sum is primary suppressed, thus the other two primary suppressions are within the row/col
+                if (ss$sdcStatus[1] == "u" & sum(ss$freq > 0) > 3) {
+                  # we need to find an additional suppression
+                  res <- .supp_val(dt = ss, dat = dat)
+                  nr_added_supps <- nr_added_supps + 1
+                  supp_ids <- c(supp_ids, res$supp_id)
+                  dat <- res$dat
                 }
-                nrAddSupps <- nrAddSupps + 1
-                suppIds <- c(suppIds, suppId)
               }
             }
-            # 3. If a frequency rule is used, it could happen that two cells on a row/column are
-            # primary unsafe, but the sum of the two cells could still be unsafe. In that case
-            # it should be prevented that these two cells protect each other.
-            if (length(ind_u)==3) {
-              # the sum is primary suppressed, thus the other two primary suppressions are within the row/col
-              if (dat$sdcStatus[ii[1]]=="u" & sum(dat$freq[ii]>0)>3) {
-                # we need to find an additional suppression
+
+            # respect threshold for rows with suppressions
+            if (!is.na(threshold)) {
+              finished <- !any(dat[ii][["sdcStatus"]] %in% c("u", "x")) # only if we have suppressions
+              # suppress as many cells as required
+              while (!finished) {
                 ss <- dat[ii]
-                ss <- ss[sdcStatus=="s"]
-                suppId <- ss$id[which.min(ss$freq)]
-                if (length(suppId)==0) {
-                  stop("error finding an additional primary suppression (2)\n")
-                }
-                if (dat[suppId, freq]==1) {
-                  dat[suppId, sdcStatus:="u"]
+                ind_supps <- ss$sdcStatus %in% c("u", "x")
+                # already fully suppressed?
+                fully_supped <- all(ss[freq > 0, unique(sdcStatus)] %in% c("u", "x"))
+                if (!fully_supped & sum(ss$freq[ind_supps]) < threshold) {
+                  res <- .supp_val(dt = ss, dat = dat)
+                  nr_added_supps <- nr_added_supps + 1
+                  supp_ids <- c(supp_ids, res$supp_id)
+                  dat <- res$dat
                 } else {
-                  dat[suppId, sdcStatus:="x"]
+                  finished <- TRUE
                 }
-                nrAddSupps <- nrAddSupps + 1
-                suppIds <- c(suppIds, suppId)
               }
             }
           }
@@ -561,11 +626,12 @@ singletonDetectionProcedure <- function(dat, indices, subIndices) {
   }
 
   # reset primary suppressions
-  if (length(id_changed)>0) {
-    dat[id_changed, sdcStatus:="u"]
+  if (length(id_changed) > 0) {
+    dat[id_changed, sdcStatus := "u"]
   }
-  #if (length(nrAddSupps)>0) {
-  #  dat[suppIds, sdcStatus:="u"]
-  #}
-  invisible(list(dat=dat, nrAddSupps=nrAddSupps, suppIds=suppIds))
+  invisible(list(
+    dat = dat,
+    nr_added_supps = nr_added_supps,
+    suppIds = supp_ids
+  ))
 }

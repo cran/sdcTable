@@ -4,10 +4,21 @@
 \alias{createArgusInput}
 \title{Create input files for tauArgus}
 \usage{
-createArgusInput(obj, typ = "microdata", verbose = FALSE,
-  path = getwd(), solver = "FREE", method, primSuppRules = NULL,
-  responsevar = NULL, shadowvar = NULL, costvar = NULL,
-  requestvar = NULL, holdingvar = NULL, ...)
+createArgusInput(
+  obj,
+  typ = "microdata",
+  verbose = FALSE,
+  path = getwd(),
+  solver = "FREE",
+  method,
+  primSuppRules = NULL,
+  responsevar = NULL,
+  shadowvar = NULL,
+  costvar = NULL,
+  requestvar = NULL,
+  holdingvar = NULL,
+  ...
+)
 }
 \arguments{
 \item{obj}{an object of class \linkS4class{sdcProblem} from \code{sdcTable}}
@@ -97,7 +108,7 @@ dimVarInd <- 1:2
 numVarInd <- 3:5
 sampWeightInd <- 6
 
-# creating an object of class \\code{\\link{sdcProblem-class}}
+# creating an object of class \code{\link{sdcProblem-class}}
 obj <- makeProblem(
   data = microData1,
   dimList = dimList,
@@ -105,7 +116,7 @@ obj <- makeProblem(
   numVarInd = numVarInd,
   sampWeightInd = sampWeightInd)
 
-# creating an object of class \\code{\\link{sdcProblem-class}} containing "duplicated" codes
+# creating an object of class \code{\link{sdcProblem-class}} containing "duplicated" codes
 obj_dupl <- makeProblem(
   data = microData1,
   dimList = dimList_dupl,

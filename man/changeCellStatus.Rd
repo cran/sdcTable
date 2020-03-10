@@ -4,8 +4,7 @@
 \alias{changeCellStatus}
 \title{change anonymization status of a specific cell}
 \usage{
-changeCellStatus(object, characteristics, varNames, rule,
-  verbose = FALSE)
+changeCellStatus(object, characteristics, varNames, rule, verbose = FALSE)
 }
 \arguments{
 \item{object}{an object of class \code{\link{sdcProblem-class}}}
@@ -30,7 +29,7 @@ Important: the \code{i}-th element of argument \code{characteristics} is uses as
 }
 \examples{
 # load primary suppressed data (as created in the example
-# of \\code{\\link{primarySuppression}})
+# of \code{\link{primarySuppression}})
 sp <- searchpaths()
 fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
 problem <- get(load(fn))
