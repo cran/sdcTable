@@ -117,7 +117,7 @@ setMethod("c_make_partitions", signature=c("list"), definition=function(input) {
   return(final)
 })
 
-setMethod("c_gen_mat_m", signature=c("list"), definition=function(input) {
+setMethod("c_gen_mat_m", signature = c("list"), definition = function(input) {
   x <- input$objectA
   y <- input$objectB
 
@@ -127,8 +127,11 @@ setMethod("c_gen_mat_m", signature=c("list"), definition=function(input) {
   nrCells <- g_nrVars(x)
   freqs <- g_freq(x)
 
-  constraintM <- init.simpleTriplet(type='simpleTriplet', input=list(mat=matrix(0, nrow=0, ncol=nrCells)))
-  for ( i in 1:nrVars ) {
+  constraintM <- init.simpleTriplet(
+    type = "simpleTriplet",
+    input = list(mat = matrix(0, nrow = 0, ncol = nrCells))
+  )
+  for (i in 1:nrVars) {
     lO <- levelObj[[i]]
     keepList <- lapply(g_str_info(y)[-i], function(k) {
       seq(k[1], k[2])
@@ -138,42 +141,61 @@ setMethod("c_gen_mat_m", signature=c("list"), definition=function(input) {
     })
     f1 <- f2 <- mySplitIndicesList(strID, keepList2)
 
-    if ( nrVars > 1 ) {
+    if (nrVars > 1) {
       f1 <- mySplitIndicesList(strID, keepList)
     }
 
     dimlO <- g_dims(lO)
-    if ( length(unique(f2)) != 1 ) {
-      dimInd <- sapply(1:length(dimlO), function(x) { identical( sort(unique(f2)), dimlO[[x]]) } )
-      if ( sum(dimInd) == 0 ) {
-        for ( j in 1:length(g_dims(lO)) ) {
+    if (length(unique(f2)) != 1) {
+      dimInd <- sapply(1:length(dimlO), function(x) {
+        identical(sort(unique(f2)), dimlO[[x]])
+      })
+
+      if (sum(dimInd) == 0) {
+        for (j in 1:length(g_dims(lO))) {
           splitInd <- which(f2 %in% g_dims(lO)[[j]])
-          spl <- split(splitInd, f1[splitInd])
-          for ( z in 1:length(spl) ) {
-            ind <- rep(1,length(spl[[z]]))
+          if (nrVars == 1) {
+            spl <- split(splitInd, rep(1, length(splitInd)))
+          } else {
+            spl <- split(splitInd, f1[splitInd])
+          }
+
+          for (z in 1:length(spl)) {
+            ind <- rep(1, length(spl[[z]]))
             ind[which.max(freqs[spl[[z]]])] <- -1
-            if ( !is.zero(sum(freqs[spl[[z]]]*ind)) ) {
+            if (!is.zero(sum(freqs[spl[[z]]] * ind))) {
               stop("something went wrong!\n")
             }
-            constraintM <- c_add_row(constraintM, input=list(index=spl[[z]], values=ind))
+            constraintM <- c_add_row(
+              object = constraintM,
+              input = list(index = spl[[z]], values = ind)
+            )
           }
         }
       } else {
-        splitInd <- which(f2 %in% g_dims(lO)[[which(dimInd==TRUE)]])
+        splitInd <- which(f2 %in% g_dims(lO)[[which(dimInd == TRUE)]])
         ## only 1 dimension
-        if ( nrVars > 1 ) {
+        if (nrVars > 1) {
           spl <- split(splitInd, f1[splitInd])
         } else {
           spl <- split(splitInd, rep(1, length(splitInd)))
         }
 
-        for ( z in 1:length(spl) ) {
-          ind <- rep(1,length(spl[[z]]))
+        for (z in 1:length(spl)) {
+          ind <- rep(1, length(spl[[z]]))
           ind[which.max(freqs[spl[[z]]])] <- -1
-          if ( !is.zero(sum(freqs[spl[[z]]]*ind)) ) {
-            stop("something went wrong! (z=",z," und names(spl)[z]='",names(spl)[z],")\n")
+          if (!is.zero(sum(freqs[spl[[z]]] * ind))) {
+            e <- c(
+              "something went wrong! (z = ", z,
+              " | names(spl)[z] = ", shQuote(names(spl)[z]), ")"
+            )
+            stop(paste(e, collapse = ""), call. = FALSE)
+
           }
-          constraintM <- c_add_row(constraintM, input=list(index=spl[[z]], value=ind))
+          constraintM <- c_add_row(
+            object = constraintM,
+            input = list(index = spl[[z]], value = ind)
+          )
         }
       }
     }
@@ -223,11 +245,10 @@ setMethod("c_make_att_prob", signature=c("list"), definition=function(input) {
   return(list(aProb=aProb, newCutsMaster=newCutsMaster))
 })
 
-setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
+setMethod(f = "c_calc_full_prob", signature = c("list"), definition = function(input) {
   .SD <- ID <- id <- NULL
   x <- input$objectA
   y <- input$objectB
-  time.start <- proc.time()
   datO <- g_raw_data(x)
   dimObj <- g_dim_info(y)
 
@@ -247,11 +268,14 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
     cDefault <- g_default_codes(dimObj[[i]])
     cOriginal <- g_original_codes(dimObj[[i]])
     cOriginalDups <- g_dups(dimObj[[i]])
-    cOriginalDupsUp <- g_dups_up(dimObj[[i]])
     if (all(unique(codes[[i]]) %in% c(cOriginal, cOriginalDups))) {
-      codes[[i]] <- c_match_default_codes(object=dimObj[[i]], input=rawData[[ind.dimvars[i]]])
-      if (sum(is.na(codes[[i]]))>0) {
-        stop(paste0("NA values in default codes have been generated for variable ",
+      codes[[i]] <- c_match_default_codes(
+        object = dimObj[[i]],
+        input = rawData[[ind.dimvars[i]]]
+      )
+      if (sum(is.na(codes[[i]])) > 0) {
+        stop(
+          paste0("NA values in default codes have been generated for variable ",
           shQuote(names(dimObj)[i]),".\nPlease check the definition of this hierarchy!\n"))
       }
     } else if (all(unique(codes[[i]]) %in% cDefault)) {
@@ -274,19 +298,21 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
 
   ## fill the table
   nrIndexvars <- length(ind.dimvars)
-  fullDims <- lapply(dimObj, g_dims)
 
-  allCodes <- expand(lapply(dimObj, g_default_codes), vector=FALSE)
-  fullTabObj <- data.table(ID=1:length(allCodes[[1]]))
+  allCodes <- expand(lapply(dimObj, g_default_codes), vector = FALSE)
+  fullTabObj <- data.table(ID = 1:length(allCodes[[1]]))
   for (i in 1:length(allCodes)) {
-    fullTabObj[,colnames(rawData)[ind.dimvars][i]:=allCodes[[i]]]
+    fullTabObj[, colnames(rawData)[ind.dimvars][i] := allCodes[[i]]]
   }
   setkeyv(fullTabObj, colnames(rawData)[ind.dimvars])
-  fullTabObj[,ID:=NULL]
+  fullTabObj[, ID := NULL]
 
   ## revert rawData codes to default codes
   for (j in seq_along(ind.dimvars)) {
-    v <- c_match_default_codes(object=dimObj[[j]], input=rawData[,get(names(dimObj)[j])])
+    v <- c_match_default_codes(
+      object = dimObj[[j]],
+      input = rawData[, get(names(dimObj)[j])]
+    )
     set(rawData, NULL, names(dimObj)[j], v)
   }
   setkeyv(rawData, colnames(rawData)[ind.dimvars])
@@ -300,11 +326,10 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
     set(rawData, ind.na[[k]], j, 0)
     k <- k + 1
   }
-  rm(k)
 
   ## merge minDat to fullDat
   fullTabObj <- merge(fullTabObj, rawData, all.x = TRUE)
-  
+
   ## set missing combinations of lowest levels to 0
   ## problematic are all levels that should exist, but do not exist
   ## they are filled with 0 so that we can aggregate
@@ -322,7 +347,7 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
   fullTabObj[, strID := NULL]
 
   if (length(missing.codes) > 0) {
-    index <- which(strID%in%missing.codes)
+    index <- which(strID %in% missing.codes)
     for (i in 1:length(cols)) {
       set(fullTabObj, index, cols[i], 0)
     }
@@ -334,11 +359,11 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
   # which indexvars have any hierarchy (not just the total?)
   # these indiecs specify the dim-variables we loop over
   useInds <- which(sapply(y@dimInfo, function(x) {
-    length(x@codesOriginal)>1
+    length(x@codesOriginal) > 1
   }))
 
-  fullTabObj[,id:=.I]
-  cols <- (nrIndexvars+1):(ncol(fullTabObj)-1)
+  fullTabObj[, id := .I]
+  cols <- (nrIndexvars + 1):(ncol(fullTabObj) - 1)
   col.names <- names(fullTabObj)[cols]
   while (not.finished) {
     for (i in useInds) {
@@ -359,10 +384,10 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
           out <- out[, lapply(.SD, sum), .SDcols = col.names, by = key(out)]
         }
         cmd <- paste0("row.ind <- fullTabObj[",dim.vars[i],"==cur.levs[1],id]")
-        eval(parse(text=cmd))
+        eval(parse(text = cmd))
         for (z in col.names) {
           cmd <- paste0("fullTabObj[id %in% row.ind,",z,":=out[[z]]]")
-          eval(parse(text=cmd))
+          eval(parse(text = cmd))
         }
       }
     }
@@ -373,11 +398,11 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
     }
   }
   fullTabObj[, id := NULL]
-  
+
   nrV <- nrow(fullTabObj)
   f <- fullTabObj[[ind.freq]]
   strID <- apply(fullTabObj[, dim.vars, with = FALSE], 1, paste0, collapse = "")
-  
+
   # performance improvement
   cmd <- paste0("fullTabObj[,strID:=paste0(", dim.vars[1])
   if (length(dim.vars) > 1) {
@@ -413,6 +438,7 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
       set(rawData, ind.na[[i]], cols[i], NA)
     }
   }
+
   s_raw_data(x) <- list(datO)
 
   # w are the actual weights as used in the
@@ -462,8 +488,7 @@ setMethod("c_calc_full_prob", signature=c("list"), definition=function(input) {
     partition = partition,
     startI = 1,
     startJ = 1,
-    indicesDealtWith = NULL,
-    elapsedTime = (proc.time() - time.start)[3]
+    indicesDealtWith = NULL
   )
   return(sdcProblem)
 })

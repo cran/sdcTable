@@ -14,7 +14,7 @@
 #' @param type character vector of length 1 defining the primary suppression
 #' rule. Allowed types are:
 #' - `freq`: apply frequency rule with parameters `maxN` and `allowZeros`
-#' - `nk`: apply nk-dominance rule with parameters `n`, `k` 
+#' - `nk`: apply nk-dominance rule with parameters `n`, `k`
 #' - `p`: apply p-percent rule with parameter `p`
 #' - `pq`: apply pq-rule with parameters `p` and `q`
 #' @param ... parameters used in the identification of primary sensitive cells.
@@ -25,7 +25,9 @@
 #' - `allowZeros`: logical vector of length 1 specifying if empty cells
 #' (count==0) should be considered sensitive when using the frequency rule.
 #' The default value of `allowZeros` is `FALSE` so that empty cells are not
-#' considered primary sensitive by default.
+#' considered primary sensitive by default. Such cells (frequency 0) are then
+#' flagged as `z` which indicates such a cell may be published but should (internally)
+#' not be used for (secondary) suppression in the heuristic algorithms.
 #' - `p`: numeric vector of length 1 specifying parameter `p` that is used
 #' when applying the p-percent rule with default value of `80`.
 #' - `pq`: numeric vector of length 2 specifying parameters `p` and `q` that
@@ -48,25 +50,26 @@
 #' @return a [sdcProblem-class] object
 #' @md
 #' @export
-#' @note the nk-dominance rule, the p-percent rule and the pq-rule can only
+#' @note
+#' the nk-dominance rule, the p-percent rule and the pq-rule can only
 #' be applied if micro data have been used as input data to function [makeProblem()]
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
 #' @md
 #' @examples
 #' # load micro data
-#' data("microData1", package = "sdcTable")
+#' utils::data("microdata1", package = "sdcTable")
 #'
 #' # load problem (as it was created in the example in ?makeProblem
-#' data("problem", package = "sdcTable")
+#' p <- sdc_testproblem(with_supps = FALSE)
 #'
 #' # we have a look at the frequency table by gender and region
-#' xtabs(rep(1, nrow(microData1)) ~ gender + region, data = microData1)
+#' xtabs(rep(1, nrow(microdata1)) ~ gender + region, data = microdata1)
 #'
 #' # 2 units contribute to cell with region=='A' and gender=='female'
 #' # --> this cell is considered sensitive according the the
 #' # freq-rule with 'maxN' equal to 2!
 #' p1 <- primarySuppression(
-#'   object = problem,
+#'   object = p,
 #'   type = "freq",
 #'   maxN = 2
 #' )
@@ -75,7 +78,7 @@
 #' # This is only possible if we are dealing with micro data and we also
 #' # have to specify the name of a numeric variable.
 #' p2 <- primarySuppression(
-#'   object = problem,
+#'   object = p,
 #'   type = "p",
 #'   p = 30,
 #'   numVarName = "val"
@@ -94,7 +97,6 @@
 #'   p2_sdc = getInfo(p2, type = "sdcStatus")
 #' )
 primarySuppression <- function(object, type, ...) {
-  start.time <- proc.time()
   if (!type %in% c("nk", "freq", "p", "pq")) {
     stop("valid types are 'nk', 'freq', 'p' or 'pq'!\n")
   }
@@ -108,6 +110,9 @@ primarySuppression <- function(object, type, ...) {
     selection = "control.primary",
     numVarIndices = numVarsIndices, ...
   )
+
+  # starting-pattern
+  pat <- g_suppPattern(object@problemInstance)
 
   if (type == "freq") {
     object <- c_rule_freq(object, input = paraList)
@@ -142,7 +147,9 @@ primarySuppression <- function(object, type, ...) {
     object <- domRule(object = object, params = paraList, type = "pq")
   }
 
-  elapsed.time <- g_elapsedTime(object) + (proc.time() - start.time)[3]
-  s_elapsedTime(object) <- elapsed.time
+  # reset previous solution if suppression-pattern has changed
+  if (!identical(pat, g_suppPattern(object@problemInstance))) {
+    object@results <- NULL
+  }
   return(object)
 }

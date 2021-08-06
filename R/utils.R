@@ -28,7 +28,6 @@ domRule <- function(object, params, type) {
   nk_rule <- function(params) {
     stopifnot(is_scalar_double(params$cell_tot))
     stopifnot(is_scalar_integerish(params$n))
-
     # if TRUE, cell needs to be suppressed
     sum(params$top_contr) > (params$k / 100 * params$cell_tot)
   }
@@ -51,6 +50,7 @@ domRule <- function(object, params, type) {
     if (length(vals) == 0) {
       return(NULL)
     }
+
     # replicate by weights: what to do with non-integerish weights?
     # randomly round upwards and downwards?
     if (!is_integerish(w)) {
@@ -58,7 +58,9 @@ domRule <- function(object, params, type) {
       w[dir == -1] <- floor(w[dir == -1])
       w[dir == 1] <- ceiling(w[dir == 1])
     }
-    vals <- rep(vals, times = w)
+    # division is required here because in makeProblem()
+    # all numVars-variables are aggregated on cell-level
+    vals <- rep(vals / w, times = w)
 
     top_contr <- rep(0, n)
     v <- rev(tail(sort(vals), n))
@@ -85,15 +87,16 @@ domRule <- function(object, params, type) {
     n <- 2
   } else {
     n <- params$n
-    if (n < 2) {
-      stop("Parameter `n` must be >= 2 for nk-dominance rule.", call. = FALSE)
+    if (n < 1) {
+      stop("Parameter `n` must be >= 1 for nk-dominance rule.", call. = FALSE)
     }
   }
 
   pI <- g_problemInstance(object)
   dataObj <- g_dataObj(object)
   strIDs <- g_strID(pI)
-  numVal <- g_raw_data(dataObj)[[params$numVarName]]
+  raw_data <- g_raw_data(dataObj)
+  numVal <- raw_data[[params$numVarName]]
 
   if (any(na.omit(numVal) < 0)) {
     e <- c(
@@ -113,9 +116,19 @@ domRule <- function(object, params, type) {
 
   # calculate contributing indices
   nr_cells <- g_nrVars(pI)
-  indices <- lapply(1:nr_cells, function(x) {
-    c_contributing_indices(object, input = list(strIDs[x]))
-  })
+
+  # we check if we need to compute contributing indices
+  indices <- attributes(raw_data)[["computed_indices"]]
+  if (is.null(indices)) {
+    # indices of contributing units have not yet been computed
+    indices <- contributing_indices(
+      prob = object,
+      ids = strIDs
+    )
+    attr(raw_data, "computed_indices") <- indices
+    object@dataObj@rawData <- raw_data
+    object <<- object
+  }
 
   # values and totals of contributing units
   inp <- lapply(1:nr_cells, function(x) {
@@ -166,3 +179,113 @@ domRule <- function(object, params, type) {
   return(object)
 }
 
+# returns all contributing codes for each dimensions
+# of a sdcProblem-object; dimensions are stored as attributes
+# in sdcProblem-objects; thus we can use sdcHierarchies::hier_info()
+# this is used in createRegSDCInput() and contributing_indices()
+.get_all_contributing_codes <- function(x) {
+  stopifnot(inherits(x, "sdcProblem"))
+  dims_hier <- attributes(x)$hierinfo
+
+  dims_info <- lapply(dims_hier, function(x) {
+    sdcHierarchies::hier_info(x)
+  })
+
+  all_contr_codes <- lapply(dims_info, function(x) {
+    lapply(x, function(y) {
+      list(
+        is_root = y$is_rootnode,
+        contr_codes = y$contributing_codes
+      )
+    })
+  })
+  all_contr_codes
+}
+
+# returns a slam::simple_triplet_matrix containing all
+# linear constraints of a given sdcProblem-instance `x`
+# additionally, as attribute `infodf` a data.frame is
+# returned that has for each cell (identified by cell_id)
+# the information if it is an inner cell or not
+.gen_contraint_matrix <- function(x) {
+  stopifnot(inherits(x, "sdcProblem"))
+  pi <- get.sdcProblem(x, type = "problemInstance")
+  str_ids <- pi@strID
+  m <- c_gen_mat_m(
+    input = list(
+      objectA = pi,
+      objectB = get.sdcProblem(x, type = "dimInfo")
+    )
+  )
+
+  # convert to simple-triplet from slam-pkg because
+  # we can use indexing without converting to full-matrix
+  m <- slam::simple_triplet_matrix(i = m@i, j = m@j, v = m@v)
+  colnames(m) <- str_ids
+
+  index_subtots <- unique(m$j[m$v == -1])
+  infodf <- data.frame(
+    str_id = slot(pi, "strID"),
+    is_inner = TRUE
+  )
+  infodf$is_inner[index_subtots] <- FALSE
+  attr(m, "infodf") <- infodf
+  m
+}
+
+.tmpweightname <- function() {
+  "weight.for.suppression"
+}
+
+# returns a relevant row from a protected dataset (slot "results") or
+# the current status (from "problemInstance") depending on the inputs
+# specs is a named vector and complete allows to return the entire row
+# or only the id
+cell_id <- function(x, specs, complete = TRUE, addDups = FALSE) {
+  stopifnot(inherits(x, "sdcProblem"))
+  df <- slot(x, "results")
+  if (is.null(df)) {
+    df <- sdcProb2df(
+      obj = x,
+      dimCodes = "original",
+      addNumVars = TRUE,
+      addDups = addDups
+    )
+  }
+
+  stopifnot(rlang::is_scalar_logical(complete))
+
+  # check inputs
+  if (!rlang::is_named(specs)) {
+    stop("input `specs` must be a named character vector", call. = FALSE)
+  }
+  if (!rlang::is_character(specs)) {
+    stop("input `specs` must be a named character vector", call. = FALSE)
+  }
+
+  di <- slot(x, "dimInfo")
+  vnames <- slot(di, "vNames")
+
+  if (length(specs) != length(vnames)) {
+    stop("length of input `specs` does not match number of dimensions.", call. = FALSE)
+  }
+
+  idx <- match(names(specs), vnames)
+  if (any(is.na(idx))) {
+    stop("names of input `specs` does not match names of dimensions.", call. = FALSE)
+  }
+
+  specs <- specs[idx]
+  df$id <- 1:nrow(df)
+  for (v in vnames) {
+    df <- df[get(v) == specs[v]]
+  }
+  if (nrow(df) != 1) {
+    stop("0 or > 1 cells identified, check inputs `specs`", call. = FALSE)
+  }
+  if (complete) {
+    return(df)
+  } else {
+    return(df$id)
+  }
+}

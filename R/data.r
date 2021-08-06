@@ -1,49 +1,26 @@
-#' synthetic microdata
+#' Synthetic Microdata (1)
 #'
-#' example microdata used for example in \code{\link{protectLinkedTables}}.
+#' A `data.frame` used for examples and problem-generation in various
+#' examples.
 #'
-#' @name microData1
-#' @docType data
-#' @format A dataframe with 100 observations on 5 variables (\code{region},\code{gender},\code{ecoOld},\code{ecoNew} and \code{numVal})
-#' @keywords datasets
-NULL
+#' @format a `data.frame` with `100` rows and variables `region`, `gender`
+#' and `val`.
+#' @usage data(microdata1)
+#' @examples
+#' utils::data("microdata1", package = "sdcTable")
+#' head(microdata1)
+"microdata1"
 
-#' synthetic microdata
+#' Synthetic Microdata (2)
 #'
-#' example microdata used for various examples.
+#' Example microdata used for example in [protect_linked_tables()].
 #'
-#' @name microData2
-#' @docType data
-#' @format A dataframe with 100 observations on 2 variables (\code{region} and \code{gender})
-#' @keywords datasets
-NULL
+#' @format a `data.frame` with `100` observations containing variables `region`,
+#' `gender`,  `ecoOld`, `ecoNew` and `numVal`.
+#' @usage data(microdata2)
+#' @examples
+#' utils::data("microdata2", package = "sdcTable")
+#' head(microdata2)
+"microdata2"
 
-#' data of class \code{\link{sdcProblem-class}}
-#'
-#' example data of class \code{\link{sdcProblem-class}} as created in the example of \code{\link{makeProblem}}
-#'
-#' @name problem
-#' @docType data
-#' @format an object of class \code{\link{sdcProblem-class}}
-#' @keywords datasets
-NULL
-
-#' data of class \code{\link{sdcProblem-class}}
-#'
-#' example data of class \code{\link{sdcProblem-class}} as created in the example of \code{\link{primarySuppression}}
-#'
-#' @name problemWithSupps
-#' @docType data
-#' @format an object of class \code{\link{sdcProblem-class}} featuring primary suppressed table cells
-#' @keywords datasets
-NULL
-
-#' data of class \code{\link{safeObj-class}}
-#'
-#' example data of class \code{\link{safeObj-class}} as created in the example of \code{\link{protectTable}}
-#'
-#' @name protectedData
-#' @docType data
-#' @format an object of class \code{\link{safeObj-class}} being a protected dataset
-#' @keywords datasets
 NULL

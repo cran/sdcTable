@@ -1,11 +1,16 @@
 ## Wrapper function for pasting key-Variables
-pasteStrVec <- function(strVec, nrVars, coll=NULL) {
-  if(length(strVec) %% nrVars != 0)
-    stop("Wrong Dimensions!\n")
-  if ( is.null(coll) ) {
+pasteStrVec <- function(strVec, nrVars, coll = NULL) {
+  if (length(strVec) %% nrVars != 0) {
+    stop("Wrong Dimensions", call. = FALSE)
+  }
+  if (is.null(coll)) {
     return(cpp_myPaste(as.character(strVec), as.integer(nrVars)[1], NA))
   } else {
-    return(cpp_myPaste(as.character(strVec), as.integer(nrVars)[1], as.character(coll[1])))
+    return(cpp_myPaste(
+      as.character(strVec),
+      as.integer(nrVars)[1],
+      as.character(coll[1])
+    ))
   }
 }
 
@@ -42,11 +47,6 @@ mySplit <- function(strVec, keepIndices) {
   keepIndices <- unique(keepIndices)
   return(cpp_mySplit(as.character(strVec), as.integer(keepIndices)))
 }
-
-#strs <- rep(paste(LETTERS[1:6],collapse=""), 10000)
-#system.time({
-#  sapply(strs, mySplit, c(1,6))
-#})
 
 mySplitIndicesList <- function(strVec, keepList, coll="-") {
   u <- unlist(keepList)
@@ -132,83 +132,6 @@ my.Rglpk_solve_LP <- function(obj, mat, dir, rhs, types=NULL, max=FALSE,
     status = x$status,
     dual = x$solution_dual
   )
-}
-
-
-# calculates years, weeks, days, hours, minutes and seconds from integer number
-# secs: count of elapsed seconds (proc.time()[3])
-# returns also a formatted string
-formatTime <- function(secs){
-  time.vec <- rep(NA, 6)
-  names(time.vec) <- c('seconds', 'minutes','hours', 'days','weeks','years')
-
-  secs <- ceiling(secs)
-
-  time.vec['years'] <- floor(secs / (60*60*24*7*52))
-  if ( time.vec['years'] > 0 ) {
-    secs <- secs - (time.vec['years'] * (60*60*24*7*52))
-  }
-
-  time.vec['weeks'] <- floor(secs / (60*60*24*7))
-  if ( time.vec['weeks'] > 0 ) {
-    secs <- secs - (time.vec['weeks'] * (60*60*24*7))
-  }
-
-  time.vec['days'] <- floor(secs / (60*60*24))
-  if ( time.vec['days'] > 0 ) {
-    secs <- secs - time.vec['days']*(60*60*24)
-  }
-
-  time.vec['hours'] <- floor(secs / (60*60))
-  if ( time.vec['hours'] > 0 ) {
-    secs <- secs - time.vec['hours']*(60*60)
-  }
-
-  time.vec['minutes'] <- floor(secs / (60))
-  if ( time.vec['minutes'] > 0 ) {
-    secs <- secs - time.vec['minutes']*(60)
-  }
-
-  time.vec['seconds'] <- secs
-  time.vec <- rev(time.vec)
-
-  # time str #
-  x <- time.vec[time.vec!=0]
-  shortNames <- sapply(1:length(x), function(y) { substr(names(x)[y], 1, nchar(names(x)[y])-1)  } )
-
-  time.str <- NULL
-  for ( i in seq_along(names(x))) {
-
-    if ( length(x) == 1 ) {
-      if ( x[i] > 1 ) {
-        time.str <- paste(time.str, x[i], " ", names(x[i]), sep="")
-      } else {
-        time.str <- paste(time.str, x[i], " ", shortNames[i], sep="")
-      }
-    }
-    else {
-
-      if ( names(x)[i]=="seconds") {
-        if ( x[i] > 1 ) {
-          time.str <- paste(time.str, "and", x[i], names(x[i]), sep=" ")
-        } else {
-          time.str <- paste(time.str, "and", x[i], shortNames[i], sep=" ")
-        }
-
-      } else {
-        if ( x[i] > 1 ) {
-          time.str <- paste(time.str, x[i], " ", names(x[i]), sep="")
-        } else {
-          time.str <- paste(time.str, x[i], " ", shortNames[i], sep="")
-        }
-
-        if ( i != length(x)-1 ) {
-          time.str <- paste(time.str,", ", sep="")
-        }
-      }
-    }
-  }
-  return(list(time.vec=time.vec, time.str=time.str))
 }
 
 # create default parameter objects suitable for primary|secondary suppression
@@ -319,8 +242,10 @@ genParaObj <- function(selection, ...) {
     # SIMPLEHEURISTIC - parameter
     paraObj$detectSingletons <- FALSE
     paraObj$threshold <- NA
+    # solve attackerprobs in a loop when using simpleheuristic
+    paraObj$solve_attackerprobs <- TRUE
 
-    # protectLinkedTables
+    # protect_linked_tables
     paraObj$maxIter <- 5
 
     newPara <- list(...)
@@ -379,6 +304,9 @@ genParaObj <- function(selection, ...) {
       if (paraObj$threshold < 1) {
         stop("argument `threshold` must be >= 1.", call. = FALSE)
       }
+    }
+    if (!rlang::is_scalar_logical(paraObj$solve_attackerprobs)) {
+      stop("argument `solve_attackerprobs` is not a logical value", call. = FALSE)
     }
     return(paraObj)
   }
@@ -451,7 +379,6 @@ csp_cpp <- function(sdcProblem, attackonly=FALSE, verbose) {
     attackonly <- as.integer(0)
   }
   final_pattern <- as.integer(rep(0, length(vals)))
-  time.start <- proc.time()
   res <- .C("csp",
     ind_prim=ind_prim,
     len_prim=len_prim,
@@ -505,9 +432,6 @@ csp_cpp <- function(sdcProblem, attackonly=FALSE, verbose) {
       pI <- g_problemInstance(sdcProblem)
       s_sdcStatus(pI) <- list(index=1:nr_vars, vals=status_new)
       s_problemInstance(sdcProblem) <- pI
-
-      time.el <- g_elapsedTime(sdcProblem)+(proc.time()-time.start)[3]
-      s_elapsedTime(sdcProblem) <- time.el
       s_indicesDealtWith(sdcProblem) <- 1:nr_vars
       return(sdcProblem)
     }
@@ -517,20 +441,15 @@ csp_cpp <- function(sdcProblem, attackonly=FALSE, verbose) {
 # do_singletons: logical --> ordinary singleton detection procedure
 # threshold: make sure that in all rows the total amount of contributors is >= threshold_th
 detect_singletons <- function(dat, indices, sub_indices, do_singletons, threshold = NA) {
-  .supp_val <- function(dt, dat) {
-    tmp <- dt[sdcStatus == "s"]
+  #.supp_val <- function(dt, dat) {
+  .supp_val <- function(dt) {
+    tmp <- subset(dt, dt$sdcStatus == "s")
     if (nrow(tmp) == 0) {
       stop("error finding an additional primary suppression (1)", call. = FALSE)
     }
-
     setorder(tmp, freq, -id)
     supp_id <- tmp$id[1]
-    if (dat$freq[supp_id] == 1) {
-      dat$sdcStatus[supp_id] <- "u"
-    } else {
-      dat$sdcStatus[supp_id] <- "x"
-    }
-    list(dat = dat, supp_id = supp_id)
+    supp_id
   }
 
   if (do_singletons == FALSE & is.na(threshold)) {
@@ -552,68 +471,78 @@ detect_singletons <- function(dat, indices, sub_indices, do_singletons, threshol
     dat[id_changed, sdcStatus := "x"]
   }
 
+  is_singleton <- is_primsupp <- is_suppressed <- NULL
+  dat$is_singleton <- FALSE
+  dat[sdcStatus == "u" & freq == 1, is_singleton := TRUE]
+  dat[, is_suppressed := sdcStatus %in% c("u", "x")]
+  dat[, is_primsupp := sdcStatus == "u"]
+
   for (i in 1:length(indices)) {
     sI <- sub_indices[[i]]
     for (j in 1:length(sI)) {
-      sJ <- sI[[j]]
+      sJ <- unique(sI[[j]]) # only unique subtables need to be covered!
       for (z in 1:length(sJ)) {
         poss <- sJ[[z]]
         mm <- max(poss)
         for (k in 1:mm) {
           ii <- indices[[i]][[j]][which(poss == k)]
-          # only if we have a real subtable
-          if (length(ii) > 1) {
-            # tau-argus strategy
-            ind_u <- which(dat[ii]$sdcStatus == "u")
-            ind_x <- which(dat[ii]$sdcStatus == "x")
+          # only if we have a real subtable (more than 1 cell)
+          # that is populated (freqs > 0) and not fully suppressed
+          ss <- dat[ii]
+          fully_supped <- sum(ss$freq[!ss$sdcStatus %in% c("u", "x")]) == 0
 
+          if (length(ii) > 1 & max(ss$freq) > 0 & !fully_supped) {
             if (do_singletons) {
-              if (length(ind_u) == 2) {
-                ss <- dat[ii]
-                ff <- ss$freq[ind_u]
-                # at least one cell of two supps is a singleton
-                # 1. If on a row or column of a subtable there are only two singletons and no other
-                # primary suppressions.
-                # 2. If there is only one singleton and one multiple primary unsafe cell.
-                # one or two singletons
-                if (any(ff == 1) & length(ind_x) == 0 & sum(ss$freq > 0) > 2) {
-                  # we have two singletons, we need to add one additional suppression
-                  res <- .supp_val(dt = ss, dat = dat)
-                  nr_added_supps <- nr_added_supps + 1
-                  supp_ids <- c(supp_ids, res$supp_id)
-                  dat <- res$dat
-                }
+              # tau-argus strategy
+              nr_supps <- sum(ss$is_suppressed)
+              nr_singletons <- sum(ss$is_singleton)
+              if (nr_supps == 2 & nr_singletons > 0) {
+                # either two singletons or one singleton and exactly one additional suppression
+                # we need to add one additional suppression
+                supp_id <- .supp_val(dt = ss)
+                nr_added_supps <- nr_added_supps + 1
+                supp_ids <- c(supp_ids, supp_id)
+                dat$sdcStatus[supp_id] <- "u"
+                dat$is_suppressed[supp_id] <- TRUE
               }
               # 3. If a frequency rule is used, it could happen that two cells on a row/column are
               # primary unsafe, but the sum of the two cells could still be unsafe. In that case
               # it should be prevented that these two cells protect each other.
-              if (length(ind_u) == 3) {
+              nr_primsupps <- sum(ss$is_primsupp)
+              if (nr_primsupps == 3) {
                 ss <- dat[ii]
-                # the sum is primary suppressed, thus the other two primary suppressions are within the row/col
+                # the sum is primary suppressed, thus the other two
+                # primary suppressions are within the row/col
                 if (ss$sdcStatus[1] == "u" & sum(ss$freq > 0) > 3) {
                   # we need to find an additional suppression
-                  res <- .supp_val(dt = ss, dat = dat)
+                  supp_id <- .supp_val(dt = ss)
                   nr_added_supps <- nr_added_supps + 1
-                  supp_ids <- c(supp_ids, res$supp_id)
-                  dat <- res$dat
+                  supp_ids <- c(supp_ids, supp_id)
+                  dat$sdcStatus[supp_id] <- "u"
+                  dat$is_suppressed[supp_id] <- TRUE
                 }
               }
             }
 
             # respect threshold for rows with suppressions
             if (!is.na(threshold)) {
-              finished <- !any(dat[ii][["sdcStatus"]] %in% c("u", "x")) # only if we have suppressions
+              ss <- dat[ii]
+              nr_supps <- sum(ss$is_suppressed)
+              obs_supp <- sum(ss$freq[ss$is_suppressed])
+              # only if we have suppressions
+              finished <- nr_supps == 0 | obs_supp >= threshold
               # suppress as many cells as required
               while (!finished) {
                 ss <- dat[ii]
                 ind_supps <- ss$sdcStatus %in% c("u", "x")
                 # already fully suppressed?
-                fully_supped <- all(ss[freq > 0, unique(sdcStatus)] %in% c("u", "x"))
-                if (!fully_supped & sum(ss$freq[ind_supps]) < threshold) {
-                  res <- .supp_val(dt = ss, dat = dat)
+                fully_supped <- sum(ss$freq[!ss$is_suppressed]) == 0
+                if (!fully_supped & sum(ss$freq[ss$is_suppressed]) < threshold) {
+                  supp_id <- .supp_val(dt = ss)
                   nr_added_supps <- nr_added_supps + 1
-                  supp_ids <- c(supp_ids, res$supp_id)
-                  dat <- res$dat
+                  supp_ids <- c(supp_ids, supp_id)
+                  dat$sdcStatus[supp_id] <- "u"
+                  dat$is_suppressed[supp_id] <- TRUE
                 } else {
                   finished <- TRUE
                 }

@@ -10,12 +10,11 @@ required to protect the complete table that is given by the dimensional
 variables. Such an object holds the data itself  (slot \code{dataObj}), the
 entire information about the dimensional variables (slot \code{dimInfo}),
 information on all table cells (ID's, bounds, values, anonymization state in
-slot \code{problemInstance}), the indices on the subtables that need to be
+slot \code{problemInstance}), the indices on the sub tables that need to be
 considered if one wants to protect primary sensitive cells using a heuristic
-approach (slot \code{partition}, information on which groups or rather
+approach (slot \code{partition} and the information on which groups or rather
 subtables have already been protected while performing a heuristic method
-(slots \code{startI} and \code{startJ}) and the time that has been elapsed
-(slot \code{elapsedTime}).
+(slots \code{startI} and \code{startJ}).
 }
 \details{
 \describe{
@@ -26,7 +25,6 @@ subtables have already been protected while performing a heuristic method
 \item{slot \code{startI}:}{a numeric vector of length 1 defining the group-level of the subtables in which a heuristic algorithm needs to start. All subtables having a group-index less than \code{startI} have already been protected}
 \item{slot \code{startJ}:}{a numeric vector of length 1 defining the number of the table within the group defined by parameter \code{startI} at which a heuristic algorithm needs to start. All tables in the group having an index \code{j} smaller than \code{startJ} have already been protected}
 \item{slot \code{indicesDealtWith}:}{a numeric vector holding indices of table cells that have protected and whose anonymization state must remain fixed}
-\item{slot \code{elapsedTime}:}{a numeric vector of length 1 holding the time that has already been elapsed during the anonymization process}
  }
 }
 \note{

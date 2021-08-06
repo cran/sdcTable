@@ -10,7 +10,7 @@
 #' The implemented methods may have bugs that yield in not-fully protected tables. Especially
 #' the usage of `"OPT"`, `"HITAS"` and `"HYPERCUBE"` in production is not
 #' suggested as these methods may eventually be removed completely. In case you encounter any problems,
-#' please report it or use Tau-Argus (\url{http://research.cbs.nl/casc/tau.htm}).
+#' please report it or use Tau-Argus (\url{https://research.cbs.nl/casc/tau.htm}).
 #' @param method a character vector of length 1 specifying the algorithm that should be
 #' used to protect the primary sensitive table cells. Allowed values are:
 #' - `"OPT"`: protect the complete problem at once using a cut and branch algorithm. The optimal
@@ -59,7 +59,7 @@
 #'    * `suppAdditionalQuader`: logical vector of length 1 specfifying if additional cubes should be
 #'    suppressed if any secondary suppressions in the 'optimal' cube are 'singletons'. Parameter
 #'    `suppAdditionalQuader` has a default value of `FALSE`
-#' - parameter(s) used for [protectLinkedTables()]:
+#' - parameter(s) used for [protect_linked_tables()]:
 #'    * `maxIter`: integerish number specifying the maximal number of interations that should be make
 #'    while trying to protect common cells of two different tables. The default value of parameter is `10`
 #'
@@ -69,23 +69,25 @@
 #'    * `threshold`: if not `NULL` (the default) an integerish number (> `0`). If specified, a procedure similar
 #'    to the singleton-detection procedure is run that makes sure that for all (simple) rows in the table instance that
 #'    contains primary sensitive cells the suppressed number of contributors is `>=` the specified threshold.
+#'    * `solve_attackerprobs`: logical value; if `TRUE` (default), attacker problems are solved for
+#'    each primary sensitive cells and possibly additional suppressions are added until
+#'    these cells are adequately protected; if this parameter is `FALSE`, attacker-problems
+#'    are not checked (which is potentially unsafe)
 #' @return an [safeObj-class] object
 #' @md
 #' @examples
-#' # load problem (as it was created after performing primary suppression
-#' # in the example of \code{\link{primarySuppression}})
-#' sp <- searchpaths()
-#' fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
-#' problem <- get(load(fn))
+#' # load example-problem with with a single primary suppression
+#' # (same as example from ?primarySuppression)
+#' p <- sdc_testproblem(with_supps = TRUE)
 #'
 #' # protect the table using the 'HITAS' algorithm with verbose output
-#' protectedData <- protectTable(problem, method='HITAS', verbose=TRUE, useC=TRUE)
+#' p_protected <- protectTable(p, method = "HITAS", verbose = TRUE, useC = TRUE)
 #'
 #' # showing a summary
-#' summary(protectedData)
+#' summary(p_protected)
 #'
 #' # looking at the final table with result suppression pattern
-#' print(getInfo(protectedData, type='finalData'))
+#' print(getInfo(p_protected, type= "finalData"))
 #' @rdname protectTable
 #' @export protectTable
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}

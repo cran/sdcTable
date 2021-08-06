@@ -6,7 +6,7 @@
 #' @param prob a [sdcProblem-class] object created with [makeProblem()]
 #' @param ids a character vector containing default ids (strIDs) that define table
 #' cells. Valid inputs can be extracted by using [sdcProb2df()] and looking at
-#' column `strID`. If this argument is `NULL`, the correspondig units are computed
+#' column `strID`. If this argument is `NULL`, the corresponding units are computed
 #' for all cells in the table.
 #'
 #' @return a named `list where names correspond to the given `ids` and the values
@@ -14,44 +14,29 @@
 #' @export
 #' @md
 #' @examples
-#' # loading test data
-#' data("microData1", package="sdcTable")
+#' # loading test problem
+#' p <- sdc_testproblem(with_supps = FALSE)
+#' dt <- sdcProb2df(p, dimCodes = "original")
 #'
-#' # specify hierarchies for `age` and `region`
-#' dim_region <- hier_create(root = "Total", nodes = LETTERS[1:4])
-#' dim_gender <- hier_create(root = "Total", nodes = c("male", "female"))
-#' dl <- list(region = dim_region, gender = dim_gender)
+#' # question: which units contribute to cell region = "A" and gender = "female"?
 #'
-#' # no variables holding counts, numeric values, weights or sampling
-#' # weights are available in the input data
-#'
-#' # using variable names is also possible
-#' prob <- makeProblem(
-#'   data = microData1,
-#'   dimList = dl
-#' )
-#'
-#' df <- sdcProb2df(prob, dimCodes = "original")
-#'
-#' # which units contribute to cell region = "A" and gender = "female"?
-#'
-#' # compute the id ("0101")
-#' df[region == "A" & gender == "female", strID]
+#' # compute the id ("0102")
+#' dt[region == "A" & gender == "female", strID]
 #'
 #' # which indices contribute to the cell?
-#' ids <- contributing_indices(prob = prob, ids = "0101")
+#' ids <- contributing_indices(prob = p, ids = "0101")
 #'
 #' # check
-#' dataObj <- get.sdcProblem(prob, "dataObj")
+#' dataObj <- get.sdcProblem(p, "dataObj")
 #' rawData <- slot(dataObj, "rawData")
 #' rawData[ids[["0101"]]]
 #'
-#' # compute contributing ids for each cell
-#' contributing_indices(prob)
-#'
+#' # compute contributing ids for all cells
+#' contributing_indices(p)
 contributing_indices <- function(prob, ids = NULL) {
-  pi <- slot(prob, "problemInstance")
-  poss_ids <- slot(pi, "strID")
+  . <- NULL
+  dt <- sdcProb2df(prob, addDups = FALSE, dimCodes = "original")
+  poss_ids <- dt$strID
 
   if (is.null(ids)) {
     ids <- poss_ids
@@ -68,11 +53,55 @@ contributing_indices <- function(prob, ids = NULL) {
     }
   }
 
-  contr_indices <- lapply(1:length(ids), function(x) {
-    c_contributing_indices(
-      object = prob,
-      input = list(ids[x]))
-  })
-  names(contr_indices) <- ids
-  contr_indices
+  dimvars <- slot(prob, "dimInfo")@vNames
+  nr_dims <- length(dimvars)
+
+  dt <- dt[, c("strID", "freq", dimvars), with = FALSE]
+  data.table::setnames(dt, old = "strID", new = "id")
+
+  # get contributing codes
+  contr_codes <- .get_all_contributing_codes(prob)
+
+  # inner cells are raw data!
+  dt_inner <- prob@dataObj@rawData
+  dt_inner$idx <- 1:nrow(dt_inner)
+
+  # subsetting dt to those ids, we want to compute the contributing indices from
+  dt <- dt[.(ids), on = "id"]
+
+  # prepare output
+  res <- vector("list", length(ids))
+  names(res) <- ids
+
+  message("computing contributing indices | rawdata <--> table; this might take a while")
+  # compute contributing ids by dimvar and code
+  for (dv in dimvars) {
+    ll <- contr_codes[[dv]]
+    for (code in names(ll)) {
+      if (contr_codes[[dv]][[code]]$is_root) {
+        contr_codes[[dv]][[code]]$idx <- rep(TRUE, nrow(dt_inner))
+      } else {
+        contr_codes[[dv]][[code]]$idx <- data.table::`%chin%`(dt_inner[[dv]], ll[[code]]$contr_codes)
+      }
+    }
+  }
+  for (i in seq_len(nrow(dt))) {
+    strid <- dt$id[i]
+    if (dt$freq[i] == 0) {
+      res[[strid]] <- integer()
+    } else {
+      for (dv in dimvars) {
+        code <- dt[[dv]][i]
+        if (dv == dimvars[1]) {
+          ii <- contr_codes[[dv]][[code]]$idx
+        } else {
+          if (!contr_codes[[dv]][[code]]$is_root) {
+            ii <- ii & contr_codes[[dv]][[code]]$idx
+          }
+        }
+      }
+      res[[strid]] <- dt_inner$idx[ii]
+    }
+  }
+  return(res)
 }

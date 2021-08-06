@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // cpp_splitByIndices
 List cpp_splitByIndices(std::vector<std::string> strings, List strInfo);
 RcppExport SEXP _sdcTable_cpp_splitByIndices(SEXP stringsSEXP, SEXP strInfoSEXP) {
@@ -42,18 +47,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// greedyMultDimSuppression
-List greedyMultDimSuppression(DataFrame dat, List indices, List subIndices, IntegerVector dimVars, bool verbose);
-RcppExport SEXP _sdcTable_greedyMultDimSuppression(SEXP datSEXP, SEXP indicesSEXP, SEXP subIndicesSEXP, SEXP dimVarsSEXP, SEXP verboseSEXP) {
+// suppConstraints
+List suppConstraints(DataFrame dat, List m, List params);
+RcppExport SEXP _sdcTable_suppConstraints(SEXP datSEXP, SEXP mSEXP, SEXP paramsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type dat(datSEXP);
-    Rcpp::traits::input_parameter< List >::type indices(indicesSEXP);
-    Rcpp::traits::input_parameter< List >::type subIndices(subIndicesSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type dimVars(dimVarsSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(greedyMultDimSuppression(dat, indices, subIndices, dimVars, verbose));
+    Rcpp::traits::input_parameter< List >::type m(mSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    rcpp_result_gen = Rcpp::wrap(suppConstraints(dat, m, params));
     return rcpp_result_gen;
 END_RCPP
 }

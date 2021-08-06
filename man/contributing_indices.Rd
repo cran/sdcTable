@@ -11,7 +11,7 @@ contributing_indices(prob, ids = NULL)
 
 \item{ids}{a character vector containing default ids (strIDs) that define table
 cells. Valid inputs can be extracted by using \code{\link[=sdcProb2df]{sdcProb2df()}} and looking at
-column \code{strID}. If this argument is \code{NULL}, the correspondig units are computed
+column \code{strID}. If this argument is \code{NULL}, the corresponding units are computed
 for all cells in the table.}
 }
 \value{
@@ -23,39 +23,23 @@ This function computes (with respect to the raw input data) the indices of all
 contributing units to given cells identified by \code{ids}.
 }
 \examples{
-# loading test data
-data("microData1", package="sdcTable")
+# loading test problem
+p <- sdc_testproblem(with_supps = FALSE)
+dt <- sdcProb2df(p, dimCodes = "original")
 
-# specify hierarchies for `age` and `region`
-dim_region <- hier_create(root = "Total", nodes = LETTERS[1:4])
-dim_gender <- hier_create(root = "Total", nodes = c("male", "female"))
-dl <- list(region = dim_region, gender = dim_gender)
+# question: which units contribute to cell region = "A" and gender = "female"?
 
-# no variables holding counts, numeric values, weights or sampling
-# weights are available in the input data
-
-# using variable names is also possible
-prob <- makeProblem(
-  data = microData1,
-  dimList = dl
-)
-
-df <- sdcProb2df(prob, dimCodes = "original")
-
-# which units contribute to cell region = "A" and gender = "female"?
-
-# compute the id ("0101")
-df[region == "A" & gender == "female", strID]
+# compute the id ("0102")
+dt[region == "A" & gender == "female", strID]
 
 # which indices contribute to the cell?
-ids <- contributing_indices(prob = prob, ids = "0101")
+ids <- contributing_indices(prob = p, ids = "0101")
 
 # check
-dataObj <- get.sdcProblem(prob, "dataObj")
+dataObj <- get.sdcProblem(p, "dataObj")
 rawData <- slot(dataObj, "rawData")
 rawData[ids[["0101"]]]
 
-# compute contributing ids for each cell
-contributing_indices(prob)
-
+# compute contributing ids for all cells
+contributing_indices(p)
 }

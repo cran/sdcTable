@@ -32,9 +32,7 @@ a \code{data.table} containing information about all cells of the given problem
 }
 \examples{
 # loading micro data
-data("microData1", package="sdcTable")
-# having a look at the data structure
-str(microData1)
+utils::data("microdata1", package = "sdcTable")
 
 # we can observe that we have a micro data set consisting
 # of two spanning variables ('region' and 'gender') and one
@@ -64,14 +62,14 @@ numVarInd <- 3
 # weights are available in the input data
 # creating an problem instance using numeric indices
 p1 <- makeProblem(
-  data = microData1,
+  data = microdata1,
   dimList = dimList,
   numVarInd = 3 # third variable in `data`
 )
 
 # using variable names is also possible
 p2 <- makeProblem(
-  data = microData1,
+  data = microdata1,
   dimList = dimList,
   numVarInd = "val"
 )

@@ -27,7 +27,9 @@ value of \code{maxN} is \code{3}.
 \item \code{allowZeros}: logical vector of length 1 specifying if empty cells
 (count==0) should be considered sensitive when using the frequency rule.
 The default value of \code{allowZeros} is \code{FALSE} so that empty cells are not
-considered primary sensitive by default.
+considered primary sensitive by default. Such cells (frequency 0) are then
+flagged as \code{z} which indicates such a cell may be published but should (internally)
+not be used for (secondary) suppression in the heuristic algorithms.
 \item \code{p}: numeric vector of length 1 specifying parameter \code{p} that is used
 when applying the p-percent rule with default value of \code{80}.
 \item \code{pq}: numeric vector of length 2 specifying parameters \code{p} and \code{q} that
@@ -71,19 +73,19 @@ be applied if micro data have been used as input data to function \code{\link[=m
 }
 \examples{
 # load micro data
-data("microData1", package = "sdcTable")
+utils::data("microdata1", package = "sdcTable")
 
 # load problem (as it was created in the example in ?makeProblem
-data("problem", package = "sdcTable")
+p <- sdc_testproblem(with_supps = FALSE)
 
 # we have a look at the frequency table by gender and region
-xtabs(rep(1, nrow(microData1)) ~ gender + region, data = microData1)
+xtabs(rep(1, nrow(microdata1)) ~ gender + region, data = microdata1)
 
 # 2 units contribute to cell with region=='A' and gender=='female'
 # --> this cell is considered sensitive according the the
 # freq-rule with 'maxN' equal to 2!
 p1 <- primarySuppression(
-  object = problem,
+  object = p,
   type = "freq",
   maxN = 2
 )
@@ -92,7 +94,7 @@ p1 <- primarySuppression(
 # This is only possible if we are dealing with micro data and we also
 # have to specify the name of a numeric variable.
 p2 <- primarySuppression(
-  object = problem,
+  object = p,
   type = "p",
   p = 30,
   numVarName = "val"

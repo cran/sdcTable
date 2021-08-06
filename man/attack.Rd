@@ -2,36 +2,67 @@
 % Please edit documentation in R/attack.R
 \name{attack}
 \alias{attack}
-\title{attacking primary suppressed cells and calculating current lower and upper bounds}
+\title{Attacking primary suppressed cells}
 \usage{
-attack(object, verbose = FALSE)
+attack(object, to_attack = NULL, verbose = FALSE, ...)
 }
 \arguments{
-\item{object}{an object of class \code{\link{sdcProblem-class}}}
+\item{object}{an object of class `sdcProblem`}
 
-\item{verbose}{a logical vector specifying if output should be verbose (TRUE) or not (FALSE)}
+\item{to_attack}{if `NULL` all current primary suppressed cells are attacked;
+otherwise either an integerish (indices) or character-vector (str-ids) of
+the cells that should be attacked.}
+
+\item{verbose}{a logical scalar determing if additional output should be
+displayed}
+
+\item{...}{placeholder for possible additional input, currently unused;}
 }
 \value{
-a data.frame with column 'index' holding indices of primary suppressed cells and columns
-'bounds_min' and 'bounds_max' featuring calculated lower and upper bounds for each cell.
-Column 'protected' shows if a given cell is accordingly protected (TRUE) or not (FALSE).
+a `data.frame` with the following columns:
+- `prim_supps`: index of primary suppressed cells
+- `status`: the original sdc-status code
+- `val` the original value of the cell
+- `low`: computed lower bound of the attacker's problem
+- `up`: computed upper bound of the attacker's problem
+- `protected` shows if a given cell is accordingly protected
 }
 \description{
-Function \code{\link{attack}} is used to calculate lower and upper bounds for a given
-sdcProblem (stored as object of class \code{\link{sdcProblem-class}}).
-For all calculations the current suppression pattern is used when calculating solutions of the
-attacker's problem.
+Function [attack()] is used to compute lower and upper bounds for a given
+sdcProblem instance. For all calculations the current suppression pattern
+is used when calculating solutions of the attacker's problem.
 }
 \examples{
-# load problem (as it was created after performing primary suppression
-# in the example of \code{\link{primarySuppression}})
-sp <- searchpaths()
-fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
-problem <- get(load(fn))
+dims <- list(
+  v1 = sdcHierarchies::hier_create("tot", letters[1:4]),
+  v2 = sdcHierarchies::hier_create("tot", letters[5:8])
+)
 
-# calculate current lower|upper bounds given current suppression pattern
-# (in this case consisting of primary suppressions only)
-attack(problem, verbose=FALSE)
+N <- 150
+df <- data.frame(
+  v1 = sample(letters[1:4], N, replace = TRUE),
+  v2 = sample(letters[5:8], N, replace = TRUE)
+)
+
+sdc <- makeProblem(data = df, dimList = dims)
+
+# set primary suppressions
+specs <- data.frame(
+  v1 = c("a", "b", "a"),
+  v2 = c("e", "e", "f")
+)
+sdc <- change_cellstatus(sdc, specs = specs, rule = "u")
+
+# attack all primary sensitive cells
+# the cells can be recomputed exactly
+attack(sdc, to_attack = NULL)
+
+# protect the table and attack again
+sdc <- protectTable(sdc, method = "SIMPLEHEURISTIC")
+attack(sdc, to_attack = NULL)
+
+# attack only selected cells
+attack(sdc, to_attack = c(7, 12))
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

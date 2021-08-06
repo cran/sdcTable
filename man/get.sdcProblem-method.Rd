@@ -19,7 +19,6 @@ get.sdcProblem(object, type)
 \item dataObj: a list containing the (raw) input data
 \item problemInstance: return the current problem instance
 \item partition: a list containing information on the subtables that are required to be protected as well as information on the processing order of the subtables
-\item elapsedTime: the elapsed time of the protection algorithm so far
 \item dimInfo: information on the variables defining the hierarchical table
 \item indicesDealtWith: a set of indices that have already been dealt with during the protection algorithmus
 \item startI: current level at which subtables need to be protected (useful when restarting HITAS|HYPERCUBE)
@@ -45,7 +44,6 @@ information from objects of class \code{sdcProblem} depending on argument \code{
 \item element 'indexInnerCells': numeric vector specifying indices of inner cells
 \item element 'indexTotCells': numeric vector specifying indices of marginal cells}
 \item an object of class \code{dimInfo} (or NULL) if \code{type} matches 'dimInfo'
-\item numeric vector if argument \code{type} matches 'elapsedTime'
 \item numeric vector of length 1 if argument \code{type} matches 'startI' or 'startJ'
 }
 }

@@ -5,6 +5,8 @@
 \alias{add_nodes}
 \alias{delete_nodes}
 \alias{rename_node}
+\alias{cellInfo}
+\alias{changeCellStatus}
 \title{Create a hierarchy}
 \usage{
 create_node(...)
@@ -14,6 +16,10 @@ add_nodes(...)
 delete_nodes(...)
 
 rename_node(...)
+
+cellInfo(...)
+
+changeCellStatus(...)
 }
 \description{
 create_node() is defunct, please use sdcHierarchies::hier_create()
@@ -23,5 +29,9 @@ add_nodes() is defunct, please use sdcHierarchies::hier_add()
 delete_nodes() is defunct, please use sdcHierarchies::hier_delete()
 
 rename_node() is defunct, please use sdcHierarchies::hier_rename()
+
+cellInfo() is defunct, please use [cell_info()]
+
+changeCellStatus() is defunct, please use [change_cellstatus()]
 }
 \keyword{internal}

@@ -2,21 +2,25 @@
 % Please edit documentation in R/setInfo.R
 \name{setInfo}
 \alias{setInfo}
-\title{set information of \code{\link{sdcProblem-class}}- or \code{\link{problemInstance-class}} objects}
+\title{Set/Update information in \code{sdcProblem} or \code{problemInstance} objects}
 \usage{
 setInfo(object, type, index, input)
 }
 \arguments{
-\item{object}{an object of class \code{\link{sdcProblem-class}} or \code{\link{problemInstance-class}}}
+\item{object}{an object of class \code{sdcProblem} or \code{problemInstance}}
 
-\item{type}{a character vector of length 1 specifying the the information that should be changed or modified, valid choices are:
+\item{type}{a scalar character specifying the kind of information that
+should be changed or modified; if \code{object} inherits class \code{problemInstance}, the
+slots are directly changed, otherwise the values within slot \code{problemInstance}
+are updated. Valid choices are:
 \itemize{
-\item \code{lb}: slot 'lb' of input \code{object} if it is of class \code{\link{problemInstance-class}} or slot 'lb' within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{ub}: slot 'ub' of input \code{object} if it is of class \code{\link{problemInstance-class}} or slot 'ub' within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{LPL}: slot 'LPL' of input \code{object} if it is of class \code{\link{problemInstance-class}} or slot 'LPL' within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{SPL}: slot 'SPL' of input \code{object} if it is of class \code{\link{problemInstance-class}} or slot 'SPL' within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{UPL}: slot 'UPL' of input \code{object} if it is of class \code{\link{problemInstance-class}} or slot 'UPL' within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{sdcStatus}:  slot 'sdcStatus' of input \code{object} if it is of class \code{\link{problemInstance-class}} or slot 'sdcStatus' within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}} }}
+\item \code{lb}: lower possible bounds for the cell
+\item \code{ub}: max. upper bound for the given cell
+\item \code{LPL}: lower protection level
+\item \code{SPL}: sliding protection level
+\item \code{UPL}: upper protection level
+\item \code{sdcStatus}:  cell-status
+}}
 
 \item{index}{numeric vector defining cell-indices for which which values in a specified slot should be changed|modified}
 
@@ -27,37 +31,37 @@ setInfo(object, type, index, input)
 }}
 }
 \value{
-a \code{\link{sdcProblem-class}}- or \code{\link{problemInstance-class}} object
+a \code{sdcProblem}- or \code{problemInstance} object
 }
 \description{
-Function \code{\link{getInfo}} is used to query information from
-\code{\link{sdcProblem-class}}- or \code{\link{problemInstance-class}} objects
+Function \code{\link[=setInfo]{setInfo()}} is used to update values in
+\code{sdcProblem} or \code{problemInstance} objects
 }
 \examples{
-# load primary suppressed data (created in the example of \code{\link{primarySuppression}})
-sp <- searchpaths()
-fn <- paste(sp[grep("sdcTable", sp)], "/data/problemWithSupps.RData", sep="")
-problem <- get(load(fn))
+# load example-problem with suppressions
+# (same as example from ?primarySuppression)
+p <- sdc_testproblem(with_supps = TRUE)
 
 # which is the overall total?
-index.tot <- which.max(getInfo(problem, 'freq'))
-index.tot
+idx <- which.max(getInfo(p, "freq")); idx
 
-# we see that the cell with index.tot==1 is the overall total and its
+# we see that the cell with idx = 1 is the overall total and its
 # anonymization state of the total can be extracted as follows:
-print(getInfo(problem, type='sdcStatus')[index.tot])
+print(getInfo(p, type = "sdcStatus")[idx])
 
 # we want this cell to never be suppressed
-problem <- setInfo(problem, type='sdcStatus', index=index.tot, input='z')
+p <- setInfo(p, type = "sdcStatus", index = idx, input = "z")
 
 # we can verify this:
-print(getInfo(problem, type='sdcStatus')[index.tot])
+print(getInfo(p, type = "sdcStatus")[idx])
 
 # changing slot 'UPL' for all cells
-inp <- data.frame(strID=getInfo(problem,'strID'), UPL_old=getInfo(problem,'UPL'))
-inp$UPL_new <- inp$UPL_old+1
-problem <- setInfo(problem, type='UPL', index=1:nrow(inp), input=inp$UPL_new)
-
+inp <- data.frame(
+  strID = getInfo(p, "strID"),
+  UPL_old = getInfo(p, "UPL")
+)
+inp$UPL_new <- inp$UPL_old + 1
+p <- setInfo(p, type = "UPL", index = 1:nrow(inp), input = inp$UPL_new)
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

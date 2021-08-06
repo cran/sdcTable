@@ -2,67 +2,69 @@
 % Please edit documentation in R/getInfo.R
 \name{getInfo}
 \alias{getInfo}
-\title{query information from objects}
+\title{Retrieve information in \code{sdcProblem} or \code{problemInstance} objects}
 \usage{
 getInfo(object, type)
 }
 \arguments{
-\item{object}{a \code{\link{sdcProblem-class}} object, \code{\link{problemInstance-class}} object or \code{\link{safeObj-class}} object.}
+\item{object}{an object of class \code{sdcProblem} or \code{problemInstance}}
 
-\item{type}{a character vector of length 1 specifying the information which should be returned.
+\item{type}{a scalar character specifying the information which should be
+returned. If \code{object} inherits class \code{problemInstance}, the
+slots are directly accessed, otherwise the values within slot \code{problemInstance}
+of the \code{sdcProblem} object are queried. Valid choices are:
 \itemize{
-\item if argument \code{object} is of class \code{sdcProblem-class} or \code{\link{problemInstance-class}}, valid choices are:
+\item the object has not yet been protected
 \itemize{
-\item \code{lb}: slot 'lb' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{ub}: slot 'ub' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{LPL}: slot 'LPL' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{SPL}: slot 'SPL' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{UPL}: slot 'UPL' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{sdcStatus}:  slot 'sdcStatus' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{freq}: slot 'freq' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{strID}: slot 'strID' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{numVars}: slot 'numVars' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}}
-\item \code{w}: slot 'w' of input \code{object} if it is of class \code{\link{problemInstance-class}} or this slot within slot 'problemInstance' if \code{object} is of class \code{\link{sdcProblem-class}} }
-\item if argument \code{object} is of class \code{\link{safeObj-class}}, valid choices are:
+\item \code{lb} and \code{ub}: current possible lower and upper bounds
+\item \code{LPL}, \code{SPL}, \code{UPL}: current lower, sliding and upper protection levels
+\item \code{sdcStatus}:  current sdc-status of cells
+\item \code{freq}: cell frequencies
+\item \code{strID}: standardized cell ids (chr)
+\item \code{numVars}: \code{NULL} or a list with a slot for each tabulated numerical variable;
+\item \code{w}: sampling weights or \code{NULL}
+}
+\item the table has already been protected
 \itemize{
-\item \code{finalData}: slot 'finalData' of input \code{object} of class \code{\link{safeObj-class}}
-\item \code{nrNonDuplicatedCells}: slot 'nrNonDuplicatedCells' of input \code{object} of class \code{\link{safeObj-class}}
-\item \code{nrPrimSupps}: slot 'nrPrimSupps' of input \code{object} of class \code{\link{safeObj-class}}
-\item \code{nrSecondSupps}: slot 'nrSecondSupps' of input \code{object} of class \code{\link{safeObj-class}}
-\item \code{nrPublishableCells}: slot 'nrPublishableCells' of input \code{object} of class \code{\link{safeObj-class}}
-\item \code{suppMethod}: slot 'suppMethod' of input \code{object} of class \code{\link{safeObj-class}}}
+\item \code{finalData}: protected table as a \code{data.table}
+\item \code{nrNonDuplicatedCells}: number of unique (non-bogus) cells in the table
+\item \code{nrPrimSupps}: number of primary sensitive cells that were protected
+\item \code{nrSecondSupps}: number of additional secondary suppressions
+\item \code{nrPublishableCells}: number of cells (status \verb{"s} or `"z") that may
+be published
+\item \code{suppMethod}: name of the algorithm used to protect the table
+}
 }}
 }
 \value{
-manipulated data dependend on arguments \code{object} and \code{type}
+manipulated data depending on arguments \code{object} and \code{type}
 }
 \description{
-Function \code{\link{getInfo}} is used to query information from objects of class
-\code{\link{sdcProblem-class}}, \code{\link{problemInstance-class}} or \code{\link{safeObj-class}}
+Function \code{\link[=getInfo]{getInfo()}} is used to extract values from
+\code{sdcProblem} or \code{problemInstance} objects
 }
 \examples{
-# load problem (as it was created in the example
-# of \code{\link{makeProblem}})
-sp <- searchpaths()
-fn <- paste(sp[grep("sdcTable", sp)], "/data/problem.RData", sep="")
-problem <- get(load(fn))
+# define an example problem with two hierarchies
+p <- sdc_testproblem(with_supps = FALSE)
 
-# problem is an object of class \code{\link{sdcProblem-class}}
-print(class(problem))
+# apply primary suppression
+p <- primarySuppression(p, type = "freq", maxN = 3)
 
-for (slot in c('lb','ub','LPL','SPL','UPL','sdcStatus',
-  'freq', 'strID', 'numVars', 'w')) {
-  cat('slot', slot,':\n')
-  print(getInfo(problem, type=slot))
+# `p` is an `sdcProblem` object
+print(class(p))
+
+for (slot in c("lb", "ub", "LPL", "SPL", "UPL", "sdcStatus",
+  "freq", "strID", "numVars", "w")) {
+  message("slot: ", shQuote(slot))
+  print(getInfo(p, type = slot))
 }
 
-# extracting information for objects of class \code{\link{safeObj-class}}
-fn <- paste(sp[grep("sdcTable", sp)], "/data/protectedData.RData", sep="")
-protectedData <- get(load(fn))
-for (slot in c('finalData', 'nrNonDuplicatedCells', 'nrPrimSupps',
-  'nrSecondSupps', 'nrPublishableCells', 'suppMethod')) {
-  cat('slot', slot,':\n')
-  print(getInfo(protectedData, type=slot))
+# protect the cell and extract results
+p_protected <- protectTable(p, method = "SIMPLEHEURISTIC")
+for (slot in c("finalData", "nrNonDuplicatedCells", "nrPrimSupps",
+  "nrSecondSupps", "nrPublishableCells", "suppMethod")) {
+  message("slot: ", shQuote(slot))
+  print(getInfo(p_protected, type = slot))
 }
 }
 \author{

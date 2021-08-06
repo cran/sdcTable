@@ -15,10 +15,8 @@ that has been protected (slot \code{dimInfo}). Also, the number of
 non-duplicated table cells (slot \code{nrNonDuplicatedCells}) is returned
 along with the number of primary (slot \code{nrPrimSupps}) and secondary
 (slot \code{nrSecondSupps}) suppressions. Furthermore, the number of cells
-that can be published (slot \code{nrPublishableCells}), the algorithm that
-has  been used to protect the data (slot \code{suppMethod}) and the time that
-was needed to protect the data structure (slot \code{elapsedTime}) is
-returned.
+that can be published (slot \code{nrPublishableCells}) and the algorithm that
+has  been used to protect the data (slot \code{suppMethod}) is returned.
 }
 \details{
 \describe{
@@ -34,7 +32,6 @@ returned.
 \item{slot \code{nrSecondSupps}:}{numeric vector of length 1 (or NULL) showing the number of secondary suppressions}
 \item{slot \code{nrPublishableCells}:}{numeric vector of length 1 (or NULL) showing the number of cells that may be published}
 \item{slot \code{suppMethod}:}{character vector of length 1 holding information on the protection method}
-\item{slot \code{elapsedTime}:}{numeric vector of length 1 holding the time that was required to protect the table}
 }
 }
 \note{

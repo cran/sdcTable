@@ -20,15 +20,14 @@ set.sdcProblem(object, type, input)
 \item partition: set|modify slot 'partition' of argument \code{object}
 \item startI: set|modify slot 'startI' of argument \code{object}
 \item startJ: set|modify slot 'startJ' of argument \code{object}
-\item indicesDealtWith: set|modify slot 'indicesDealtWith' of argument \code{object}
-\item elapsedTime: set|modify slot 'elapsedTime' of argument \code{object}}
+\item indicesDealtWith: set|modify slot 'indicesDealtWith' of argument \code{object}}
 
 \item{input}{a list with elements depending on argument \code{type}.}
 
 \itemize{
 \item an object of class \code{problemInstance} if argument \code{type} matches 'problemInstance'
 \item a list (derived from calc.multiple(type='makePartition', ...) if argument \code{type} matches 'partition'
-\item a numeric vector of length 1 if argument \code{type} matches 'startI', 'startJ' or 'elapsedTime'
+\item a numeric vector of length 1 if argument \code{type} matches 'startI' or 'startJ'
 \item a numeric vector if argument \code{type} matches 'indicesDealtWith'}
 }
 \value{
