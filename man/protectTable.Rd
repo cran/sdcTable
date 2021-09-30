@@ -20,8 +20,15 @@ protected using a top-down approach.
 \item \code{"HYPERCUBE"}: protect the complete problem by protecting sub-tables with a fast
 heuristic that is based on finding and suppressing geometric structures (n-dimensional cubes)
 that are required to protect primary sensitive table cells.
-\item \code{"SIMPLEHEURISTIC"}: heuristic, quick procedure which might be applied to
-large problem instances
+\item \code{"SIMPLEHEURISTIC"} and \code{"SIMPLEHEURISTIC_OLD"}: heuristic procedures which might be applied to
+large(r) problem instances;
+\itemize{
+\item \code{"SIMPLEHEURISTIC"} is based on constraints; it also solves attacker problems to make sure
+each primary sensitive cell cannot be recomputed;
+\item \code{"SIMPLEHEURISTIC_OLD"} was the implementation in \code{sdcTable} versions prior to \code{0.32}; this
+implementation is possibly unsafe but very fast; it is advised to check results using \code{\link[=attack]{attack()}}
+afterwards.
+}
 }}
 
 \item{...}{parameters used in the protection algorithm that has been selected. Parameters that
@@ -73,17 +80,13 @@ suppressed if any secondary suppressions in the 'optimal' cube are 'singletons'.
 \item \code{maxIter}: integerish number specifying the maximal number of interations that should be make
 while trying to protect common cells of two different tables. The default value of parameter is \code{10}
 }
-\item parameters used for the \strong{"SIMPLEHEURISTIC"} procedure:
+\item parameters used for the \strong{"SIMPLEHEURISTIC"} and \strong{"SIMPLEHEURISTIC_OLD"} procedure:
 \itemize{
 \item \code{detectSingletons}: logical, should a singleton-detection procedure be run before protecting the
 data, defaults to \code{FALSE}.
 \item \code{threshold}: if not \code{NULL} (the default) an integerish number (> \code{0}). If specified, a procedure similar
 to the singleton-detection procedure is run that makes sure that for all (simple) rows in the table instance that
 contains primary sensitive cells the suppressed number of contributors is \code{>=} the specified threshold.
-\item \code{solve_attackerprobs}: logical value; if \code{TRUE} (default), attacker problems are solved for
-each primary sensitive cells and possibly additional suppressions are added until
-these cells are adequately protected; if this parameter is \code{FALSE}, attacker-problems
-are not checked (which is potentially unsafe)
 }
 }}
 }
@@ -110,13 +113,20 @@ please report it or use Tau-Argus (\url{https://research.cbs.nl/casc/tau.htm}).
 p <- sdc_testproblem(with_supps = TRUE)
 
 # protect the table using the 'HITAS' algorithm with verbose output
-p_protected <- protectTable(p, method = "HITAS", verbose = TRUE, useC = TRUE)
+res1 <- protectTable(p, method = "HITAS", verbose = TRUE, useC = TRUE)
+res1
 
-# showing a summary
-summary(p_protected)
+# protect using the heuristic algorithm
+res2 <- protectTable(p, method = "SIMPLEHEURISTIC")
+res2
+
+# protect using the old implmentation of the heuristic algorithm
+# used in sdcTable versions <0.32
+res3 <- protectTable(p, method = "SIMPLEHEURISTIC_OLD")
+res3
 
 # looking at the final table with result suppression pattern
-print(getInfo(p_protected, type= "finalData"))
+print(getInfo(res1, type = "finalData"))
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

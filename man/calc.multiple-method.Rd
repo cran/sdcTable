@@ -12,29 +12,38 @@ calc.multiple(type, input)
 \S4method{calc.multiple}{character,list}(type, input)
 }
 \arguments{
-\item{type}{a character vector of length 1 defining what to calculate|return|modify. Allowed types are:}
+\item{type}{a character vector of length 1 defining what to calculate|return|modify. Allowed types are:
 \itemize{
 \item makePartitions: information on subtables required for HITAS and HYPECUBE algorithms
-\item genMatMFull: the constraint matrix used in the master problem
 \item makeAttackerProblem: set up the attackers problem for a given (sub)table
-\item calcFullProblem: calculate a complete problem object containing all information required to solve the secondary cell suppression problem}
+\item calcFullProblem: calculate a complete problem object containing all information required to solve
+the secondary cell suppression problem
+}}
 
-\item{input}{a list depending on argument \code{type}.}
+\item{input}{a list depending on argument \code{type} with two elements \code{"objectA"} and \code{"objectB"}
 \itemize{
-\item if type matches 'makePartitions', 'genMatMFull' or 'makeAttackerProblem': a list of length 2 with elements 'objectA' and 'objectB'
+\item if type matches 'makePartitions':
 \itemize{
-\item element 'object A': an object of class \code{problemInstance}
-\item element 'object B': an object of class \code{dimInfo} }
-\item type matches 'calcFullProblem': a list of length 1
+\item \code{"object A"}: a \code{problemInstance} object
+\item \code{"object B"}: a \code{dimInfo} object
+}
+\item if \code{type} matches 'makeAttackerProblem':
 \itemize{
-\item element 'object A': an object of class \code{dataObj}
-\item element 'object B': an object of class \code{dimInfo} }}
+\item \code{"object A"}: a \code{sdcProblem} object
+\item \code{"object B"}: ignored
+}
+\item \code{type} matches 'calcFullProblem'
+\itemize{
+\item \code{"object A"}: a \code{dataObj} object
+\item \code{"object B"}: a \code{dimInfo} object
+}
+}}
 }
 \value{
 manipulated data based on argument \code{type}
 \itemize{
-\item list with elements 'groups', 'indices', 'strIDs', 'nrGroups' and 'nrTables' if argument \code{type} matches 'makePartitions'
-\item object of class \code{simpleTriplet} if argument \code{type} matches 'genMatMFull'
+\item list with elements 'groups', 'indices', 'strIDs', 'nrGroups' and 'nrTables'
+if argument \code{type} matches 'makePartitions'
 \item object of class \code{linProb} if argument \code{type} matches 'makeAttackerProblem'
 \item object of class \code{sdcProblem} if argument \code{type} matches 'calcFullProblem'
 }
@@ -43,7 +52,7 @@ manipulated data based on argument \code{type}
 perform calculations on multiple objects depending on argument \code{type}
 }
 \note{
-internal function
+internal functions/methods
 }
 \author{
 Bernhard Meindl \email{bernhard.meindl@statistik.gv.at}

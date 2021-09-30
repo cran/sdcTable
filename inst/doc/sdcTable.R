@@ -33,46 +33,47 @@ lev.V1 <- as.character(sort(unique(microData$V1)))
 lev.V2 <- as.character(sort(unique(microData$V2)))
 lev.V3 <- as.character(sort(unique(microData$V3)))
 
-## ---- echo=FALSE--------------------------------------------------------------
-print(lev.V1)
+## ---- echo=FALSE, comment=""--------------------------------------------------
+cat(paste(shQuote(lev.V1), collapse = ", "))
 
-## ---- echo=FALSE--------------------------------------------------------------
-print(lev.V2)
+## ---- echo=FALSE, comment=""--------------------------------------------------
+cat(paste(shQuote(lev.V2), collapse = ", "))
 
-## ---- echo=FALSE--------------------------------------------------------------
-print(lev.V3)
+## ---- echo=FALSE, comment=""--------------------------------------------------
+cat(paste(shQuote(lev.V3), collapse = ", "))
 
 ## -----------------------------------------------------------------------------
 print(tail(completeData))
 
 ## ---- echo=FALSE--------------------------------------------------------------
-levComp.V1 <- as.character(dimList$V1[, 2])
-levComp.V2 <- as.character(dimList$V2[, 2])
-levComp.V3 <- as.character(dimList$V3[, 2])
+levComp.V1 <- dimList$V1$name
+levComp.V2 <- dimList$V2$name
+levComp.V3 <- dimList$V3$name
 
-## ---- echo=FALSE--------------------------------------------------------------
-print(levComp.V1)
+## ---- echo=FALSE, comment=""--------------------------------------------------
+cat(paste(shQuote(levComp.V1), collapse = ", "))
 
-## ---- echo=FALSE--------------------------------------------------------------
-print(levComp.V2)
+## ---- echo=FALSE, comment=""--------------------------------------------------
+cat(paste(shQuote(levComp.V2), collapse = ", "))
 
-## ---- echo=FALSE--------------------------------------------------------------
-print(levComp.V3)
+## ---- echo=FALSE, comment=""--------------------------------------------------
+cat(paste(shQuote(levComp.V3), collapse = ", "))
 
 ## ---- echo=FALSE--------------------------------------------------------------
 x <- completeData[nrow(completeData), ]
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ---- echo=FALSE, comment=""--------------------------------------------------
 subTots.V1 <- setdiff(levComp.V1, lev.V1)
-print(subTots.V1)
+cat(paste(shQuote(subTots.V1), collapse = ", "))
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ---- echo=FALSE, comment=""--------------------------------------------------
 subTots.V2 <- setdiff(levComp.V2, lev.V2)
-print(subTots.V2)
+cat(paste(shQuote(subTots.V2), collapse = ", "))
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ---- echo=FALSE, comment=""--------------------------------------------------
 subTots.V3 <- setdiff(levComp.V3, lev.V3)
-print(subTots.V3)
+cat(paste(shQuote(subTots.V3), collapse = ", "))
+
 
 ## -----------------------------------------------------------------------------
 dimV1 <- matrix(nrow = 0, ncol = 2)

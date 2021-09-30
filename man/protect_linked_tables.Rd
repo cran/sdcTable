@@ -14,7 +14,7 @@ protectLinkedTables(
   ...
 )
 
-protect_linked_tables(x, y, common_cells, ...)
+protect_linked_tables(x, y, common_cells, method = "SIMPLEHEURISTIC", ...)
 }
 \arguments{
 \item{objectA}{maps to argument \code{x} in \code{\link[=protect_linked_tables]{protect_linked_tables()}}}
@@ -23,9 +23,8 @@ protect_linked_tables(x, y, common_cells, ...)
 
 \item{commonCells}{maps to argument \code{common_cells} in \code{\link[=protect_linked_tables]{protect_linked_tables()}}}
 
-\item{method}{scalar character vector defining the algorithm
-that should be used to protect the primary sensitive table cells. In versions \verb{>= 0.32}
-only the \code{SIMPLEHEURISTIC} procedure is supported}
+\item{method}{which protection algorithm should be used; choices are
+\code{"SIMPLEHEURISTIC"} and \code{"SIMPLEHEURISTIC_OLD"}}
 
 \item{...}{additional arguments to control the secondary cell suppression
 algorithm. For details, see \code{\link[=protectTable]{protectTable()}}.}
