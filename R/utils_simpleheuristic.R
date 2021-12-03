@@ -18,8 +18,10 @@
   df <- sdcProb2df(object, addDups = FALSE, dimCodes = "original")
   df[[.tmpweightname()]] <- g_weight(pi)
   df$is_common_cell <- FALSE # required for suppConstraints()
-
   df$id <- 1:nrow(df)
+
+  # remember original z's
+  orig_z <- df$sdcStatus == "z"
 
   # we need to solve the problem in any case
   # looping or not
@@ -41,7 +43,6 @@
       cppverbose <- input$verbose
     }
 
-    print(table(df$sdcStatus))
     res <- suppConstraints(
       dat = df,
       m = full_m,
@@ -52,6 +53,10 @@
         threshold = threshold
       )
     )
+
+    # reset z-cells
+    idx <- res$sdc_status == "z" & !orig_z
+    res$sdc_status[idx] <- "s"
 
     if (run == 1) {
       primsupps <- which(res$sdc_status == c("u"))
@@ -133,7 +138,6 @@
 # old implementation < 0.32 (fast but possibly unsafe)
 # in this case; no attacker problems are solved
 .protect_simpleheuristic_old <- function(object, input) {
-  message("old")
   freq <- id <- sdcStatus <- weights <- NULL
   verbose <- input$verbose
   detectSingletons <- input$detectSingletons

@@ -31,7 +31,7 @@ under consideration should be set.}
 a \linkS4class{sdcProblem} object
 }
 \description{
-Function \code{\link[=changeCellStatus]{changeCellStatus()}} allows to change|modify the anonymization state
+Function \code{\link[=change_cellstatus]{change_cellstatus()}} allows to change|modify the anonymization state
 of single table cells for objects of class \linkS4class{sdcProblem}.
 }
 \examples{

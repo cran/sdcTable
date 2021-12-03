@@ -24,9 +24,10 @@ Parameters that can be modified|changed are:
 \item \code{maxN}: numeric vector of length 1 used when applying the frequency rule.
 All cells having counts <= \code{maxN} are set as primary suppressed. The default
 value of \code{maxN} is \code{3}.
-\item \code{allowZeros}: logical vector of length 1 specifying if empty cells
-(count==0) should be considered sensitive when using the frequency rule.
-The default value of \code{allowZeros} is \code{FALSE} so that empty cells are not
+\item \code{allowZeros}: logical value defining if empty cells (with frequency = 0)
+should be considered sensitive when using the frequency rule. Empty cells are
+never considered as sensitive when applying dominance rules; The default
+value of \code{allowZeros} is \code{FALSE} so that empty cells are not
 considered primary sensitive by default. Such cells (frequency 0) are then
 flagged as \code{z} which indicates such a cell may be published but should (internally)
 not be used for (secondary) suppression in the heuristic algorithms.

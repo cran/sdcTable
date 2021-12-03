@@ -12,7 +12,7 @@
 
 <meta name="author" content="Bernhard Meindl" />
 
-<meta name="date" content="2021-09-30" />
+<meta name="date" content="2021-12-03" />
 
 <title>sdcTable</title>
 
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">sdcTable</h1>
 <h4 class="author">Bernhard Meindl</h4>
-<h4 class="date">2021-09-30</h4>
+<h4 class="date">2021-12-03</h4>
 
 
 <div id="TOC">
@@ -190,7 +190,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>More detailed information on all the possibilities is available in the help-files, additional information is given in the corresponding sections of this vignette that deal with specific functions. The first step however to get started is to load the package, which can easily be done as shown below:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sdcTable)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;sdcTable&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &#39;0.32.1&#39;</code></pre>
+<pre><code>## [1] &#39;0.32.2&#39;</code></pre>
 </div>
 </div>
 <div id="a-simple-example" class="section level1">
@@ -470,14 +470,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>resOPT <span class="ot">&lt;-</span> <span class="fu">protectTable</span>(prob.completeDat, <span class="at">method =</span> <span class="st">&quot;OPT&quot;</span>)</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>resHYPER <span class="ot">&lt;-</span> <span class="fu">protectTable</span>(prob.completeDat, <span class="at">method =</span> <span class="st">&quot;HYPERCUBE&quot;</span>)</span>
 <span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>resSIMPLE <span class="ot">&lt;-</span> <span class="fu">protectTable</span>(prob.completeDat, <span class="at">method =</span> <span class="st">&quot;SIMPLEHEURISTIC&quot;</span>)</span></code></pre></div>
-<pre><code>## 
-##   s   u 
-## 153  15</code></pre>
 <p>Having a look at the Output objects we can observe that the number of secondary suppressions required to protect the 15 primary sensitive cells (by default against exact re-calculation given sliding protection levels of 1 for each primary sensitive cell) differs.</p>
 <p>Using the <em>“OPT”</em>-algorithm, a total of <code>23</code> cells have been marked as secondary suppressions. When using <em>“HITAS”</em>-algorithm, it was required to additionally suppress <code>25</code> cells. A total of <code>27</code> cells was selected and marked as secondary suppressions when the <em>“HYPERCUBE”</em> algorithm was used while <code>27</code> additional suppressions were required for the fast heuristic simple procedure <em>“SIMPLEHEURISTIC”</em>.</p>
 <p>One now easily get information from the resulting output objects that are instances of class <code>safeObj</code> by using function <code>getInfo()</code> or applying the <code>summary</code>-method. For the former we show how to extract the final data set which can be achieved as follows:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>finalData <span class="ot">&lt;-</span> <span class="fu">getInfo</span>(resOPT, <span class="at">type =</span> <span class="st">&quot;finalData&quot;</span>)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(finalData))</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>finalData <span class="ot">&lt;-</span> <span class="fu">getInfo</span>(resOPT, <span class="at">type =</span> <span class="st">&quot;finalData&quot;</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(finalData))</span></code></pre></div>
 <pre><code>##     V1  V2  V3 Freq   numVal1   numVal2 sdcStatus
 ## 1: Tot Tot Tot 1000 294693.72 298707.90         s
 ## 2: Tot Tot   a  178  49115.62  49784.65         s
@@ -487,7 +484,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6: Tot Tot   e  150  49115.62  49784.65         s</code></pre>
 <p>As we can see above the final result data set contains all columns specified in the input data set along with another column <code>sdcStatus</code> that specifies the anonymization state for each table cell.</p>
 <p>For the latter we show how to apply the summary method. This can be done by applying the following code:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(resOPT)</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(resOPT)</span></code></pre></div>
 <pre><code>## 
 ## #####################################</code></pre>
 <pre><code>## ### Summary of the protected data ###</code></pre>

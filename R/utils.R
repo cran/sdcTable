@@ -52,11 +52,14 @@ domRule <- function(object, params, type) {
     }
 
     # replicate by weights: what to do with non-integerish weights?
-    # randomly round upwards and downwards?
+    # consistently round up (1, 3, ...) and downwards (2, 4, ...)
     if (!is_integerish(w)) {
-      dir <- sample(c(-1, 1), length(vals), replace = TRUE)
-      w[dir == -1] <- floor(w[dir == -1])
-      w[dir == 1] <- ceiling(w[dir == 1])
+      idx <- seq(1, length(w), by = 2)
+      w[idx] <- ceiling(w[idx])
+      if (length(w) > 1) {
+        idx <- seq(2, length(w), by = 2)
+        w[idx] <- floor(w[idx])
+      }
     }
     # division is required here because in makeProblem()
     # all numVars-variables are aggregated on cell-level
@@ -151,28 +154,14 @@ domRule <- function(object, params, type) {
     }
   })
 
-  supp_index <- which(supp_state == TRUE)
+  # in case of dominance rules; empty cells (frequency = 0)
+  # are never marked as sensitive
+  supp_index <- which(supp_state == TRUE & g_freq(pI) > 0)
   if (length(supp_index) > 0) {
     s_sdcStatus(pI) <- list(
       index = supp_index,
       vals = rep("u", length(supp_index))
     )
-  }
-
-  if (isFALSE(params$allowZeros)) {
-    if (type %in% c("p", "pq")) {
-      ind_zero <- which(g_freq(pI) == 0)
-    }
-    if (type == "nk") {
-      cell_totals <- unlist(lapply(inp, function(x) x$celltot))
-      ind_zero <- which(cell_totals == 0 & g_freq(pI) >= 0)
-    }
-    if (length(ind_zero) > 0) {
-      s_sdcStatus(pI) <- list(
-        index = ind_zero,
-        vals = rep("u", length(ind_zero))
-      )
-    }
   }
   s_problemInstance(object) <- pI
   validObject(object)
