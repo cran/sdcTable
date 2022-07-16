@@ -52,7 +52,7 @@
 #' @export
 #' @author Bernhard Meindl \email{bernhard.meindl@@statistik.gv.at}
 getInfo <- function(object, type) {
-  if (!class(object) %in% c("sdcProblem", "problemInstance", "safeObj")) {
+  if (!(inherits(object, "sdcProblem") | inherits(object, "problemInstance") | inherits(object, "safeObj"))) {
     stop("getInfo:: argument `object` must be of class `sdcProblem` or `problemInstance`!", call. = FALSE)
   }
 
@@ -75,7 +75,7 @@ getInfo <- function(object, type) {
     if (!type %in% ok) {
       stop("getInfo:: type must be one of", paste(shQuote(ok), collapse = ", "), call. = FALSE)
     }
-    if (class(object) == "sdcProblem") {
+    if (inherits(object, "sdcProblem")) {
       pI <- g_problemInstance(object)
     } else {
       pI <- object

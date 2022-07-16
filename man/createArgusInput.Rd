@@ -163,7 +163,7 @@ bO_td2 <- createArgusInput(
 ## in case CPLEX should be used, it is required to specify argument licensefile
 bO_md2 <- createArgusInput(
   obj = obj,
-  typ = "microdata1",
+  typ = "microdata",
   path = tempdir(),
   solver = "CPLEX",
   method = "OPT",

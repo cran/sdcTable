@@ -21,10 +21,6 @@ dimList <- list(
   V3 = sdcHierarchies::hier_convert(h3, as = "df")
 )
 
-#resOPT <- workDat$resOPT
-#completeData <- workDat$resOPT@finalData
-#completeData <- completeData[, -ncol(completeData)]
-
 ## ---- echo=FALSE--------------------------------------------------------------
 print(head(microData), row.names = FALSE)
 
@@ -154,6 +150,7 @@ summary(prob.completeDat)
 nrPrimSupps <- length(which(getInfo(prob.completeDat, type = "sdcStatus") == "u"))
 
 ## ---- cache=TRUE--------------------------------------------------------------
+resGAUSS <- protectTable(prob.completeDat, method = "GAUSS")
 resHITAS <- protectTable(prob.completeDat, method = "HITAS")
 resOPT <- protectTable(prob.completeDat, method = "OPT")
 resHYPER <- protectTable(prob.completeDat, method = "HYPERCUBE")

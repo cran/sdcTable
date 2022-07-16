@@ -120,7 +120,7 @@
 #' ## in case CPLEX should be used, it is required to specify argument licensefile
 #' bO_md2 <- createArgusInput(
 #'   obj = obj,
-#'   typ = "microdata1",
+#'   typ = "microdata",
 #'   path = tempdir(),
 #'   solver = "CPLEX",
 #'   method = "OPT",
@@ -133,7 +133,7 @@ createArgusInput <- function(
   primSuppRules=NULL, responsevar=NULL, shadowvar=NULL, costvar=NULL,
   requestvar=NULL, holdingvar=NULL, ...) {
 
-  if (class(obj) != "sdcProblem") {
+  if (!inherits(obj, "sdcProblem")) {
     stop("argument 'obj' must be of class 'sdcProblem'.\n")
   }
   if (!typ %in% c("microdata", "tabular")) {
