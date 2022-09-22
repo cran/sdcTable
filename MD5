@@ -1,4 +1,4 @@
-327dd34cfabaeb814d1bf5b9cddb7887 *DESCRIPTION
+0919d02c67dcf7179861a1f9641da809 *DESCRIPTION
 c06ef7e3dd78125a4197b58e009e8490 *NAMESPACE
 991c39e89185f5f1d7e426d44bd5fa37 *R/0_imports.R
 9848ffa53dd22aa4d4b6f6c6fab08cf9 *R/RcppExports.R
@@ -55,7 +55,7 @@ f89d7d7122c888a949d61a6e0a7df727 *configure
 e0077fa401482680789c6ef2bca9fc66 *data/microdata1.rda
 2cd2395bd171bb007d27dbf5ce955376 *data/microdata2.rda
 298afd70d41134684f89f3c1aee4cdc6 *inst/doc/sdcTable.R
-db53dcb664473d043989cc6867687f74 *inst/doc/sdcTable.html
+4f7571675058603bfcdb02cfc72c95a8 *inst/doc/sdcTable.html
 e57277610310f72315d9eb7d3caf8ada *inst/doc/sdcTable.rmd
 246f50420493661a04c97f590e1e7ee9 *man/argusVersion.Rd
 da8e2fe04df76f6999516973f8eecb47 *man/attack.Rd
@@ -144,6 +144,6 @@ e6f6a30a61e655bae97c36a062e091b7 *vignettes/microdat.rds
 26b1126b667e23848d94e43bb4488d51 *vignettes/sdcTable.bib
 e57277610310f72315d9eb7d3caf8ada *vignettes/sdcTable.rmd
 1a0fba9f117fc1bacbd8e188f8993555 *vignettes/sdcTable_cache/html/__packages
-b22c8e94eda56fb9642314aee594cc60 *vignettes/sdcTable_cache/html/unnamed-chunk-32_6449cec6072951ca6c5fd4e6da6b9edd.RData
-d2cb074cb7f993552ef428d2f91929b0 *vignettes/sdcTable_cache/html/unnamed-chunk-32_6449cec6072951ca6c5fd4e6da6b9edd.rdb
-63271aa76e3ab05cc3955c2fac1e9896 *vignettes/sdcTable_cache/html/unnamed-chunk-32_6449cec6072951ca6c5fd4e6da6b9edd.rdx
+d87511bfed48ea75dc7a8438f627a367 *vignettes/sdcTable_cache/html/unnamed-chunk-32_931a7d0e258181f18d729d01917b4c1e.RData
+d2cb074cb7f993552ef428d2f91929b0 *vignettes/sdcTable_cache/html/unnamed-chunk-32_931a7d0e258181f18d729d01917b4c1e.rdb
+63271aa76e3ab05cc3955c2fac1e9896 *vignettes/sdcTable_cache/html/unnamed-chunk-32_931a7d0e258181f18d729d01917b4c1e.rdx
