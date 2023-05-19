@@ -1,4 +1,4 @@
-0919d02c67dcf7179861a1f9641da809 *DESCRIPTION
+935562576211b97dedb0fd0a4de1d342 *DESCRIPTION
 c06ef7e3dd78125a4197b58e009e8490 *NAMESPACE
 991c39e89185f5f1d7e426d44bd5fa37 *R/0_imports.R
 9848ffa53dd22aa4d4b6f6c6fab08cf9 *R/RcppExports.R
@@ -23,7 +23,7 @@ a9c1c725956ee655e014af2388ad4e13 *R/generics_multiple.r
 37b5f376d39b7c135f50c88a0219cea8 *R/generics_sdcProblem.r
 6b934139aee9756901e9cb940d824e26 *R/generics_simpleTriplet.r
 0056d2a1494adb0dfb2e850a29edcceb *R/getInfo.R
-d29e718bf626a21f87355bab2628bcd4 *R/helper_functions.r
+8ee6764a2dd8a4fc20fb8f8543a53027 *R/helper_functions.r
 6b56f02401947748e554794af1c99ef8 *R/makeProblem.R
 02d7ea69840c24ae6cb8fa933bf637bb *R/methods_class_cutList.r
 3da99b0cd57c3cb74552187f94f7d395 *R/methods_class_dataObj.r
@@ -49,13 +49,13 @@ b9ac934594b4aa2d13c38a2b8efb1b7d *R/utils_safeObj.R
 0dae13254b2afaa89d59f0ee734d51e1 *R/utils_simpleheuristic.R
 b7c3ba189e8ee5c3e32b4f5cb3005797 *R/writeJJFormat.R
 e3cdecf2e31fea9be3c5e369c8e05a4f *R/zzz.r
-de84e2d14c4b5db17b63c191ed47e33b *build/vignette.rds
+308026c3e73d18d486798e1889216161 *build/vignette.rds
 f89d7d7122c888a949d61a6e0a7df727 *configure
 68b329da9893e34099c7d8ad5cb9c940 *configure.win
 e0077fa401482680789c6ef2bca9fc66 *data/microdata1.rda
 2cd2395bd171bb007d27dbf5ce955376 *data/microdata2.rda
 298afd70d41134684f89f3c1aee4cdc6 *inst/doc/sdcTable.R
-4f7571675058603bfcdb02cfc72c95a8 *inst/doc/sdcTable.html
+05c4884b9b0a33443ee283dffc5c1d17 *inst/doc/sdcTable.html
 e57277610310f72315d9eb7d3caf8ada *inst/doc/sdcTable.rmd
 246f50420493661a04c97f590e1e7ee9 *man/argusVersion.Rd
 da8e2fe04df76f6999516973f8eecb47 *man/attack.Rd
@@ -143,7 +143,3 @@ e6f6a30a61e655bae97c36a062e091b7 *vignettes/microdat.rds
 2cf194fb331944b3efef6fab719047a5 *vignettes/overview.png
 26b1126b667e23848d94e43bb4488d51 *vignettes/sdcTable.bib
 e57277610310f72315d9eb7d3caf8ada *vignettes/sdcTable.rmd
-1a0fba9f117fc1bacbd8e188f8993555 *vignettes/sdcTable_cache/html/__packages
-d87511bfed48ea75dc7a8438f627a367 *vignettes/sdcTable_cache/html/unnamed-chunk-32_931a7d0e258181f18d729d01917b4c1e.RData
-d2cb074cb7f993552ef428d2f91929b0 *vignettes/sdcTable_cache/html/unnamed-chunk-32_931a7d0e258181f18d729d01917b4c1e.rdb
-63271aa76e3ab05cc3955c2fac1e9896 *vignettes/sdcTable_cache/html/unnamed-chunk-32_931a7d0e258181f18d729d01917b4c1e.rdx

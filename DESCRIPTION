@@ -1,6 +1,6 @@
 Package: sdcTable
-Version: 0.32.4
-Date: 2022-09-22
+Version: 0.32.5
+Date: 2023-05-19
 Title: Methods for Statistical Disclosure Control in Tabular Data
 Description: Methods for statistical disclosure control in
     tabular data such as primary and secondary cell suppression as described for example
@@ -20,8 +20,8 @@ Encoding: UTF-8
 RoxygenNote: 7.2.0
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2022-09-22 07:20:35 UTC; bernhard
+Packaged: 2023-05-19 05:04:27 UTC; meindl
 Author: Bernhard Meindl [aut, cre]
 Maintainer: Bernhard Meindl <bernhard.meindl@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-09-22 08:00:02 UTC
+Date/Publication: 2023-05-19 11:50:02 UTC
