@@ -104,6 +104,9 @@ check_varinput <- function(obj, type, responsevar, shadowvar, costvar, requestva
     if (!holdingvar %in% cn) {
       stop("non-valid variable selected for choice 'holdingvar'.\n")
     }
+    if (!is.integer(obj@dataObj@rawData[[holdingvar]])) {
+      stop("holdingvar (", shQuote(holdingvar), ") is not an integer!")
+    }
   } else {
     holdingvar <- ""
   }
@@ -120,6 +123,15 @@ check_suppmethod <- function(method) {
   method
 }
 
+# no colons in var-labels (https://github.com/sdcTools/UserSupport/issues/301)
+check_colon <- function(x) {
+  for (n in names(x)) {
+    if (sum(grepl(",", x[[n]]$codes)) > 0) {
+      stop("Colon (,) detected in a label for dimensional variable ", shQuote(n))
+    }
+  }
+  invisible(TRUE)
+}
 
 ###############################################################################################################
 ##### helper-functions that are used to create hierarchy-files for tau-argus using an sdcProblem-instance #####
@@ -215,8 +227,9 @@ create_microdata_and_metadata <- function(obj, verbose, digits=2, path=getwd(), 
   # define output-matrix (required for fixed-file format)
   mat <- matrix("", nrow=nrow(mdat), ncol=1)
 
-  # calculate hierarchy-files
+  # calculate and check hierarchy-files
   hiercodes <- hrc(obj)
+  check_colon(x = hiercodes)
 
   # write microdata
   # 1: dim-vars
@@ -243,6 +256,7 @@ create_microdata_and_metadata <- function(obj, verbose, digits=2, path=getwd(), 
     f_hrc <- normalizePath(f_hrc, winslash="/", mustWork=TRUE)
     cmds <- append(cmds, paste(vv, cur_dig)) # no missings allowed in sdcProblem-objects
     cmds <- append(cmds, paste(bl, "<RECODEABLE>"))
+    cmds <- append(cmds, paste(bl, "<TOTCODE>", shQuote(slot(di, "dimInfo")[[vv]]@codesOriginal[1])))
     cmds <- append(cmds, paste(bl, "<HIERCODELIST>", dQuote(f_hrc)))
     cmds <- append(cmds, paste(bl, "<HIERLEADSTRING>", dQuote("@")))
     cmds <- append(cmds, paste(bl, "<HIERARCHICAL>"))
@@ -349,8 +363,9 @@ create_tabdata_and_metadata <- function(obj, verbose, responsevar, digits=2, pat
   # define output-matrix (required for fixed-file format)
   mat <- matrix("", nrow=nrow(mdat), ncol=1)
 
-  # calculate hierarchiy-files
+  # calculate and check hierarchy-files
   hiercodes <- hrc(obj)
+  check_colon(x = hiercodes)
 
   # write microdata
   # 1: dim-vars
@@ -362,6 +377,7 @@ create_tabdata_and_metadata <- function(obj, verbose, responsevar, digits=2, pat
   # --> all have <HIERLEADSTRING>
   # --> none have <REQUEST> or <HOLDING>: currently not supported
   dim_vars <- names(hiercodes)
+  di <- slot(obj, "dimInfo")
   f_hrcs <- c()
   for (i in seq_along(dim_vars)) {
     vv <- dim_vars[i]
@@ -382,6 +398,7 @@ create_tabdata_and_metadata <- function(obj, verbose, responsevar, digits=2, pat
 
     cmds <- append(cmds, paste(vv)) # no missings allowed in sdcProblem-objects
     cmds <- append(cmds, paste(bl, "<RECODEABLE>"))
+    cmds <- append(cmds, paste(bl, "<TOTCODE>", shQuote(slot(di, "dimInfo")[[vv]]@codesOriginal[1])))
     cmds <- append(cmds, paste(bl, "<TOTCODE>", dQuote(tot_code)))
     cmds <- append(cmds, paste(bl, "<HIERCODELIST>", dQuote(f_hrc)))
     cmds <- append(cmds, paste(bl, "<HIERLEADSTRING>", dQuote("@")))

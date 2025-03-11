@@ -12,7 +12,7 @@
 
 <meta name="author" content="Bernhard Meindl" />
 
-<meta name="date" content="2023-08-11" />
+<meta name="date" content="2025-03-11" />
 
 <title>sdcTable</title>
 
@@ -51,7 +51,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">sdcTable</h1>
 <h4 class="author">Bernhard Meindl</h4>
-<h4 class="date">2023-08-11</h4>
+<h4 class="date">2025-03-11</h4>
 
 
 <div id="TOC">
@@ -396,7 +396,7 @@ or <code>?makeProblem</code></li>
 <div id="how-to-protect-data---an-overview" class="section level2">
 <h2>How to protect data - An overview</h2>
 <div class="float" id="fig:overview">
-<img src="data:image/png;base64,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" alt="Figure 1: sdcTable - an overview of exported functions" />
+<img role="img" aria-label="Figure 1: sdcTable - an overview of exported functions" src="data:image/png;base64,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" alt="Figure 1: sdcTable - an overview of exported functions" />
 <div class="figcaption">Figure 1: <strong>sdcTable</strong> - an
 overview of exported functions</div>
 </div>
@@ -428,7 +428,7 @@ step however to get started is to load the package, which can easily be
 done as shown below:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(sdcTable)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;sdcTable&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &#39;0.32.6&#39;</code></pre>
+<pre><code>## [1] &#39;0.32.7&#39;</code></pre>
 </div>
 </div>
 <div id="a-simple-example" class="section level1">
@@ -970,13 +970,14 @@ the former we show how to extract the final data set which can be
 achieved as follows:</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>finalData <span class="ot">&lt;-</span> <span class="fu">getInfo</span>(resOPT, <span class="at">type =</span> <span class="st">&quot;finalData&quot;</span>)</span>
 <span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(finalData))</span></code></pre></div>
-<pre><code>##     V1  V2  V3 Freq   numVal1   numVal2 sdcStatus
-## 1: Tot Tot Tot 1000 294693.72 298707.90         s
-## 2: Tot Tot   a  178  49115.62  49784.65         s
-## 3: Tot Tot   b  159  49115.62  49784.65         s
-## 4: Tot Tot   c  177  49115.62  49784.65         s
-## 5: Tot Tot   d  144  49115.62  49784.65         s
-## 6: Tot Tot   e  150  49115.62  49784.65         s</code></pre>
+<pre><code>##        V1     V2     V3  Freq   numVal1   numVal2 sdcStatus
+##    &lt;char&gt; &lt;char&gt; &lt;char&gt; &lt;num&gt;     &lt;num&gt;     &lt;num&gt;    &lt;char&gt;
+## 1:    Tot    Tot    Tot  1000 294693.72 298707.90         s
+## 2:    Tot    Tot      a   178  49115.62  49784.65         s
+## 3:    Tot    Tot      b   159  49115.62  49784.65         s
+## 4:    Tot    Tot      c   177  49115.62  49784.65         s
+## 5:    Tot    Tot      d   144  49115.62  49784.65         s
+## 6:    Tot    Tot      e   150  49115.62  49784.65         s</code></pre>
 <p>As we can see above the final result data set contains all columns
 specified in the input data set along with another column
 <code>sdcStatus</code> that specifies the anonymization state for each

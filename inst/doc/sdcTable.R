@@ -1,11 +1,11 @@
-## ---- include=FALSE-----------------------------------------------------------
+## ----include=FALSE------------------------------------------------------------
 library(sdcTable)
 
-## ---- eval=TRUE---------------------------------------------------------------
+## ----eval=TRUE----------------------------------------------------------------
 library(sdcTable)
 packageVersion("sdcTable")
 
-## ---- include=FALSE-----------------------------------------------------------
+## ----include=FALSE------------------------------------------------------------
 # daten laden
 microData <- readRDS("microdat.rds")
 aggregatedData <- readRDS("aggdat.rds")
@@ -21,52 +21,52 @@ dimList <- list(
   V3 = sdcHierarchies::hier_convert(h3, as = "df")
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 print(head(microData), row.names = FALSE)
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 lev.V1 <- as.character(sort(unique(microData$V1)))
 lev.V2 <- as.character(sort(unique(microData$V2)))
 lev.V3 <- as.character(sort(unique(microData$V3)))
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 cat(paste(shQuote(lev.V1), collapse = ", "))
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 cat(paste(shQuote(lev.V2), collapse = ", "))
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 cat(paste(shQuote(lev.V3), collapse = ", "))
 
 ## -----------------------------------------------------------------------------
 print(tail(completeData))
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 levComp.V1 <- dimList$V1$name
 levComp.V2 <- dimList$V2$name
 levComp.V3 <- dimList$V3$name
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 cat(paste(shQuote(levComp.V1), collapse = ", "))
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 cat(paste(shQuote(levComp.V2), collapse = ", "))
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 cat(paste(shQuote(levComp.V3), collapse = ", "))
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 x <- completeData[nrow(completeData), ]
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 subTots.V1 <- setdiff(levComp.V1, lev.V1)
 cat(paste(shQuote(subTots.V1), collapse = ", "))
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 subTots.V2 <- setdiff(levComp.V2, lev.V2)
 cat(paste(shQuote(subTots.V2), collapse = ", "))
 
-## ---- echo=FALSE, comment=""--------------------------------------------------
+## ----echo=FALSE, comment=""---------------------------------------------------
 subTots.V3 <- setdiff(levComp.V3, lev.V3)
 cat(paste(shQuote(subTots.V3), collapse = ", "))
 
@@ -146,10 +146,10 @@ prob.completeDat <- primarySuppression(prob.completeDat, type = "freq", maxN = 1
 print(table(getInfo(prob.completeDat, type = "sdcStatus")))
 summary(prob.completeDat)
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 nrPrimSupps <- length(which(getInfo(prob.completeDat, type = "sdcStatus") == "u"))
 
-## ---- cache=TRUE--------------------------------------------------------------
+## ----cache=TRUE---------------------------------------------------------------
 resGAUSS <- protectTable(prob.completeDat, method = "GAUSS")
 resHITAS <- protectTable(prob.completeDat, method = "HITAS")
 resOPT <- protectTable(prob.completeDat, method = "OPT")
