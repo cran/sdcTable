@@ -2,12 +2,12 @@
 % Please edit documentation in R/protectTable.R
 \name{protectTable}
 \alias{protectTable}
-\title{Protecting \linkS4class{sdcProblem} objects}
+\title{Protecting \link[=sdcProblem-class]{sdcProblem} objects}
 \usage{
 protectTable(object, method, ...)
 }
 \arguments{
-\item{object}{a \linkS4class{sdcProblem} object that has created using \code{\link[=makeProblem]{makeProblem()}} and has
+\item{object}{a \link[=sdcProblem-class]{sdcProblem} object that has created using \code{\link[=makeProblem]{makeProblem()}} and has
 been modified by \code{\link[=primarySuppression]{primarySuppression()}}}
 
 \item{method}{a character vector of length 1 specifying the algorithm that should be
@@ -87,6 +87,15 @@ data, defaults to \code{FALSE}.
 \item \code{threshold}: if not \code{NULL} (the default) an integerish number (> \code{0}). If specified, a procedure similar
 to the singleton-detection procedure is run that makes sure that for all (simple) rows in the table instance that
 contains primary sensitive cells the suppressed number of contributors is \code{>=} the specified threshold.
+\item \code{n_workers}: (integer >= 1, for \code{method = "SIMPLEHEURISTIC"} only);
+number of parallel workers. Defaults to \code{1} (sequential). If \verb{> 1}, parallel
+execution via \href{https://CRAN.R-project.org/package=future.apply}{\code{future.apply}}
+is used to accelerate processing. Warning: Higher values increase RAM usage.
+\item \code{attack_threshold}: (numeric >= 0, for \code{method = "SIMPLEHEURISTIC"} only);
+the safety threshold used to determine if a primary sensitive cell is considered
+protected. A cell is deemed "safe" if the difference between its computed
+upper and lower bound (\code{abs(upper - lower)}) is strictly greater than this
+threshold. Defaults to \code{1e-8}.
 }
 \item parameters used for the \strong{"GAUSS"} procedure; for details please see \code{?SSBtools::GaussSuppression} as
 the default values are the same as in this function:
@@ -101,7 +110,7 @@ the default values are the same as in this function:
 }}
 }
 \value{
-an \linkS4class{safeObj} object
+an \link[=safeObj-class]{safeObj} object
 }
 \description{
 Function \code{\link[=protectTable]{protectTable()}} is used to protect primary sensitive table cells
@@ -115,8 +124,38 @@ the protection algorithm are set using parameter \code{...}.
 The implemented methods may have bugs that yield in not-fully protected tables. Especially
 the usage of \code{"OPT"}, \code{"HITAS"} and \code{"HYPERCUBE"} in production is not
 suggested as these methods may eventually be removed completely. In case you encounter any problems,
-please report it or use Tau-Argus (\url{https://research.cbs.nl/casc/tau.htm}).
+please report it or use Tau-Argus (\url{https://github.com/sdcTools/tauargus}).
 }
+\section{Cell Status Codes}{
+
+
+When an object of class \code{sdcProblem} is created, every cell is assigned an
+internal anonymization state. These codes track the lifecycle of a
+cell throughout the suppression process:
+\itemize{
+\item \code{"s"} (\emph{"Publishable"}): The cell is safe and can be published (default).
+\item \code{"z"}(\emph{"Forced Publishable"}): The cell must not be suppressed under any
+circumstances.
+\item \code{"u"} (*"Primary Suppressed"): The cell is identified as sensitive and
+requires protection (typically assigned via \code{\link[=primarySuppression]{primarySuppression()}}).
+\item \code{"x"} (\emph{"Secondary Suppressed"}): The cell is suppressed to protect
+primary sensitive cells (typically assigned via \code{\link[=protectTable]{protectTable()}}).
+\item \code{"w"} (\emph{"Extension Cell"}): The cell exists in the object but will never
+be published. It is treated as a suppressed cell by internal algorithms.
+This is useful if it is known in advance that specific codes of a hierarchy
+will be excluded from publication.
+}
+
+Initially in \code{\link[=makeProblem]{makeProblem()}}, cells are coded as \code{"s"} or \code{"z"}. Their
+status transitions to \code{"u"} or \code{"x"} as suppression algorithms are applied.
+
+While \code{\link[=setInfo]{setInfo()}} or \code{\link[=change_cellstatus]{change_cellstatus()}} allow for manual state
+modifications, \code{\link[=primarySuppression]{primarySuppression()}} automatically identifies primary
+sensitive cells and assigns state \code{"u"}. In \code{\link[=protectTable]{protectTable()}}, additional
+cells are identified and set to \code{"x"} to ensure all primary sensitive
+cells are adequately protected.
+}
+
 \examples{
 \dontrun{
 # load example-problem with with a single primary suppression

@@ -29,9 +29,9 @@ protect_linked_tables(x, y, common_cells, method = "SIMPLEHEURISTIC", ...)
 \item{...}{additional arguments to control the secondary cell suppression
 algorithm. For details, see \code{\link[=protectTable]{protectTable()}}.}
 
-\item{x}{a \linkS4class{sdcProblem} object}
+\item{x}{a \link[=sdcProblem-class]{sdcProblem} object}
 
-\item{y}{a \linkS4class{sdcProblem} object}
+\item{y}{a \link[=sdcProblem-class]{sdcProblem} object}
 
 \item{common_cells}{a list object defining common cells in
 \code{x} and \code{y}. For each variable that has one or more common

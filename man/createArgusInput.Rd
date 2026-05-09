@@ -21,7 +21,7 @@ createArgusInput(
 )
 }
 \arguments{
-\item{obj}{an object of class \linkS4class{sdcProblem} from \code{sdcTable}}
+\item{obj}{an object of class \link[=sdcProblem-class]{sdcProblem} from \code{sdcTable}}
 
 \item{typ}{(character) either \code{"microdata"} or \code{"tabular"}}
 
@@ -85,7 +85,7 @@ as well as \code{licensefile} in clase \code{"CPLEX"} was specified in argument 
 the filepath to the batch-file
 }
 \description{
-create required input-files and batch-file for tau-argus given an \linkS4class{sdcProblem} object
+create required input-files and batch-file for tau-argus given an \link[=sdcProblem-class]{sdcProblem} object
 }
 \examples{
 \dontrun{

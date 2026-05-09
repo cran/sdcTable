@@ -7,7 +7,7 @@
 sdcProb2df(obj, addDups = TRUE, addNumVars = FALSE, dimCodes = "both")
 }
 \arguments{
-\item{obj}{an \linkS4class{sdcProblem} object}
+\item{obj}{an \link[=sdcProblem-class]{sdcProblem} object}
 
 \item{addDups}{(logical), if \code{TRUE}, duplicated cells are included in the output}
 
@@ -28,7 +28,7 @@ are included in the output
 a \code{data.table} containing information about all cells of the given problem
 }
 \description{
-\code{\link[=sdcProb2df]{sdcProb2df()}} returns a \code{data.table} given an \linkS4class{sdcProblem} input object.
+\code{\link[=sdcProb2df]{sdcProb2df()}} returns a \code{data.table} given an \link[=sdcProblem-class]{sdcProblem} input object.
 }
 \examples{
 # loading micro data

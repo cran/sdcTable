@@ -7,39 +7,36 @@
 contributing_indices(prob, ids = NULL)
 }
 \arguments{
-\item{prob}{a \linkS4class{sdcProblem} object created with \code{\link[=makeProblem]{makeProblem()}}}
+\item{prob}{a \link[=sdcProblem-class]{sdcProblem} object created with \code{\link[=makeProblem]{makeProblem()}}.}
 
-\item{ids}{a character vector containing default ids (strIDs) that define table
-cells. Valid inputs can be extracted by using \code{\link[=sdcProb2df]{sdcProb2df()}} and looking at
-column \code{strID}. If this argument is \code{NULL}, the corresponding units are computed
-for all cells in the table.}
+\item{ids}{a character vector of cell identifiers (\code{strID}). If \code{NULL},
+indices are computed for all cells in the table. Valid identifiers can
+be found in the \code{strID} column of the data frame returned by \code{\link[=sdcProb2df]{sdcProb2df()}}.}
 }
 \value{
-a named \verb{list where names correspond to the given }ids` and the values
-to the row numbers within the raw input data.
+a named list where each element contains integer indices of the
+contributing rows in the raw microdata.
 }
 \description{
-This function computes (with respect to the raw input data) the indices of all
-contributing units to given cells identified by \code{ids}.
+This function maps aggregated table cells back to their constituent microdata.
+It returns the row indices of the raw input data that contribute to specific
+cells identified by \code{ids}.
 }
 \examples{
-# loading test problem
+# load test problem
 p <- sdc_testproblem(with_supps = FALSE)
 dt <- sdcProb2df(p, dimCodes = "original")
 
-# question: which units contribute to cell region = "A" and gender = "female"?
+# find the strID for a specific cell (e.g., region "A" and gender "female")
+target_id <- dt[region == "A" & gender == "female", strID]
 
-# compute the id ("0102")
-dt[region == "A" & gender == "female", strID]
+# compute contributing indices for this cell
+contr_list <- contributing_indices(prob = p, ids = target_id)
 
-# which indices contribute to the cell?
-ids <- contributing_indices(prob = p, ids = "0101")
+# view the contributing raw data rows
+rawData <- slot(get.sdcProblem(p, "dataObj"), "rawData")
+rawData[contr_list[[target_id]]]
 
-# check
-dataObj <- get.sdcProblem(p, "dataObj")
-rawData <- slot(dataObj, "rawData")
-rawData[ids[["0101"]]]
-
-# compute contributing ids for all cells
-contributing_indices(p)
+# compute indices for all cells in the table
+all_indices <- contributing_indices(p)
 }

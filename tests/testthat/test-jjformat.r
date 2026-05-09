@@ -1,5 +1,3 @@
-context("test jj_format")
-
 test_that("jj-format works", {
   skip_on_cran()
   utils::data("microdata1", package = "sdcTable")
@@ -27,15 +25,15 @@ test_that("jj-format works", {
   expect_error(createJJFormat(x = 5))
 
   # create inputs for jj format
-  inp <- createJJFormat(prob)
-  expect_identical(digest::digest(inp), "accb193e8f09427be7f8ccd1787a9815")
+  inp_a <- createJJFormat(prob)
+  expect_snapshot(inp_a)
 
   # no numvar
   prob <- makeProblem(
     data = microdata1,
     dimList = dimList
   )
-  inp <- createJJFormat(prob)
-  expect_identical(digest::digest(inp), "dbba270f1edc3cedff83e97f82eeae49")
+  inp_b <- createJJFormat(prob)
+  expect_snapshot(inp_b)
 })
 

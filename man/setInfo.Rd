@@ -37,6 +37,36 @@ a \code{sdcProblem}- or \code{problemInstance} object
 Function \code{\link[=setInfo]{setInfo()}} is used to update values in
 \code{sdcProblem} or \code{problemInstance} objects
 }
+\section{Cell Status Codes}{
+
+
+When an object of class \code{sdcProblem} is created, every cell is assigned an
+internal anonymization state. These codes track the lifecycle of a
+cell throughout the suppression process:
+\itemize{
+\item \code{"s"} (\emph{"Publishable"}): The cell is safe and can be published (default).
+\item \code{"z"}(\emph{"Forced Publishable"}): The cell must not be suppressed under any
+circumstances.
+\item \code{"u"} (*"Primary Suppressed"): The cell is identified as sensitive and
+requires protection (typically assigned via \code{\link[=primarySuppression]{primarySuppression()}}).
+\item \code{"x"} (\emph{"Secondary Suppressed"}): The cell is suppressed to protect
+primary sensitive cells (typically assigned via \code{\link[=protectTable]{protectTable()}}).
+\item \code{"w"} (\emph{"Extension Cell"}): The cell exists in the object but will never
+be published. It is treated as a suppressed cell by internal algorithms.
+This is useful if it is known in advance that specific codes of a hierarchy
+will be excluded from publication.
+}
+
+Initially in \code{\link[=makeProblem]{makeProblem()}}, cells are coded as \code{"s"} or \code{"z"}. Their
+status transitions to \code{"u"} or \code{"x"} as suppression algorithms are applied.
+
+While \code{\link[=setInfo]{setInfo()}} or \code{\link[=change_cellstatus]{change_cellstatus()}} allow for manual state
+modifications, \code{\link[=primarySuppression]{primarySuppression()}} automatically identifies primary
+sensitive cells and assigns state \code{"u"}. In \code{\link[=protectTable]{protectTable()}}, additional
+cells are identified and set to \code{"x"} to ensure all primary sensitive
+cells are adequately protected.
+}
+
 \examples{
 # load example-problem with suppressions
 # (same as example from ?primarySuppression)

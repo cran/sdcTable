@@ -7,13 +7,13 @@
 createJJFormat(x)
 }
 \arguments{
-\item{x}{a \linkS4class{sdcProblem} object}
+\item{x}{a \link[=sdcProblem-class]{sdcProblem} object}
 }
 \value{
 an input suitable for \code{\link[=writeJJFormat]{writeJJFormat()}}
 }
 \description{
-This function transforms a \linkS4class{sdcProblem} object into a list that can
+This function transforms a \link[=sdcProblem-class]{sdcProblem} object into a list that can
 be used as input for \code{\link[=writeJJFormat]{writeJJFormat()}} to write a problem in \code{"JJ-format"} to
 disk.
 }

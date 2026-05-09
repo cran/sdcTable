@@ -1,5 +1,3 @@
-context("test secondarySuppression()")
-
 prob <- function() {
   v1 <- sdcHierarchies::hier_create("tot", c("w", "x", "y", "z"))
   v2 <- sdcHierarchies::hier_create("tot", c("a", "b", "c", "d"))
@@ -69,7 +67,7 @@ test_that("simpleheuristic and simpleheuristic-old work", {
   skip_on_cran()
 
   sdc <- prob()
-  expect_is(sdc, "sdcProblem")
+  expect_s4_class(sdc, "sdcProblem")
   expect_equal(sum(sdc@problemInstance@sdcStatus == "u"), 9)
   expect_equal(sum(sdc@results$sdcStatus == "x"), 0)
 
@@ -77,7 +75,7 @@ test_that("simpleheuristic and simpleheuristic-old work", {
   expect_equal(sum(sdc_protected@results$sdcStatus == "x"), 0) # --> still a problem
 
   # we need to check that simpleheuristic adds at least one additional suppression
-  sdc_protected <- protectTable(sdc, method = "SIMPLEHEURISTIC", solve_attackerprobs = TRUE) # this is the default
+  sdc_protected <- protectTable(sdc, method = "SIMPLEHEURISTIC", solve_attackerprobs = TRUE, verbose = FALSE) # this is the default
   expect_equal(sum(sdc_protected@results$sdcStatus == "x"), 1)
 
   bnds <- attack(sdc_protected, to_attack = 8)

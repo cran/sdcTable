@@ -8,7 +8,7 @@
 get_safeobj(object, type, ...)
 }
 \arguments{
-\item{object}{an object of class \linkS4class{sdcProblem}}
+\item{object}{an object of class \link[=sdcProblem-class]{sdcProblem}}
 
 \item{type}{a character vector defining what should be returned. Possible
 choices are:
@@ -38,7 +38,7 @@ only the cell id (number)
 the required information.
 }
 \description{
-\code{\link[=get_safeobj]{get_safeobj()}} allows to extract information from protected \linkS4class{sdcProblem}
+\code{\link[=get_safeobj]{get_safeobj()}} allows to extract information from protected \link[=sdcProblem-class]{sdcProblem}
 instances.
 }
 \note{

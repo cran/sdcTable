@@ -7,7 +7,7 @@
 change_cellstatus(object, specs, rule, verbose = FALSE, ...)
 }
 \arguments{
-\item{object}{an object of class \linkS4class{sdcProblem}}
+\item{object}{an object of class \link[=sdcProblem-class]{sdcProblem}}
 
 \item{specs}{input that defines which cells to query; the function expects
 either (see examples below)
@@ -28,11 +28,11 @@ under consideration should be set.}
 \item{...}{additional parameters for potential future use, currently unused.}
 }
 \value{
-a \linkS4class{sdcProblem} object
+a \link[=sdcProblem-class]{sdcProblem} object
 }
 \description{
 Function \code{\link[=change_cellstatus]{change_cellstatus()}} allows to change|modify the anonymization state
-of single table cells for objects of class \linkS4class{sdcProblem}.
+of single table cells for objects of class \link[=sdcProblem-class]{sdcProblem}.
 }
 \examples{
 # load example-problem

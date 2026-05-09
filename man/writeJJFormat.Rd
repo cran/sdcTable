@@ -11,7 +11,7 @@ writeJJFormat(x, tabvar = "freqs", path = "out.jj", overwrite = FALSE)
 
 \item{tabvar}{the name of the variable that will be used when producing the
 problem in JJ format. It is possible to specify \code{freqs} (the default) or the
-name of a numeric variable that was available in the \linkS4class{sdcProblem} object
+name of a numeric variable that was available in the \link[=sdcProblem-class]{sdcProblem} object
 used in \code{\link[=makeProblem]{makeProblem()}}.}
 
 \item{path}{a scalar character defining the name of the file that

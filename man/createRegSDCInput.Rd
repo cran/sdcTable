@@ -7,7 +7,7 @@
 createRegSDCInput(x, chk = FALSE)
 }
 \arguments{
-\item{x}{a \linkS4class{sdcProblem} object}
+\item{x}{a \link[=sdcProblem-class]{sdcProblem} object}
 
 \item{chk}{a logical value deciding if computed linear relations should
 be additionally checked for validity}
@@ -30,7 +30,7 @@ but suppressed cells have a value of \code{NA}
 }
 }
 \description{
-This function transforms a \linkS4class{sdcProblem} object into an object
+This function transforms a \link[=sdcProblem-class]{sdcProblem} object into an object
 that can be used as input for \link[RegSDC:SuppressDec]{RegSDC::SuppressDec} (among others).
 }
 \examples{

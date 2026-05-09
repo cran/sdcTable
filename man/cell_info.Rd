@@ -7,7 +7,7 @@
 cell_info(object, specs, ...)
 }
 \arguments{
-\item{object}{an object of class \linkS4class{sdcProblem}}
+\item{object}{an object of class \link[=sdcProblem-class]{sdcProblem}}
 
 \item{specs}{input that defines which cells to query; the function expects
 either (see examples below)
@@ -37,7 +37,7 @@ contains the following columns:
 }
 \description{
 Function \code{\link[=cellInfo]{cellInfo()}} can be used to query information of a single cell
-from a \linkS4class{sdcProblem} object. If the instance has already been protected
+from a \link[=sdcProblem-class]{sdcProblem} object. If the instance has already been protected
 using \code{\link[=protectTable]{protectTable()}}, the information is retrieved from the final protected
 dataset, otherwise from the current state of the instance.
 }
